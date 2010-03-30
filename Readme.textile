@@ -1,1 +1,6 @@
-Readme
+h1. WallManager Project
+
+This project contains two different applications:
+
+* A Django application for management of applications via web
+* A Multitouch Application using PyMT to launch the applications on the wall
