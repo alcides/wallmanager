@@ -28,7 +28,7 @@ MEDIA_ROOT = relative('media/')
 MEDIA_URL = '/media/'
 ADMIN_MEDIA_PREFIX = '/media/admin/'
 
-ROOT_URLCONF = 'yoursite.urls'
+ROOT_URLCONF = 'webmanager.urls'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
