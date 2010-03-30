@@ -1,15 +1,15 @@
 from django.db import models
 
 class User(models.Model):
-    username = models.EmailField()
-    usertype = models.CharField(max_length=12)
+	username = models.EmailField()
+	usertype = models.CharField(max_length=12)
 	isbanned = models.BooleanField()
 	
 class Category(models.Model):
-	name = models.CharField()
+	name = models.CharField(max_length=255)
 	
 class Application(models.Model):
-	name = models.CharField()
+	name = models.CharField(max_length=255)
 	appowner = models.ForeignKey('User')
 	category = models.ForeignKey('Category')
 	like = models.IntegerField()
