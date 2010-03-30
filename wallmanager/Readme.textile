@@ -1,0 +1,3 @@
+h1. WallManager Application
+
+A Multitouch Application using PyMT to launch the applications on the wall
