@@ -7,7 +7,7 @@ class User(models.Model):
         ('S', 'SuperAdmin'),
     )
     
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     level = models.CharField(max_length=1, choices=LEVELS)
     
     
@@ -21,7 +21,7 @@ class User(models.Model):
         return u"%s" % self.email
     
 class Category(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     
     class Meta:
         verbose_name_plural = "Categories"
@@ -30,7 +30,7 @@ class Category(models.Model):
         return u"%s" % self.name
 
 class Application(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     owner = models.ForeignKey(User)
     category = models.ForeignKey(Category)
     
