@@ -1,8 +1,21 @@
 from django.db import models
 
 class User(models.Model):
+    LEVELS = (
+        ('U', 'User'),
+        ('A', 'Admin'),
+        ('S', 'SuperAdmin'),
+    )
+    
     email = models.EmailField()
-    is_admin = models.BooleanField(default=False)
+    level = models.CharField(max_length=1, choices=LEVELS)
+    
+    
+    def save(self, *args, **kwargs):
+        """ Verifies is there is another superuser, and removes him from that level."""
+        if self.level == 'S':
+            User.objects.filter(level='S').update(level='A')
+        super(User,self).save(*args, **kwargs)
     
     def __unicode__(self):
         return u"%s" % self.email
@@ -48,15 +61,6 @@ class AbuseReport(models.Model):
 
     def __unicode__(self):
         return u"%s reported by %s" % (self.application, self.author)
-    
-    
-class AuthConfig(models.Model):
-    contact = models.EmailField()
-    superadmin = models.IntegerField()
-    
-    class Meta:
-        verbose_name = "Global Configuration"
-        verbose_name_plural = "Global Configurations"
     
 class ProjectorControl(models.Model):
     inactivity_time = models.IntegerField()
