@@ -64,5 +64,10 @@ class AbuseReport(models.Model):
     
 class ProjectorControl(models.Model):
     inactivity_time = models.IntegerField()
-    shutdown_time = models.TimeField()
     startup_time = models.TimeField()
+    shutdown_time = models.TimeField()
+
+    def save(self, *args, **kwargs):
+        """ There can be only one ProjectorControl instance."""
+        ProjectorControl.objects.all().delete()
+        super(ProjectorControl,self).save(*args, **kwargs)

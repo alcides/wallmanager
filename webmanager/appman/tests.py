@@ -1,4 +1,7 @@
+from datetime import time
+
 from django.test import TestCase
+
 from appman.models import *
 
 class ApplicationManagement(TestCase):
@@ -31,9 +34,15 @@ class ApplicationManagement(TestCase):
 		su1 = User.objects.create(email="su1@dei.uc.pt", level='S')
 		su2 = User.objects.create(email="su2@dei.uc.pt", level='S')
 		
-		self.assertEqual( len(User.objects.filter(level='S')), 1)
+		self.assertEqual( User.objects.filter(level='S').count(), 1)
 		self.assertEqual( User.objects.get(email="su1@dei.uc.pt").level, 'A')
 		self.assertEqual( User.objects.get(email="su2@dei.uc.pt").level, 'S')
+		
+	def test_uniqueness_control(self):
+		c1 = ProjectorControl.objects.create(inactivity_time=1, startup_time=time(1), shutdown_time=time(2))
+		c2 = ProjectorControl.objects.create(inactivity_time=1, startup_time=time(1), shutdown_time=time(3))
+		
+		self.assertEqual( ProjectorControl.objects.count(), 1)
 		
 	def tearDown(self):
 		pass
