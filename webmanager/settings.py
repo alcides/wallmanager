@@ -36,7 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-	'webmanager_application'
+	'appman'
 )
 
 TEMPLATE_DIRS = (
