@@ -52,16 +52,7 @@ class Application(models.Model):
     
     def __unicode__(self):
         return u"%s" % self.name
-    
-    
-class AbuseReport(models.Model):
-    application = models.ForeignKey(Application)
-    author = models.ForeignKey(User)
-    description = models.TextField()
-
-    def __unicode__(self):
-        return u"%s reported by %s" % (self.application, self.author)
-    
+        
 class ProjectorControl(models.Model):
     inactivity_time = models.IntegerField()
     startup_time = models.TimeField()
