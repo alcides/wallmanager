@@ -12,7 +12,7 @@ class User(models.Model):
     
     
     def save(self, *args, **kwargs):
-        """ Verifies is there is another superuser, and removes him from that level."""
+        """ Verifies if there is another superuser, and removes him from that level."""
         if self.level == 'S':
             User.objects.filter(level='S').update(level='A')
         super(User,self).save(*args, **kwargs)
@@ -44,7 +44,7 @@ class Application(models.Model):
     extraction_path = models.FilePathField()
     
     def value(self):
-        """ The value of an application, based on the likes and disliked """
+        """ The value of an application, based on the likes and dislikes """
         return self.likes - self.dislikes
         
     class Meta:
