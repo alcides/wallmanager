@@ -4,5 +4,5 @@ from appman.models import *
 
 def application_list(request):
 	cs = Application.objects.all()
-
-	return object_list(request, **{ "queryset": cs, "template_object_name": "application" })
+	
+	return object_list(request, queryset=cs, template_object_name="application")
