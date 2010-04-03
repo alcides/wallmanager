@@ -54,3 +54,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
+
+AUTHENTICATION_BACKENDS = (
+    'appman.backends.StudentPopBackend',
+)

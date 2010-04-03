@@ -1,24 +1,5 @@
 from django.db import models
-
-class User(models.Model):
-    LEVELS = (
-        ('U', 'User'),
-        ('A', 'Admin'),
-        ('S', 'SuperAdmin'),
-    )
-    
-    email = models.EmailField(unique=True)
-    level = models.CharField(max_length=1, choices=LEVELS)
-    
-    
-    def save(self, *args, **kwargs):
-        """ Verifies if there is another superuser, and removes him from that level."""
-        if self.level == 'S':
-            User.objects.filter(level='S').update(level='A')
-        super(User,self).save(*args, **kwargs)
-    
-    def __unicode__(self):
-        return u"%s" % self.email
+from django.contrib.auth.models import User
     
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
