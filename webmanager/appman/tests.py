@@ -23,7 +23,8 @@ class ApplicationManagement(TestCase):
         self.gps.likes = 5
         self.gps.dislikes = 3
         self.gps.save()
-        self.assertEqual( self.gps.value(), 2)
+        self.assertEqual( self.gps.value(), 0.625)
+        self.assertEqual( self.gps.stars(), 3)
     
     def test_uniqueness_superadmin(self):
         su1 = User.objects.create(email="su1@dei.uc.pt", level='S')
