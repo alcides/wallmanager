@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %} All Applications {% endblock %}
+
+{% block content%}
+<ul>
+{% for app in queryset %}
+	<li>{{ app.name }}</li>
+{% endfor %}
+</ul>
+{% endblock %}
