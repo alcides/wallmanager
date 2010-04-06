@@ -5,17 +5,17 @@ from appman.models import *
 class ApplicationManagement(TestCase):
     
     def setUp(self):
-        #Creates usernames for Zacarias and Mario Zenha-Rela
+        #Creates usernames for Zacarias and Prof. Plum
         self.zacarias = User.objects.create(email="zacarias@student.dei.uc.pt")
-        self.mzr = User.objects.create(email="mzr@dei.uc.pt", level="A")
+        self.plum = User.objects.create(email="plum@dei.uc.pt", level="A")
 		
         self.educational = Category.objects.create(name="Educational")
         self.games = Category.objects.create(name="Games")
         
-        self.gps = Application.objects.create(name="Gps Application", owner=self.mzr, category=self.educational)
+        self.gps = Application.objects.create(name="Gps Application", owner=self.plum, category=self.educational)
     
     def test_models_representation(self):
-        self.assertEqual( unicode(self.mzr), u"mzr@dei.uc.pt" )
+        self.assertEqual( unicode(self.plum), u"plum@dei.uc.pt" )
         self.assertEqual( unicode(self.educational), u"Educational" )
         self.assertEqual( unicode(self.gps), u"Gps Application" )
     
@@ -23,7 +23,8 @@ class ApplicationManagement(TestCase):
         self.gps.likes = 5
         self.gps.dislikes = 3
         self.gps.save()
-        self.assertEqual( self.gps.value(), 2)
+        self.assertEqual( self.gps.value(), 0.625)
+        self.assertEqual( self.gps.stars(), 3)
     
     def test_uniqueness_superadmin(self):
         su1 = User.objects.create(email="su1@dei.uc.pt", level='S')

@@ -33,20 +33,28 @@ class Application(models.Model):
     name = models.CharField(max_length=255, unique=True)
     owner = models.ForeignKey(User)
     category = models.ForeignKey(Category)
+    description = models.TextField(blank=True)
     
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
     
+    runs = models.IntegerField(default=0)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
+    
     zipfile = models.FileField(upload_to='applications')
-    icon = models.FileField(upload_to='icons')
+    icon = models.ImageField(upload_to='icons')
     extraction_path = models.FilePathField()
     
     def value(self):
         """ The value of an application, based on the likes and dislikes """
-        return self.likes - self.dislikes
-        
+        total = self.likes + self.dislikes
+        return ( self.likes ) / float(total)
+    
+    def stars(self):
+        """ The number of stars an application has, based on the likes and dislikes """
+        return round(self.value()*5)
+            
     class Meta:
         ordering = ("-likes",)
     
