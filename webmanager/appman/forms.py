@@ -4,4 +4,4 @@ from django.forms import ModelForm
 class ApplicationForm(ModelForm):
 	class Meta:
 		model = Application
-		fields = ('name', 'zipfile','icon','category')
+		fields = ('name', 'zipfile','icon','category','description')
