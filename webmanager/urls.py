@@ -10,6 +10,7 @@ urlpatterns = patterns('',
 	# (r'^admin/doc/', include('django.contrib.admindocs.urls')), 
 	# And add 'django.contrib.admindocs' to INSTALLED_APPS
     (r'^admin/(.*)', admin.site.root),
+    (r'^', include('appman.urls')),
 )
 
 if settings.DEBUG:

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %} All Applications {% endblock %}
+
+{% block content %}
+<table border="1">
+<tr>
+	<th>Name</th>	
+	<th>Author</th>
+	<th>Category</th>
+	<th>Rating</th>
+</tr>
+
+{% for app in application_list %}
+<tr>
+	<td>{{ app.name }}</td>
+	<td>{{ app.owner }}</td>
+	<td>{{ app.category }}</td>
+	<td>{{ app.likes }}</td>
+</tr>
+{% endfor %}
+
+</table>
+{% endblock %}

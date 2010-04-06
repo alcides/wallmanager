@@ -1,0 +1,21 @@
+
+{% extends 'base.html' %}
+
+{% block title %} Add Application {% endblock %}
+
+{% block content %}
+
+{% if form.errors %}
+<h2>Please correct the following error{{ form.errors|pluralize }}:</h2>
+
+{% for error in form.errors %}
+{{error}}
+{% endfor %}
+
+{% endif %}
+
+<form action="" method="post">
+  {{ form.as_p }}
+  <input type="submit" />
+</form>
+{% endblock %}
