@@ -5,11 +5,9 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # (r'^yoursite/', include('yoursite.foo.urls')),
 
-	# (r'^admin/doc/', include('django.contrib.admindocs.urls')), 
-	# And add 'django.contrib.admindocs' to INSTALLED_APPS
     (r'^admin/(.*)', admin.site.root),
+    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
     (r'^', include('appman.urls')),
 )
 

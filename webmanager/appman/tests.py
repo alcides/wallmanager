@@ -1,13 +1,16 @@
 from datetime import time
+
 from django.test import TestCase
+from django.contrib.auth.models import User
+
 from appman.models import *
 
 class ApplicationManagement(TestCase):
     
     def setUp(self):
         #Creates usernames for Zacarias and Prof. Plum
-        self.zacarias = User.objects.create(email="zacarias@student.dei.uc.pt")
-        self.plum = User.objects.create(email="plum@dei.uc.pt", level="A")
+        self.zacarias = User.objects.create(username="zacarias_stu", email="zacarias@student.dei.uc.pt")
+        self.plum = User.objects.create(username="plum_ede", email="plum@dei.uc.pt")
 		
         self.educational = Category.objects.create(name="Educational")
         self.games = Category.objects.create(name="Games")
@@ -15,7 +18,6 @@ class ApplicationManagement(TestCase):
         self.gps = Application.objects.create(name="Gps Application", owner=self.plum, category=self.educational)
     
     def test_models_representation(self):
-        self.assertEqual( unicode(self.plum), u"plum@dei.uc.pt" )
         self.assertEqual( unicode(self.educational), u"Educational" )
         self.assertEqual( unicode(self.gps), u"Gps Application" )
     
@@ -25,14 +27,6 @@ class ApplicationManagement(TestCase):
         self.gps.save()
         self.assertEqual( self.gps.value(), 0.625)
         self.assertEqual( self.gps.stars(), 3)
-    
-    def test_uniqueness_superadmin(self):
-        su1 = User.objects.create(email="su1@dei.uc.pt", level='S')
-        su2 = User.objects.create(email="su2@dei.uc.pt", level='S')
-        
-        self.assertEqual( User.objects.filter(level='S').count(), 1)
-        self.assertEqual( User.objects.get(email="su1@dei.uc.pt").level, 'A')
-        self.assertEqual( User.objects.get(email="su2@dei.uc.pt").level, 'S')
     
     def test_uniqueness_control(self):
         c1 = ProjectorControl.objects.create(inactivity_time=1, startup_time=time(1), shutdown_time=time(2))
