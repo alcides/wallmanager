@@ -5,19 +5,17 @@
 
 {% block content %}
 
-{% if form.has_errors %}
+{% if form.errors %}
 <h2>Please correct the following error{{ form.errors|pluralize }}:</h2>
+
+{% for error in form.errors %}
+{{error}}
+{% endfor %}
+
 {% endif %}
 
 <form action="" method="post">
-  <p><label for="id_name">Application Name:</label> {{ form.name }}
-  {% if form.name.errors %}*** {{ form.name.errors|join:", " }}{% endif %}</p>
-  <p><label for="id_file">File:</label> {{ form.zipfile }}
-  {% if form.zipfile.errors %}*** {{ form.zipfile.errors|join:", " }}{% endif %}</p>
-  <p><label for="id_icon">Icon:</label> {{ form.icon }}
-  {% if form.icon.errors %}*** {{ form.icon.errors|join:", " }}{% endif %}</p>
-  <p><label for="id_category">Category:</label> {{ form.category }}
-  {% if form.category.errors %}*** {{ form.category.errors|join:", " }}{% endif %}</p>
+  {{ form.as_p }}
   <input type="submit" />
 </form>
 {% endblock %}
