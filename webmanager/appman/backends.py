@@ -19,9 +19,7 @@ class StudentPopBackend:
                 m = poplib.POP3_SSL(domain)
                 m.user(username)
                 m.pass_(password)
-                if m.stat():
-                    return True
-                return False
+                return bool(m.stat())
             except:
                 return False
     
