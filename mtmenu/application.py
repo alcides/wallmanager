@@ -1,7 +1,6 @@
 from os.path import join, exists, isdir
 from os import chdir, getcwdu, listdir
 from subprocess import Popen, PIPE
-import platform
 
 from OpenGL.GLUT import *
 
@@ -70,6 +69,7 @@ class Application:
             try:
                 glutHideWindow()
                 
+                import platform
                 if platform.system()[:3].lower() == "win":
                     command = [app_boot_file]
                 else:
