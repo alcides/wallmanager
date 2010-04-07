@@ -1,7 +1,11 @@
-from subprocess import Popen, PIPE
-from settings import APPS_BOOT_FILENAME, APPS_REPOSITORY_PATH
 from os.path import join, exists, isdir
 from os import chdir, getcwdu, listdir
+from subprocess import Popen, PIPE
+import platform
+
+from OpenGL.GLUT import *
+
+from settings import *
 
 
 __all__ = ['gel_all_apps', 'Application']
@@ -64,21 +68,22 @@ class Application:
         if app_boot_file:
             
             try:
-                # Changes current working context to application's path
-                # Current working context if saved to be setted back after application execution
-                curr_working_path = getcwdu()
-                chdir(app_path)
+                glutHideWindow()
+                
+                if platform.system()[:3].lower() == "win":
+                    command = [app_boot_file]
+                else:
+                    command = ["bash", app_boot_file]
+                
                 
                 # Starts application process and waits for it to terminate
-                process = Popen(app_boot_file, stdout=PIPE, stderr=PIPE)
+                process = Popen(command, stdout=PIPE, stderr=PIPE, cwd=app_path)
                 
                 # Application's output should be handle here! 
                 for str in process.communicate():
                     print "OUTPUT:\n %s" % str # TO-DO
                     
-                # Change back to previous working path
-                chdir(curr_working_path)
-                    
+                glutShowWindow()
                 success = True
             except:
                 raise
