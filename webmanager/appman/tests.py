@@ -104,6 +104,12 @@ class ApplicationManagement(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<td>Example App 2</td>")
 
+    def test_delete_app(self):
+        c = Application.objects.count()
+        login = self.do_login()
+        response = self.client.get('/app/delete/%s' % self.gps.id)
+        self.assertRedirects(response, '/app/list/')
+        self.assertEqual(c-1, Application.objects.count())
 
     def tearDown(self):
         pass
