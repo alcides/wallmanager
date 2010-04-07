@@ -29,3 +29,7 @@ def application_form(request):
 	return render_to_response('appman/application_form.html', {
 		'form': form,
 	})
+	
+def application_detail(request,object_id):
+	cs = Application.objects.all()
+	return object_detail(request, object_id=object_id, queryset=cs, template_object_name="application")

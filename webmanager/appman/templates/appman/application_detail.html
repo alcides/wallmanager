@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ application.name }} {% endblock %}
+
+{% block content%}
+
+<p><b>App Name:</b> {{ application.name }}</p>
+<p><b>Owner:</b> {{ application.owner }}</p>
+<p><b>Category:</b> {{ application.category }}</p>
+<p><b>Description:</b> {{ application.description }}</p>
+<p><b>Date Created:</b> {{ application.date_created }}</p>
+<p><b>Date Updated:</b> {{ application.date_updated }}</p>
+<p><b>Number of times run:</b> {{ application.runs }}</p>
+<p><b>Number of like votes:</b> {{ application.likes }}</p>
+<p><b>Number of dislike votes:</b> {{ application.dislikes }}</p>
+
+<a href="/app/edit/{{ application.id }}">Edit Application</a>
+<a href="/app/delete/{{ application.id }}">Delete Application</a>
+
+{% endblock %}

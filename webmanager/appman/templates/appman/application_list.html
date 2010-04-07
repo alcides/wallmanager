@@ -13,7 +13,7 @@
 
 {% for app in application_list %}
 <tr>
-	<td>{{ app.name }}</td>
+	<td><a href="{{ app.get_absolute_url }}">{{ app.name }}</a></td>
 	<td>{{ app.owner }}</td>
 	<td>{{ app.category }}</td>
 	<td>{{ app.likes }}</td>
