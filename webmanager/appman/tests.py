@@ -1,4 +1,4 @@
-from datetime import time
+from datetime import datetime, time
 from django.test import TestCase
 from appman.models import *
 
@@ -40,8 +40,10 @@ class ApplicationManagement(TestCase):
         self.assertEqual( ProjectorControl.objects.count(), 1)
         
     def test_application_log_representation(self):
-        self.log = ApplicationLog.objects.create(application=self.gps, error_description="The application reported a certain exception, which is...")
-        self.assertEqual( unicode(self.log), u"%s log at %s" % (self.gps.name, self.log.date_and_time))
+        self.log = ApplicationLog.objects.create(application=self.gps, error_description="Error importing library X.")
+        self.log.datetime = datetime(2010,1,1,15,0,1)
+        self.log.save()
+        self.assertEqual( unicode(self.log),  u"Gps Application log at 2010-01-01 15:00:01")
     
     def tearDown(self):
         pass
