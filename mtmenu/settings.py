@@ -8,5 +8,5 @@ def relative(*x):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 
 
-APPS_REPOSITORY_PATH = 'c:\\apps\\'
+APPS_REPOSITORY_PATH = relative('apps/')
 APPS_BOOT_FILENAME = 'boot.bat'
