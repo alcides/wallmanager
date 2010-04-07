@@ -3,6 +3,7 @@ from django.views.generic.create_update import *
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from appman.forms import *
 from appman.models import *
@@ -20,7 +21,7 @@ def application_add(request):
 			app = form.save(commit=False)
 			app.owner = request.user
 			app.save()
-			return HttpResponseRedirect('/app/list/') # Redirect after POST
+			return HttpResponseRedirect(reverse('application-detail', args=[str(app.id)]))
 	else:
 		form = form_class()
 
@@ -35,7 +36,7 @@ def application_detail(request,object_id):
 @login_required
 def application_edit(request, object_id):
     return update_object(request, form_class=ApplicationForm, 
-            object_id=object_id, post_save_redirect="/app/list/")
+            object_id=object_id, post_save_redirect=reverse('application-detail', args=[str(object_id)]))
             
 @login_required
 def application_delete(request, object_id):

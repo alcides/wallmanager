@@ -44,9 +44,10 @@ class Application(models.Model):
     
     def __unicode__(self):
         return u"%s" % self.name
-        
+    
+    @models.permalink
     def get_absolute_url(self):
-        return "/app/%d/" % self.id
+        return ("application-detail", [str(self.id)])
         
 class ProjectorControl(models.Model):
     inactivity_time = models.IntegerField()

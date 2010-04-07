@@ -60,6 +60,7 @@ class ApplicationManagement(TestCase):
         login = self.do_login()
         response = self.client.get('/app/add/')
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Add Application")
         self.assertContains(response, "<form", 1)
 
         zf = open(relative('../tests/python_test_app.zip'),'rb')
@@ -75,15 +76,16 @@ class ApplicationManagement(TestCase):
         zf.close()
         pf.close()
         print response.content
-        self.assertRedirects(response, '/app/list/')
+        self.assertRedirects(response, '/app/%s/' % Application.objects.get(name='Example App').id)
         response = self.client.get('/app/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Example App</a></td>")
 
     def test_edit_app(self):
         login = self.do_login()
-        response = self.client.get('/app/edit/%s' % self.gps.id)
+        response = self.client.get('/app/%s/edit/' % self.gps.id)
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Application")
         
         zf = open(relative('../tests/python_test_app.zip'),'rb')
         pf = open(relative('../tests/wmlogo.png'),'rb')
@@ -95,11 +97,11 @@ class ApplicationManagement(TestCase):
             'description': "Example app"
         }
         
-        response = self.client.post('/app/edit/%s' % self.gps.id, post_data)
+        response = self.client.post('/app/%s/edit/' % self.gps.id, post_data)
         zf.close()
         pf.close()
         
-        self.assertRedirects(response, '/app/list/')
+        self.assertRedirects(response, '/app/%s/' % self.gps.id)
         response = self.client.get('/app/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Example App 2</a></td>")
@@ -107,7 +109,7 @@ class ApplicationManagement(TestCase):
     def test_delete_app(self):
         c = Application.objects.count()
         login = self.do_login()
-        response = self.client.get('/app/delete/%s' % self.gps.id)
+        response = self.client.get('/app/%s/delete/' % self.gps.id)
         self.assertRedirects(response, '/app/list/')
         self.assertEqual(c-1, Application.objects.count())
 
