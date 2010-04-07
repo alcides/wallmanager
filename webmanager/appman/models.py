@@ -65,9 +65,8 @@ class ProjectorControl(models.Model):
         
 class ApplicationLog(models.Model):
     application = models.ForeignKey(Application)
-    date = models.DateField(auto_now_add=True)
-    hour = models.TimeField(auto_now_add=True)
+    date_and_time = models.DateTimeField(auto_now_add=True)
     error_description = models.CharField(max_length=255)
     
     def __unicode__(self):
-        return u"Log for application %s. Date: %s | Hour: %s" % (self.application.name, self.date, self.hour)
+        return u"%s log at %s" % (self.application.name, self.date_and_time)
