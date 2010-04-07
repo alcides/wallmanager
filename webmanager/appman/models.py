@@ -49,8 +49,11 @@ class Application(models.Model):
     def value(self):
         """ The value of an application, based on the likes and dislikes """
         total = self.likes + self.dislikes
-        return ( self.likes ) / float(total)
-    
+        if total != 0:
+            return ( self.likes ) / float(total)
+        else:
+            return 0
+        
     def stars(self):
         """ The number of stars an application has, based on the likes and dislikes """
         return round(self.value()*5)
