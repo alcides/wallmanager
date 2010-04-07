@@ -5,6 +5,10 @@ from django.contrib.auth.models import User
 
 from appman.models import *
 
+import os
+def relative(*x):
+	return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+
 class ApplicationManagement(TestCase):
     
     def setUp(self):
@@ -58,8 +62,8 @@ class ApplicationManagement(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<form", 1)
 
-        zf = open('requirements.txt')
-        pf = open('tests/wmlogo.png')        
+        zf = open(relative('../tests/python_test_app.zip'))
+        pf = open(relative('../tests/wmlogo.png'))
         post_data = {
             'name': 'Example App',
             'zipfile': zf,
@@ -75,6 +79,30 @@ class ApplicationManagement(TestCase):
         response = self.client.get('/app/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<td>Example App</td>")
+
+    def test_edit_app(self):
+        login = self.do_login()
+        response = self.client.get('/app/edit/%s' % self.gps.id)
+        self.assertEqual(response.status_code, 200)
+        
+        zf = open(relative('../tests/python_test_app.zip'))
+        pf = open(relative('../tests/wmlogo.png'))
+        post_data = {
+            'name': 'Example App 2',
+            'zipfile': zf,
+            'icon': pf,
+            'category': self.educational.id, 
+            'description': "Example app"
+        }
+        
+        response = self.client.post('/app/edit/%s' % self.gps.id, post_data)
+        zf.close()
+        pf.close()
+        
+        self.assertRedirects(response, '/app/list/')
+        response = self.client.get('/app/list/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<td>Example App 2</td>")
 
 
     def tearDown(self):

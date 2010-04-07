@@ -6,4 +6,5 @@ sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), "webman
 from webmanager.manage import *
 import webmanager
 
+os.chdir(sys.path[-1])
 execute_manager(webmanager.settings, argv=['','test','appman'])
