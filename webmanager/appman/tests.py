@@ -38,6 +38,10 @@ class ApplicationManagement(TestCase):
         c1 = ProjectorControl.objects.create(inactivity_time=1, startup_time=time(1), shutdown_time=time(2))
         c2 = ProjectorControl.objects.create(inactivity_time=1, startup_time=time(1), shutdown_time=time(3))
         self.assertEqual( ProjectorControl.objects.count(), 1)
+        
+    def test_application_log_representation(self):
+        self.log = ApplicationLog.objects.create(application=self.gps, error_description="The application reported a certain exception, which is...")
+        self.assertEqual( unicode(self.log), u"%s log at %s" % (self.gps.name, self.log.date_and_time))
     
     def tearDown(self):
         pass
