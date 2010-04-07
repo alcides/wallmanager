@@ -1,2 +1,9 @@
 *.pyc
 webmanager/db/dev.db
+webmanager/media/applications
+webmanager/media/icons
+.project
+.pydevproject
+.settings
+*.prefs
+*~
