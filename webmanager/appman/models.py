@@ -62,3 +62,12 @@ class ProjectorControl(models.Model):
         """ There can be only one ProjectorControl instance."""
         ProjectorControl.objects.all().delete()
         super(ProjectorControl,self).save(*args, **kwargs)
+        
+class ApplicationLog(models.Model):
+    application = models.ForeignKey(Application)
+    date = models.DateField(auto_now_add=True)
+    hour = models.TimeField(auto_now_add=True)
+    error_description = models.CharField(max_length=255)
+    
+    def __unicode__(self):
+        return u"Log for application %s. Date: %s | Hour: %s" % (self.application.name, self.date, self.hour)
