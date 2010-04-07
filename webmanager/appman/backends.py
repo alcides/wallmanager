@@ -29,8 +29,6 @@ class StudentPopBackend:
         try:
             user = User.objects.get(email=username)
         except User.DoesNotExist:
-            from random import choice
-            temp_pass = ""
             new_user = ''
             domain = ''
             if email_re.search(username):
@@ -38,8 +36,7 @@ class StudentPopBackend:
                 new_user = username[:username.find('@')]
                 new_user = new_user + '_' + AUTHORIZED_SERVERS[domain]
                 new_user = string.lower(new_user)
-            for i in range(8):
-                temp_pass = temp_pass + choice(string.letters)
+            temp_pass = User.objects.make_random_password()
             user = User.objects.create_user(new_user,username,temp_pass)
             user.is_staff = False
             user.save()
