@@ -11,10 +11,10 @@
 <p><b>Date Created:</b> {{ application.date_created }}</p>
 <p><b>Date Updated:</b> {{ application.date_updated }}</p>
 <p><b>Number of times run:</b> {{ application.runs }}</p>
-<p><b>Number of like votes:</b> {{ application.likes }}</p>
-<p><b>Number of dislike votes:</b> {{ application.dislikes }}</p>
+<p><b>Rating:</b> {{ application.stars }}</p>
 
 <a href="/app/edit/{{ application.id }}">Edit Application</a>
+<br/>
 <a href="/app/delete/{{ application.id }}">Delete Application</a>
 
 {% endblock %}
