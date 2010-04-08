@@ -1,25 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-class User(models.Model):
-    LEVELS = (
-        ('U', 'User'),
-        ('A', 'Admin'),
-        ('S', 'SuperAdmin'),
-    )
-    
-    email = models.EmailField(unique=True)
-    level = models.CharField(max_length=1, choices=LEVELS)
-    
-    
-    def save(self, *args, **kwargs):
-        """ Verifies if there is another superuser, and removes him from that level."""
-        if self.level == 'S':
-            User.objects.filter(level='S').update(level='A')
-        super(User,self).save(*args, **kwargs)
-    
-    def __unicode__(self):
-        return u"%s" % self.email
-    
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
     
@@ -49,8 +30,11 @@ class Application(models.Model):
     def value(self):
         """ The value of an application, based on the likes and dislikes """
         total = self.likes + self.dislikes
-        return ( self.likes ) / float(total)
-    
+        if total != 0:
+            return ( self.likes ) / float(total)
+        else:
+            return 0
+        
     def stars(self):
         """ The number of stars an application has, based on the likes and dislikes """
         return round(self.value()*5)
@@ -60,6 +44,10 @@ class Application(models.Model):
     
     def __unicode__(self):
         return u"%s" % self.name
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ("application-detail", [str(self.id)])
         
 class ProjectorControl(models.Model):
     inactivity_time = models.IntegerField()

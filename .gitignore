@@ -2,6 +2,7 @@
 webmanager/db/dev.db
 webmanager/media/applications
 webmanager/media/icons
+mtmenu/apps
 .project
 .pydevproject
 .settings
