@@ -36,7 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-	'appman'
+	'appman',
 )
 
 TEMPLATE_DIRS = (
@@ -61,3 +61,5 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
+
+WALL_APP_DIR = relative('../mtmenu/apps/')

@@ -9,7 +9,7 @@ import os
 def relative(*x):
 	return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 
-class ApplicationManagement(TestCase):
+class ApplicationManagementTest(TestCase):
     
     def setUp(self):
         #Creates usernames for Zacarias and Prof. Plum
