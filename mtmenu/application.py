@@ -67,8 +67,6 @@ class Application:
         if app_boot_file:
             
             try:
-                glutHideWindow()
-                
                 import platform
                 if platform.system()[:3].lower() == "win":
                     command = [app_boot_file]
@@ -83,7 +81,6 @@ class Application:
                 for str in process.communicate():
                     print "OUTPUT:\n %s" % str # TO-DO
                     
-                glutShowWindow()
                 success = True
             except:
                 raise
