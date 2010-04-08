@@ -22,7 +22,7 @@ class ApplicationManagement(TestCase):
         self.educational = Category.objects.create(name="Educational")
         self.games = Category.objects.create(name="Games")
         
-        self.gps = Application.objects.create(name="Gps Application", owner=self.plum, category=self.educational)
+        self.gps = Application.objects.create(name="Gps Application", owner=self.zacarias, category=self.educational)
  
     def do_login(self):
         login = self.client.login(username='zacarias_stu', password='zacarias')
@@ -50,6 +50,17 @@ class ApplicationManagement(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Gps Application</a></td>")
         self.assertContains(response, "<tr>", 2) # 1 app, plus header
+        
+    def test_detail_app(self):
+        response = self.client.get('/app/%s/' % self.gps.id )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Gps Application")
+        self.assertContains(response, "Edit Application",0)
+        
+        login = self.do_login()
+        response = self.client.get('/app/%s/' % self.gps.id )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Application",1)
 
     def test_requires_login_to_add_app(self):
         response = self.client.get('/app/add/')
@@ -80,6 +91,11 @@ class ApplicationManagement(TestCase):
         response = self.client.get('/app/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Example App</a></td>")
+
+    def test_requires_login_to_edit_app(self):
+        response = self.client.get('/app/%s/edit/' % self.gps.id)
+        self.assertEqual(response.status_code, 302) # redirect to login
+        self.assertRedirects(response, '/accounts/login/?next=/app/%s/edit/' % self.gps.id)
 
     def test_edit_app(self):
         login = self.do_login()
