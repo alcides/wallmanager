@@ -35,7 +35,7 @@ def application_detail(request,object_id):
 
 @login_required
 def application_edit(request, object_id):
-    return update_object(request, form_class=ApplicationForm, 
+    return update_object(request, form_class=ApplicationEditForm, 
             object_id=object_id, post_save_redirect=reverse('application-detail', args=[str(object_id)]))
             
 @login_required

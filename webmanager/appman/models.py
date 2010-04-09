@@ -45,6 +45,23 @@ class Application(models.Model):
     def __unicode__(self):
         return u"%s" % self.name
     
+    def save(self, force_insert=False, force_update=False):
+        try:
+            old_obj = Application.objects.get(pk=self.pk)
+            if old_obj.icon.path != self.icon.path:
+                    old_obj.icon.delete()
+        except:
+            pass
+        
+        try:
+            old_obj = Application.objects.get(pk=self.pk)
+            if old_obj.zipfile.path != self.zipfile.path:
+                    old_obj.zipfile.delete()
+        except:
+            pass
+        
+        super(Application, self).save(force_insert, force_update)
+    
     @models.permalink
     def get_absolute_url(self):
         return ("application-detail", [str(self.id)])
