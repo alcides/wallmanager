@@ -18,6 +18,10 @@ def remove_dir(path):
     """ Removes a certain directory and all things related to that application """
     if os.path.isdir(str(path)):
         rmtree(str(path), ignore_errors=True)
+        
+def remove_file(file):
+    """ Deletes a file held by a FileField from the filesystem. """
+    file.delete(save=True)
 
 class UncompressThread(threading.Thread):
     """ Thread that uncompresses a certain zip file."""
@@ -52,7 +56,14 @@ def remove_app(sender, instance, signal, *args, **kwargs):
     """ Deletes the uncompressed folder """    
     if str(instance.extraction_path) != "":
         remove_dir(instance.extraction_path)
+        remove_file(instance.zipfile)
+        remove_file(instance.icon)
 
+def remove_old_zip(sender, instance, signal, *args, **kwargs):
+    """ Deletes an old zipfile """
+    if instance.zipfile:
+        remove_file(instance.zipfile)
 
+signals.pre_save.connect(remove_old_zip, sender=Application)
 signals.post_save.connect(uncompress, sender=Application)
 signals.post_delete.connect(remove_app, sender=Application)
