@@ -1,5 +1,4 @@
-from datetime import time
-
+from datetime import datetime, time
 from django.test import TestCase
 from django.contrib.auth.models import User
 
@@ -45,6 +44,12 @@ class ApplicationManagementTest(TestCase):
         c2 = ProjectorControl.objects.create(inactivity_time=1, startup_time=time(1), shutdown_time=time(3))
         self.assertEqual( ProjectorControl.objects.count(), 1)
         
+    def test_application_log_representation(self):
+        self.log = ApplicationLog.objects.create(application=self.gps, error_description="Error importing library X.")
+        self.log.datetime = datetime(2010,1,1,15,0,1)
+        self.log.save()
+        self.assertEqual( unicode(self.log),  u"Gps Application log at 2010-01-01 15:00:01")
+
     def test_list_app(self):
         response = self.client.get('/app/list/')
         self.assertEqual(response.status_code, 200)
