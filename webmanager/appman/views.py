@@ -57,7 +57,18 @@ def category_list(request):
 
 @staff_login_required
 def category_add(request):
-    pass
+    form_class = CategoryForm
+    if request.method == 'POST':
+        form = form_class(request.POST, request.FILES)
+        if form.is_valid():
+            cat = form.save(commit=False)
+            cat.save()
+            return HttpResponseRedirect(reverse('category-list'))
+    else:
+        form = form_class()
+
+    return render_to_response('appman/category_form.html', {'form': form,})
+	
 
 @staff_login_required
 def category_edit(request, object_id):
