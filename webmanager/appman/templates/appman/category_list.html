@@ -12,7 +12,7 @@
 
 {% for cat in category_list %}
 <tr>
-	<td>{{ cat.name }}</a></td>
+	<td>{{ cat.name }}</td>
 	<td><a href="{% url category-edit cat.id %}">x</a></td>
 	<td><a href="{% url category-remove cat.id %}">x</a></td>
 </tr>

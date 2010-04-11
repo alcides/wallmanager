@@ -152,9 +152,34 @@ class ApplicationManagementTest(TestCase):
         response = self.client.get('/app/%s/remove/' % self.gps.id)
         self.assertRedirects(response, '/app/list/')
         self.assertEqual(c-1, Application.objects.count())
-        
 
-    
+    def test_authorized_add_category(self):
+        c = Category.objects.count()
+        login = self.do_admin_login()
+        post_data = {
+            'name': 'Action'
+        }
+        response = self.client.post('/cat/add/', post_data)
+        self.assertRedirects(response, '/cat/list/')
+        self.assertEqual(c-1, Application.objects.count())
+        
+    def test_unauthorized_add_category(self):
+        c = Category.objects.count()
+        login = self.do_login()
+        post_data = {
+            'name': 'Action'
+        }
+        response = self.client.post('/cat/add/', post_data)
+        self.assertRedirects(response, '/accounts/login/?next=/cat/add/')
+        self.assertEqual(c, Category.objects.count())
+
+    def test_authorized_list_cat(self):
+        login = self.do_admin_login()
+        response = self.client.get('/cat/list/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Games</td>")
+        self.assertContains(response, "<tr>", 3) # 2 cat, plus header
+            
     def tearDown(self):
         pass
         
