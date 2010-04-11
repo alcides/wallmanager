@@ -1,15 +1,67 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-   "http://www.w3.org/TR/html4/strict.dtd">
+  "http://www.w3.org/TR/html4/strict.dtd">
 
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>WallManager</title>
+	   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	   <title>WallManager</title>        
+	   {% block css %}
+	   <link rel="stylesheet" type="text/css" href="/media/css/main.css" media="screen"/>
+	   {% endblock %}
+
+	   {% block javascript %} {% endblock %}
 </head>
 <body>
+	<div class="container">
+		<div class="main">
+	
+			<div class="header">
+				<div align="center" class="logo">
+					<img src="/media/img/wall manager logo.png">
+				</div>
+			</div>
+	
+			<div  id="breadcrumb">
+				<ul>
+					<li>
+						<a href="" title="Home"><img src="/media/img/home.png" alt="Home" class="home" /></a>
+					</li>
+				</ul>
+			</div>
+	
+			<div class="content">
+				<div class="item">
+					<h1>{% block title%}{% endblock %}</h1>
+					<div>{% block content%}{% endblock %}</div>
+				</div>
+			</div>
+	
+			<div class="sidenav">
+				<h1>General Menu</h1>
+				<ul>
+					<li><a href="">Login</a></li>
+					<li><a href="">Technical Documentation</a></li>
+					<li><a href="">FAQ</a></li>
+				</ul>
+			</div>
+	
+			<div class="clearer"><span></span></div>
+	
+		</div>
 
-	<h1>{% block title%}{% endblock %}</h1>
-	<div>{% block content%}{% endblock %}</div>
-
+		<div class="footer">
+			Developed by the WallManager Team &copy; University of Coimbra - 2010</a>
+		</div>
+	</div>
+	
+	{% block extrajs %}{% endblock %}
+	   
 </body>
 </html>
+
+
+
+
+
+
+	   
