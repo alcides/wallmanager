@@ -6,7 +6,7 @@ from appman.models import *
 
 import os
 def relative(*x):
-	return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+    return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 
 class ApplicationManagementTest(TestCase):
     
@@ -25,6 +25,11 @@ class ApplicationManagementTest(TestCase):
  
     def do_login(self):
         login = self.client.login(username='zacarias_stu', password='zacarias')
+        self.assertEqual(login, True)
+        return login
+
+    def do_admin_login(self):
+        login = self.client.login(username='plum_ede', password='plum')
         self.assertEqual(login, True)
         return login
    
@@ -134,6 +139,22 @@ class ApplicationManagementTest(TestCase):
         self.assertRedirects(response, '/app/list/')
         self.assertEqual(c-1, Application.objects.count())
 
+    def test_requires_staff_to_remove_app(self):
+        c = Application.objects.count()
+        login = self.do_login()
+        response = self.client.get('/app/%s/remove/' % self.gps.id)
+        self.assertRedirects(response, '/accounts/login/?next=/app/%s/remove/'% self.gps.id)
+        self.assertEqual(c, Application.objects.count())
+        
+    def test_remove_app(self):
+        c = Application.objects.count()
+        login = self.do_admin_login()
+        response = self.client.get('/app/%s/remove/' % self.gps.id)
+        self.assertRedirects(response, '/app/list/')
+        self.assertEqual(c-1, Application.objects.count())
+        
+
+    
     def tearDown(self):
         pass
         
