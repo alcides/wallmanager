@@ -50,3 +50,19 @@ def application_delete(request, object_id):
     app.delete()
     return HttpResponseRedirect("/app/list/")
 
+@staff_login_required
+def category_list(request):
+    cs = Category.objects.all()
+    return object_list(request, queryset=cs, template_object_name="category")
+
+@staff_login_required
+def category_add(request):
+    pass
+
+@staff_login_required
+def category_edit(request, object_id):
+    pass
+
+@staff_login_required
+def category_remove(request, object_id):
+    pass

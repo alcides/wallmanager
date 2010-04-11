@@ -9,4 +9,8 @@ urlpatterns = patterns('appman.views',
 	url(r'^app/(?P<object_id>\d+)/edit/$', 'application_edit', name="application-edit"),
 	url(r'^app/(?P<object_id>\d+)/delete/$', 'application_delete', name="application-delete"),
 	url(r'^app/(?P<object_id>\d+)/remove/$', 'application_admin_remove', name="application-admin-remove"),
+	url(r'^cat/list/$', 'category_list', name="category-list"),
+	url(r'^cat/(?P<object_id>\d+)/edit/$', 'category_edit', name="category-edit"),
+	url(r'^cat/add/$', 'category_add', name="category-add"),
+	url(r'^cat/(?P<object_id>\d+)/remove/$', 'category_remove', name="category-remove")
 )
