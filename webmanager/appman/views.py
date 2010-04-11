@@ -68,11 +68,11 @@ def category_add(request):
         form = form_class()
 
     return render_to_response('appman/category_form.html', {'form': form,})
-	
 
 @staff_login_required
 def category_edit(request, object_id):
-    pass
+    return update_object(request, form_class=CategoryForm, 
+            object_id=object_id, post_save_redirect=reverse('category-list'))
 
 @staff_login_required
 def category_remove(request, object_id):
