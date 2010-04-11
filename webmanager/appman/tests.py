@@ -180,6 +180,24 @@ class ApplicationManagementTest(TestCase):
         self.assertContains(response, "Games</td>")
         self.assertContains(response, "<tr>", 3) # 2 cat, plus header
             
+    def test_edit_cat(self):
+        login = self.do_admin_login()
+        #change educational to Work
+        post_data = {
+            'name': 'Work'
+        }
+        response = self.client.post('/cat/%s/edit/'%self.educational.id, post_data)
+        #see if it changed
+        response = self.client.get('/cat/list/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Work</td>")
+        self.assertContains(response, "<tr>", 3) # 2 cat, plus header
+        #confirm that the applciation category changed to work
+        response = self.client.get('/app/%s/' % self.gps.id )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Work")
+        
+        
     def tearDown(self):
         pass
         
