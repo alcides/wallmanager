@@ -80,10 +80,7 @@ def send_mail_when_app_available(sender, **kwargs):
     email_from = 'wallmanager@dei.uc.pt'
     email_to = application_owner.email
     message = 'Your application, ' + application_name + ', has been successfully deployed.'
-    print "Sending mail from " + email_from + " to " + email_to
-    print message
     send_mail('[WallManager] Application successfully deployed', message, email_from, [email_to])
-    print "Sent."
             
 signals.post_save.connect(uncompress, sender=Application)
 signals.post_delete.connect(remove_app, sender=Application)
