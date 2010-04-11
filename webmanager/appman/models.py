@@ -10,6 +10,18 @@ class Category(models.Model):
     def __unicode__(self):
         return u"%s" % self.name
 
+    def delete(self):
+        """deletes a category"""
+        apps = Application.objects.filter(category=self.id)
+        if apps.count() != 0:
+            unknown, garbage = Category.objects.get_or_create(name="Unknown")
+            if self.id == unknown.id:
+                return
+            apps.update(category=unknown)
+            super(Category,self).delete();
+        else:
+            super(Category,self).delete();
+        
 class Application(models.Model):
     name = models.CharField(max_length=255, unique=True)
     owner = models.ForeignKey(User)

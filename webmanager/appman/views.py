@@ -76,4 +76,6 @@ def category_edit(request, object_id):
 
 @staff_login_required
 def category_remove(request, object_id):
-    pass
+    cat = get_object_or_404(Category, id=object_id)
+    cat.delete()
+    return HttpResponseRedirect("/cat/list/")

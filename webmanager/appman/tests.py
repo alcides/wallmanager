@@ -186,16 +186,36 @@ class ApplicationManagementTest(TestCase):
         post_data = {
             'name': 'Work'
         }
-        response = self.client.post('/cat/%s/edit/'%self.educational.id, post_data)
+        response = self.client.post('/cat/%s/edit/'%self.gps.category.id, post_data)
         #see if it changed
         response = self.client.get('/cat/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Work</td>")
         self.assertContains(response, "<tr>", 3) # 2 cat, plus header
-        #confirm that the applciation category changed to work
+        #confirm that the application category changed to work
         response = self.client.get('/app/%s/' % self.gps.id )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Work")
+
+    def test_remove_unused_cat(self):
+        login = self.do_admin_login()
+        c = Category.objects.count()
+        response = self.client.post('/cat/%s/remove/'%self.games.id)
+        self.assertRedirects(response, '/cat/list/')
+        self.assertEqual(c-1, Category.objects.count())        
+
+    def test_remove_used_cat(self):
+        login = self.do_admin_login()
+        c = Category.objects.count()
+        response = self.client.post('/cat/%s/remove/'%self.gps.category.id)
+        self.assertRedirects(response, '/cat/list/')
+        #confirm that category unknow appeared
+        response = self.client.get('/cat/list/')
+        self.assertContains(response, "Unknown")        
+        
+        #confirm that the application category changed
+        response = self.client.get('/app/%s/'%self.gps.id)
+        self.assertContains(response, "Unknown")                
         
         
     def tearDown(self):
