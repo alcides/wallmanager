@@ -1,4 +1,5 @@
 from datetime import datetime, time
+from django.core import mail
 from django.test import TestCase
 from django.contrib.auth.models import User
 
@@ -101,7 +102,26 @@ class ApplicationManagementTest(TestCase):
         response = self.client.get('/app/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Example App</a></td>")
-
+        
+        #E-mail testing
+        #There should be one (and only one) e-mail message in the e-mail outbox at this point
+        self.assertEquals(len(mail.outbox), 1)
+        #Is the message correct?
+        #Subject
+        expected_subject = '[WallManager] Application successfully deployed'
+        self.assertEquals(mail.outbox[0].subject, expected_subject)
+        #From
+        expected_from = 'wallmanager@dei.uc.pt'
+        self.assertEquals(mail.outbox[0].from_email, expected_from)
+        #To (only one recipient)
+        expected_to = 'zacarias@student.dei.uc.pt'
+        self.assertEquals(len(mail.outbox[0].to), 1)
+        self.assertEquals(mail.outbox[0].to[0], expected_to)
+        #Body
+        application_name = 'Example App'
+        expected_body = 'Your application, ' + application_name + ', has been successfully deployed.'
+        self.assertEquals(mail.outbox[0].body, expected_body)
+        
     def test_requires_login_to_edit_app(self):
         response = self.client.get('/app/%s/edit/' % self.gps.id)
         self.assertEqual(response.status_code, 302) # redirect to login
