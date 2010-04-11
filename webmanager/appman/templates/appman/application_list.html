@@ -3,25 +3,35 @@
 {% block title %} All Applications {% endblock %}
 
 {% block content %}
-<table border="1">
-<tr>
-	<th>Name</th>	
-	<th>Author</th>
-	<th>Category</th>
-	<th>Rating</th>
-</tr>
+<div id="addapp" align="right">
+	<ul class="object-tools">
+		<li><a href='{% url application-add %}' class="add-app">Add Application</a></li>
+	</ul>	
+</div>
 
-{% for app in application_list %}
-<tr>
-	<td><a href="{{ app.get_absolute_url }}">{{ app.name }}</a></td>
-	<td>{{ app.owner }}</td>
-	<td>{{ app.category }}</td>
-	<td>{{ app.stars }}</td>
-</tr>
-{% endfor %}
-
-</table>
-
-<br />
-<a href='{% url application-add %}'>Add an application</a>
+<div id="applist">
+	<table id="gradient-style">
+		<thead>
+			<tr>
+				<th>Name</th>	
+				<th>Author</th>
+				<th>Category</th>
+				<th>Rating</th>
+			</tr>
+		</thead>
+	
+		<tbody>
+	
+		{% for app in application_list %}
+		<tr>
+			<td><a href="{{ app.get_absolute_url }}">{{ app.name }}</a></td>
+			<td>{{ app.owner }}</td>
+			<td>{{ app.category }}</td>
+			<td>{{ app.stars }}</td>
+		</tr>
+		{% endfor %}
+	
+		</tbody>
+	</table>
+</div>
 {% endblock %}

@@ -37,8 +37,12 @@ p,ul {
 	padding-bottom: 1.2em;
 }
 h1 {
-	font-size: 1.4em;
-	margin-bottom: 4px;
+	font-size: 1.7em;
+	margin-bottom: 15px;
+}
+
+.content h1 {
+	margin-bottom: 50px;
 }
 
 h1,h2,h3 {
@@ -68,6 +72,7 @@ h1,h2,h3 {
 	text-align: center;
 }
 
+/* breadcrumb */
 #breadcrumb
 {
     font: 11px Arial, Helvetica, sans-serif;
@@ -193,3 +198,85 @@ h1,h2,h3 {
 	color: #06F;
 	text-decoration: underline;
 }
+
+/* App table list*/
+#gradient-style {
+	border-collapse: collapse;
+	font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+	font-size: 12px;
+	margin: 20px;
+	text-align: left;
+	width: 480px;
+}
+
+#gradient-style th {
+	background: #B9C9FE url(http://media.smashingmagazine.com/cdn_smash/images/express-css-table-design/table-images/gradhead.png) repeat-x;
+	border-bottom: 1px solid white;
+	color: #039;
+	font-size: 13px;
+	font-weight: normal;
+	padding: 8px;
+}
+
+#gradient-style td {
+	background: #E8EDFF url(http://media.smashingmagazine.com/cdn_smash/images/express-css-table-design/table-images/gradback.png) repeat-x;
+	border-bottom: 1px solid white;
+	border-top: 1px solid white;
+	color: #669;
+	padding: 8px;
+}
+
+/* Add app button*/
+.object-tools {
+	display: block;
+	float: right;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	margin-bottom: -20px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: -24px;
+	padding-left: 0px;
+	position: relative;
+	list-style-type: disc;
+	height: 16px;
+}
+
+.object-tools ul {
+	list-style-type: disc;
+	-webkit-padding-start: 40px;
+	display: block;
+	margin: 0.2em 0px 0.8em;
+}
+
+.object-tools li {
+	background: url(http://localhost:8000/media/admin/img/admin/tool-left.gif) no-repeat 0px 0px;
+	display: block;
+	float: left;
+	height: 16px;
+	margin-left: 2px;
+	padding: 0px 0px 0px 8px;
+	list-style-type: square;
+	line-height: 14px;
+	font-size: 11px;
+	background-origin: padding-box;
+	background-color: transparent;
+	background-clip: border-box;
+	background-attachment: scroll;
+
+}
+
+.object-tools a.add-app {
+	background-clip: border-box;
+	background-attachment: scroll;
+	background: #999 url(http://localhost:8000/media/admin/img/admin/tooltag-add.gif) no-repeat 100% 0%;
+	color: white;
+	padding: 0.1em 25px 0.1em 8px;
+	height: 14px;
+	float: left;
+	display: block;
+	text-decoration: none;
+	cursor: auto;
+}
+
