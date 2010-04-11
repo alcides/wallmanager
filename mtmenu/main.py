@@ -38,4 +38,5 @@ scatter.add_widget(apps_grid)
 main_window.add_widget(scatter)
 
 # Execute main loop
-runTouchApp()
+if __name__ == '__main__':
+    runTouchApp()
