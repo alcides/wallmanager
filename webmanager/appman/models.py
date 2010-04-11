@@ -1,25 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-class User(models.Model):
-    LEVELS = (
-        ('U', 'User'),
-        ('A', 'Admin'),
-        ('S', 'SuperAdmin'),
-    )
-    
-    email = models.EmailField(unique=True)
-    level = models.CharField(max_length=1, choices=LEVELS)
-    
-    
-    def save(self, *args, **kwargs):
-        """ Verifies if there is another superuser, and removes him from that level."""
-        if self.level == 'S':
-            User.objects.filter(level='S').update(level='A')
-        super(User,self).save(*args, **kwargs)
-    
-    def __unicode__(self):
-        return u"%s" % self.email
-    
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
     
@@ -49,8 +30,11 @@ class Application(models.Model):
     def value(self):
         """ The value of an application, based on the likes and dislikes """
         total = self.likes + self.dislikes
-        return ( self.likes ) / float(total)
-    
+        if total != 0:
+            return ( self.likes ) / float(total)
+        else:
+            return 0
+        
     def stars(self):
         """ The number of stars an application has, based on the likes and dislikes """
         return round(self.value()*5)
@@ -60,6 +44,27 @@ class Application(models.Model):
     
     def __unicode__(self):
         return u"%s" % self.name
+    
+    def save(self, force_insert=False, force_update=False):
+        try:
+            old_obj = Application.objects.get(pk=self.pk)
+            if old_obj.icon.path != self.icon.path:
+                    old_obj.icon.delete()
+        except:
+            pass
+        
+        try:
+            old_obj = Application.objects.get(pk=self.pk)
+            if old_obj.zipfile.path != self.zipfile.path:
+                    old_obj.zipfile.delete()
+        except:
+            pass
+        
+        super(Application, self).save(force_insert, force_update)
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ("application-detail", [str(self.id)])
         
 class ProjectorControl(models.Model):
     inactivity_time = models.IntegerField()
@@ -70,3 +75,11 @@ class ProjectorControl(models.Model):
         """ There can be only one ProjectorControl instance."""
         ProjectorControl.objects.all().delete()
         super(ProjectorControl,self).save(*args, **kwargs)
+        
+class ApplicationLog(models.Model):
+    application = models.ForeignKey(Application)
+    datetime = models.DateTimeField(auto_now_add=True)
+    error_description = models.CharField(max_length=255)
+    
+    def __unicode__(self):
+        return u"%s log at %s" % (self.application.name, self.datetime)

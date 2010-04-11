@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %} All Applications {% endblock %}
+
+{% block content %}
+<table border="1">
+<tr>
+	<th>Name</th>	
+	<th>Author</th>
+	<th>Category</th>
+	<th>Rating</th>
+</tr>
+
+{% for app in application_list %}
+<tr>
+	<td><a href="{{ app.get_absolute_url }}">{{ app.name }}</a></td>
+	<td>{{ app.owner }}</td>
+	<td>{{ app.category }}</td>
+	<td>{{ app.stars }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<br />
+<a href='{% url application-add %}'>Add an application</a>
+{% endblock %}

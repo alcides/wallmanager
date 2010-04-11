@@ -1,9 +1,25 @@
 #!/usr/bin/env python
 import sys
 import os
-sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), "webmanager"))
+import unittest
+
+for folder in ['webmanager','mtmenu']:
+    sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), folder))
 
 from webmanager.manage import *
 import webmanager
 
-execute_manager(webmanager.settings, argv=['','test','appman'])
+from mtmenu.tests import TestMultiTouch
+
+if __name__ == '__main__':
+    
+    def sep(title):
+        print 20*"+"
+        print title
+        print 20*"+"
+        
+    sep("Web Application")
+    execute_manager(webmanager.settings, argv=['','test','appman'])
+    
+    sep("Wall Application")
+    unittest.main()
