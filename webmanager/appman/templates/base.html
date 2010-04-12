@@ -24,7 +24,7 @@
 			<div  id="breadcrumb">
 				<ul>
 					<li>
-						<a href="" title="Home"><img src="/media/img/home.png" alt="Home" class="home" /></a>
+						<a href="{% url home %}" title="Home"><img src="/media/img/home.png" alt="Home" class="home" /></a>
 					</li>
 				</ul>
 			</div>
@@ -37,12 +37,7 @@
 			</div>
 	
 			<div class="sidenav">
-				<h1>General Menu</h1>
-				<ul>
-					<li><a href="">Login</a></li>
-					<li><a href="">Technical Documentation</a></li>
-					<li><a href="">FAQ</a></li>
-				</ul>
+				{% block menu%}{% endblock %}
 			</div>
 	
 			<div class="clearer"><span></span></div>

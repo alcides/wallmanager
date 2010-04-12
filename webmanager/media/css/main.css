@@ -210,7 +210,7 @@ h1,h2,h3 {
 }
 
 #gradient-style th {
-	background: #B9C9FE url(http://media.smashingmagazine.com/cdn_smash/images/express-css-table-design/table-images/gradhead.png) repeat-x;
+	background: #B9C9FE url(/media/img/gradhead.png) repeat-x;
 	border-bottom: 1px solid white;
 	color: #039;
 	font-size: 13px;
@@ -219,7 +219,7 @@ h1,h2,h3 {
 }
 
 #gradient-style td {
-	background: #E8EDFF url(http://media.smashingmagazine.com/cdn_smash/images/express-css-table-design/table-images/gradback.png) repeat-x;
+	background: #E8EDFF url(/media/img/gradback.png) repeat-x;
 	border-bottom: 1px solid white;
 	border-top: 1px solid white;
 	color: #669;
@@ -251,7 +251,7 @@ h1,h2,h3 {
 }
 
 .object-tools li {
-	background: url(http://localhost:8000/media/admin/img/admin/tool-left.gif) no-repeat 0px 0px;
+	background: url(/media/img/tool-left.gif) no-repeat 0px 0px;
 	display: block;
 	float: left;
 	height: 16px;
@@ -270,7 +270,7 @@ h1,h2,h3 {
 .object-tools a.add-app {
 	background-clip: border-box;
 	background-attachment: scroll;
-	background: #999 url(http://localhost:8000/media/admin/img/admin/tooltag-add.gif) no-repeat 100% 0%;
+	background: #999 url(/media/img/tooltag-add.gif) no-repeat 100% 0%;
 	color: white;
 	padding: 0.1em 25px 0.1em 8px;
 	height: 14px;

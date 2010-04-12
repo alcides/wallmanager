@@ -8,6 +8,32 @@ from django.core.urlresolvers import reverse
 from appman.forms import *
 from appman.models import *
 
+def home(request):
+	if request.user.is_authenticated():
+		dic = {'auth' : True}
+	else:
+		dic = {'auth' : False}
+	return render_to_response('appman/home.html',dic)
+	
+def documentation(request):
+	if request.user.is_authenticated():
+		dic = {'auth' : True}
+	else:
+		dic = {'auth' : False}
+	return render_to_response('appman/doc.html',dic)
+	
+def faq(request):
+	if request.user.is_authenticated():
+		dic = {'auth' : True}
+	else:
+		dic = {'auth' : False}
+	return render_to_response('appman/faq.html',dic)
+
+@login_required
+def contact(request):
+	return render_to_response('appman/contact.html')
+
+@login_required
 def application_list(request):
 	cs = Application.objects.all()
 	return object_list(request, queryset=cs, template_object_name="application")
@@ -28,7 +54,8 @@ def application_add(request):
 	return render_to_response('appman/application_form.html', {
 		'form': form,
 	})
-	
+
+@login_required
 def application_detail(request,object_id):
 	cs = Application.objects.all()
 	return object_detail(request, object_id=object_id, queryset=cs, template_object_name="application")
