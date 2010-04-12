@@ -9,18 +9,23 @@ from appman.forms import *
 from appman.models import *
 from appman.decorators import *
 
+# Helper
+def render(request, template, opts = {}):
+    return render_to_response(template, opts, context_instance=RequestContext(request))
+    
+#Views
 def home(request):
-	return render_to_response('appman/home.html',context_instance=RequestContext(request))
+	return render(request,'appman/home.html')
 	
 def documentation(request):
-	return render_to_response('appman/doc.html',context_instance=RequestContext(request))
+	return render(request,'appman/doc.html')
 
 def faq(request):
-	return render_to_response('appman/faq.html',context_instance=RequestContext(request))
+	return render('appman/faq.html')
 
 @login_required
 def contact(request):
-	return render_to_response('appman/contact.html',context_instance=RequestContext(request))
+	return render('appman/contact.html')
 
 @login_required
 def application_list(request):
