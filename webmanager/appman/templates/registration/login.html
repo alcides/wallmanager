@@ -2,6 +2,10 @@
 
 {% block title %} Login {% endblock %}
 
+{% block breadcrumb%}
+  <li>Login</li>
+{% endblock %}
+
 {% block content %}
 <form action="" method="post" enctype="multipart/form-data">
   {{ form.as_p }}
