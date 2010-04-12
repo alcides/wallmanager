@@ -1,12 +1,11 @@
 from os.path import join, exists, isdir
 from os import chdir, getcwdu, listdir
 from subprocess import Popen, PIPE
+import threading
 
 from OpenGL.GLUT import *
 
 from settings import *
-
-from gesture.gesture_scan import *
 
 
 __all__ = ['gel_all_apps', 'Application']
@@ -28,7 +27,7 @@ def get_all_apps():
 
 
 #class Application (models.Model): TO-DO
-class Application:
+class Application( threading.Thread ):
     """Class representing an application.
     
     Arguments:
@@ -42,6 +41,13 @@ class Application:
     """
     def __init__(self, id=-1):
         self.id = id;
+        threading.Thread.__init__(self)
+        
+    def run(self):
+        try:
+            self.execute()
+        except:
+            pass
         
     def __unicode__(self):
         return u'AppName Nr%s' % self.id

@@ -24,4 +24,5 @@ class AppButton(MTKineticItem):
         print '\nLoading %s...\n' % unicode(self.app)
         print '\tPath: %s\n' % self.app.path()
         print '\tBoot file: %s\n' % self.app.boot_file()
-        self.app.execute()
+        self.app.start()
+
