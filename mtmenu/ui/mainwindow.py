@@ -13,3 +13,4 @@ class MainWindow (MTWindow):
         kwargs.setdefault('height', DEFAULT_HEIGHT)
         
         super(kwargs)
+
