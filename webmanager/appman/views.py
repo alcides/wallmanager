@@ -21,11 +21,11 @@ def documentation(request):
 	return render(request,'appman/doc.html')
 
 def faq(request):
-	return render('appman/faq.html')
+	return render(request,'appman/faq.html')
 
 @login_required
 def contact(request):
-	return render('appman/contact.html')
+	return render(request,'appman/contact.html')
 
 @login_required
 def application_list(request):
@@ -44,7 +44,7 @@ def application_add(request):
             return HttpResponseRedirect(reverse('application-detail', args=[str(app.id)]))
     else:
         form = form_class()
-    return render_to_response('appman/application_form.html', {'form': form,})
+    return render(request,'appman/application_form.html', {'form': form,})
 	
 def application_detail(request,object_id):
     cs = Application.objects.all()
