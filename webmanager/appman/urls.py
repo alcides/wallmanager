@@ -12,4 +12,5 @@ urlpatterns = patterns('appman.views',
 	url(r'^app/(?P<object_id>\d+)/$', 'application_detail', name="application-detail"),
 	url(r'^app/(?P<object_id>\d+)/edit/$', 'application_edit', name="application-edit"),
 	url(r'^app/(?P<object_id>\d+)/delete/$', 'application_delete', name="application-delete"),
+	url(r'^app/(?P<object_id>\d+)/remove/$', 'application_admin_remove', name="application-admin-remove"),
 )

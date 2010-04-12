@@ -17,6 +17,12 @@
 <p><b>Date Updated:</b> {{ application.date_updated }}</p>
 <p><b>Number of times run:</b> {{ application.runs }}</p>
 <p><b>Rating:</b> {{ application.stars }}</p>
+{% if user.is_staff %}
+{% ifnotequal user application.owner %}
+<a href="{% url application-admin-remove application.id %}" onclick="return confirm('Remove application as admin', 'Are you sure you want to admin remove this app?');">Remove Application</a>
+<br/>
+{% endifnotequal %}
+{% endif %}
 
 {% ifequal user application.owner %}
 
