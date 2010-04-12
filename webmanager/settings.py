@@ -63,3 +63,5 @@ MIDDLEWARE_CLASSES = (
 )
 
 WALL_APP_DIR = relative('../mtmenu/apps/')
+
+LOGIN_REDIRECT_URL = '/app/list'
