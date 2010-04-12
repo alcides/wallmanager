@@ -6,6 +6,8 @@ from OpenGL.GLUT import *
 
 from settings import *
 
+from gesture.gesture_scan import *
+
 
 __all__ = ['gel_all_apps', 'Application']
 
@@ -76,6 +78,7 @@ class Application:
                 
                 # Starts application process and waits for it to terminate
                 process = Popen(command, stdout=PIPE, stderr=PIPE, cwd=app_path)
+                
                 
                 # Application's output should be handle here! 
                 for str in process.communicate():
