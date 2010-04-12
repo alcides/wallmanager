@@ -9,29 +9,17 @@ from appman.forms import *
 from appman.models import *
 
 def home(request):
-	if request.user.is_authenticated():
-		dic = {'auth' : True}
-	else:
-		dic = {'auth' : False}
-	return render_to_response('appman/home.html',dic)
+	return render_to_response('appman/home.html',context_instance=RequestContext(request))
 	
 def documentation(request):
-	if request.user.is_authenticated():
-		dic = {'auth' : True}
-	else:
-		dic = {'auth' : False}
-	return render_to_response('appman/doc.html',dic)
-	
+	return render_to_response('appman/doc.html',context_instance=RequestContext(request))
+
 def faq(request):
-	if request.user.is_authenticated():
-		dic = {'auth' : True}
-	else:
-		dic = {'auth' : False}
-	return render_to_response('appman/faq.html',dic)
+	return render_to_response('appman/faq.html',context_instance=RequestContext(request))
 
 @login_required
 def contact(request):
-	return render_to_response('appman/contact.html')
+	return render_to_response('appman/contact.html',context_instance=RequestContext(request))
 
 @login_required
 def application_list(request):
