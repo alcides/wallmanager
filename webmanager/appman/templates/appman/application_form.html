@@ -2,12 +2,11 @@
 {% extends 'base.html' %}
 
 {% block breadcrumb%}
+	<li><a href="{% url application-list %}">Applications</a></li>
 	{% if object %}
-		<li><a href="{% url application-list %}">Applications</a></li>
 		<li><a href="{{ object.get_absolute_url }}">{{ object.name }}</a></li>
 		<li>Edit Application</li>
 	{% else %}
-		<li><a href="{% url application-list %}">Applications</a></li>
 		<li>Add Aplication</li>
 	{% endif %}
 {% endblock %}
