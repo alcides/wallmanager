@@ -1,6 +1,5 @@
 import os
 
-__all__ = ['APPS_REPOSITORY_PATH', 'APPS_BOOT_FILENAME']
 
 # Returns the absolute path to this file directory joined
 # with whatever directories given as arguments
@@ -10,3 +9,12 @@ def relative(*x):
 
 APPS_REPOSITORY_PATH = relative('apps/')
 APPS_BOOT_FILENAME = 'boot.bat'
+
+
+##PROXY CONFIGURATIONS
+UDP_IP   = "127.0.0.1"
+RECEIVING_PORT = 5005
+SENDING_PORT_ONE = 6001
+SENDING_PORT_TWO = 6002
+MESSAGE  = "Hello, World!"
+

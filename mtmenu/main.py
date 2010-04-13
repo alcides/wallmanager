@@ -4,6 +4,7 @@ from ui.appslist import AppsList
 from ui.appbutton import AppButton
 from application import get_all_apps
 from gesture.gesture_scan import GestureScan
+from proxy import *
 
 
 #######
