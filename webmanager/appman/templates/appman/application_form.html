@@ -20,6 +20,16 @@
 	{% endif %}
 {% endblock %}
 
+
+
+{% block javascript %}
+	<script src="{{ MEDIA_URL }}js/swfupload/swfupload.js" type="text/javascript"></script>
+	<script src="{{ MEDIA_URL }}js/swfupload/swfupload.cookies.js" type="text/javascript"></script>
+	<script src="{{ MEDIA_URL }}js/swfupload/fileprogress.js" type="text/javascript"></script>
+	<script src="{{ MEDIA_URL }}js/swfupload/handlers.js" type="text/javascript"></script>
+{% endblock %}
+
+
 {% block content %}
 
 {% if form.errors %}
@@ -30,6 +40,63 @@
   {{ form.as_p }}
   <input type="submit" value="Save" />
 </form>
+
+{% endblock %}
+
+{% block extrajs %}
+	<style>
+		.flash div {
+			display: inline;
+			margin-right: 10px;
+		}
+		#upload_container {
+			display: inline;
+		}
+	</style>
+	<script language="javascript" type="text/javascript">
+		var swfupload;
+		window.onload = function() {
+			var replaceable_div = document.getElementById('id_zipfile');
+			var new_div = document.createElement('div');
+			new_div.innerHTML = '<span id="upload_btn"></span><span class="flash" id="fsUploadProgress"></span><input type="hidden" name="hidFileID" id="hidFileID" value="" />';
+			new_div.id = 'upload_container';
+			replaceable_div.parentNode.replaceChild(new_div, replaceable_div);
+			
+			swfupload = new SWFUpload({
+				debug: false,
+
+				upload_url: "{% url application-upload %}",
+				flash_url: "{{ MEDIA_URL }}js/swfupload/swfupload.swf",
+
+				button_placeholder_id: "upload_btn",
+				button_image_url : "{{ MEDIA_URL }}img/XPButtonUploadText_61x22.png",
+				button_width: "61",
+				button_height: "22",
+				button_cursor: SWFUpload.CURSOR.HAND,
+				
+				// Flash file settings
+				file_size_limit : "200 MB",
+				file_types : "*.zip",
+				file_types_description : "Zip Files",
+				file_upload_limit : "0",
+				file_queue_limit : "1",
+
+				file_queue_error_handler : fileQueueError,
+
+				upload_progress_handler : uploadProgress,
+				upload_error_handler : uploadError,
+				upload_success_handler : uploadSuccess,
+				upload_complete_handler : uploadComplete,
+				
+				custom_settings : {
+									progress_target : "fsUploadProgress",
+									upload_successful : false
+								},
+
+				file_dialog_complete_handler: function() { this.startUpload(); },
+      		});
+    	};
+	</script>
 {% endblock %}
 
 {% block menu %}
@@ -48,13 +115,13 @@
 	{% if user.is_staff %}
 	<h1>Admin Menu</h1>
 	<ul>
-		<li><a href="">Projectors</a></li>
-		<li><a href="">ScreenSaver</a></li>
-		<li><a href="">Suspension</a></li>
-		<li><a href="">Categories</a></li>
+		<li><a href="{% url projectors %}">Projectors</a></li>
+		<li><a href="{% url screensaver %}">ScreenSaver</a></li>
+		<li><a href="{% url suspension %}">Suspension</a></li>
+		<li><a href="{% url categories %}">Categories</a></li>
 		{% if user.is_superuser %}
-		<li><a href="">Manage Admins</a></li>
-		<li><a href="">Define Contact Admin</a></li>
+		<li><a href="{% url manage-admins %}">Manage Admins</a></li>
+		<li><a href="{% url define-admin %}">Define Contact Admin</a></li>
 		{% endif %} 
 	</ul>
 	{% endif %} 

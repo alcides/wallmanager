@@ -1,7 +1,7 @@
 from django.views.generic.list_detail import *
 from django.views.generic.create_update import *
 from django.shortcuts import render_to_response, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
@@ -13,7 +13,7 @@ from appman.decorators import *
 def render(request, template, opts = {}):
     return render_to_response(template, opts, context_instance=RequestContext(request))
     
-#Views
+#Non-Authenticated User Views
 def home(request):
 	return render(request,'appman/home.html')
 	
@@ -23,10 +23,11 @@ def documentation(request):
 def faq(request):
 	return render(request,'appman/faq.html')
 
+#Authenticated User Views
 @login_required
 def contact(request):
-	return render(request,'appman/contact.html')
-
+    return render(request,'appman/contact.html')
+    
 @login_required
 def application_list(request):
     cs = Application.objects.all()
@@ -68,3 +69,34 @@ def application_delete(request, object_id):
     app.delete()
     return HttpResponseRedirect("/app/list/")
 
+#Decorators
+def staff_required(login_url=None):
+    return user_passes_test(lambda u: u.is_staff, login_url=login_url)
+
+def superuser_required(login_url=None):
+    return user_passes_test(lambda u: u.is_superuser, login_url=login_url)
+    
+#Admin Views
+@staff_required()
+def projectors(request):
+    return render(request,'appman/projectors.html')
+
+@staff_required()
+def screensaver(request):
+    return render(request,'appman/screensaver.html')
+
+@staff_required()
+def suspension(request):
+    return render(request,'appman/suspension.html')
+
+@staff_required()
+def categories(request):
+    return render(request,'appman/categories.html')
+
+@superuser_required()
+def manage_admins(request):
+    return render(request,'appman/admins.html')
+
+@superuser_required()
+def contact_admin(request):
+    return render(request,'appman/contact_admin.html')

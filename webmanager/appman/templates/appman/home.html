@@ -24,13 +24,13 @@
 	{% if user.is_staff %}
 	<h1>Admin Menu</h1>
 	<ul>
-		<li><a href="">Projectors</a></li>
-		<li><a href="">ScreenSaver</a></li>
-		<li><a href="">Suspension</a></li>
-		<li><a href="">Categories</a></li>
+		<li><a href="{% url projectors %}">Projectors</a></li>
+		<li><a href="{% url screensaver %}">ScreenSaver</a></li>
+		<li><a href="{% url suspension %}">Suspension</a></li>
+		<li><a href="{% url categories %}">Categories</a></li>
 		{% if user.is_superuser %}
-		<li><a href="">Manage Admins</a></li>
-		<li><a href="">Define Contact Admin</a></li>
+		<li><a href="{% url manage-admins %}">Manage Admins</a></li>
+		<li><a href="{% url define-admin %}">Define Contact Admin</a></li>
 		{% endif %} 
 	</ul>
 	{% endif %} 
