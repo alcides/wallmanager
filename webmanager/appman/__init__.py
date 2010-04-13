@@ -1,1 +1,1 @@
-import signals
+from appman import signals
