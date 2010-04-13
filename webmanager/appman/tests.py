@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from appman.models import *
 
 import os
+DEFAULT_CATEGORY ="Unknown"
+
 def relative(*x):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 
@@ -161,7 +163,7 @@ class ApplicationManagementTest(TestCase):
         }
         response = self.client.post('/cat/add/', post_data)
         self.assertRedirects(response, '/cat/list/')
-        self.assertEqual(c-1, Application.objects.count())
+        self.assertEqual(c+1, Category.objects.count())
         
     def test_unauthorized_add_category(self):
         c = Category.objects.count()
@@ -211,11 +213,11 @@ class ApplicationManagementTest(TestCase):
         self.assertRedirects(response, '/cat/list/')
         #confirm that category unknow appeared
         response = self.client.get('/cat/list/')
-        self.assertContains(response, "Unknown")        
+        self.assertContains(response, DEFAULT_CATEGORY)        
         
         #confirm that the application category changed
         response = self.client.get('/app/%s/'%self.gps.id)
-        self.assertContains(response, "Unknown")                
+        self.assertContains(response, DEFAULT_CATEGORY)                
         
         
     def tearDown(self):
