@@ -180,7 +180,7 @@ class ApplicationManagementTest(TestCase):
         response = self.client.get('/cat/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Games</td>")
-        self.assertContains(response, "<tr>", 3) # 2 cat, plus header
+        self.assertContains(response, "<tr>", Category.objects.count()+1) # 2 cat, plus header
             
     def test_edit_cat(self):
         login = self.do_admin_login()
@@ -193,7 +193,7 @@ class ApplicationManagementTest(TestCase):
         response = self.client.get('/cat/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Work</td>")
-        self.assertContains(response, "<tr>", 3) # 2 cat, plus header
+        self.assertContains(response, "<tr>", Category.objects.count()+1) # 2 cat, plus header
         #confirm that the application category changed to work
         response = self.client.get('/app/%s/' % self.gps.id )
         self.assertEqual(response.status_code, 200)
@@ -204,7 +204,7 @@ class ApplicationManagementTest(TestCase):
         c = Category.objects.count()
         response = self.client.post('/cat/%s/remove/'%self.games.id)
         self.assertRedirects(response, '/cat/list/')
-        self.assertEqual(c, Category.objects.count())        
+        self.assertEqual(c-1, Category.objects.count())
 
     def test_remove_used_cat(self):
         login = self.do_admin_login()
@@ -218,7 +218,9 @@ class ApplicationManagementTest(TestCase):
         #confirm that the application category changed
         response = self.client.get('/app/%s/'%self.gps.id)
         self.assertContains(response, settings.DEFAULT_CATEGORY)                
-        
+    
+    def test_default_category(self):
+        self.assertEqual(Category.objects.filter(name=settings.DEFAULT_CATEGORY).count(), 1)
         
     def tearDown(self):
         pass
