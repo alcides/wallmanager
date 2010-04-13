@@ -45,11 +45,10 @@ class UncompressThread(threading.Thread):
     def run(self):
         try:
             un = unzip()
-            un.extract( str(self.instance.zipfile.path) , self.path)
-            email_signal.send(sender=self, application=self.instance)
-        
+            un.extract( str(self.instance.zipfile.path) , self.path)        
             # Save in Database
             self.model.objects.filter(id=self.instance.id).update(extraction_path=self.path)
+            email_signal.send(sender=self, application=self.instance)
         except:
             # Todo email user.
             pass
