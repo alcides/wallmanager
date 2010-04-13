@@ -15,14 +15,13 @@ class Category(models.Model):
     def delete(self):
         """deletes a category"""
         apps = Application.objects.filter(category=self.id)
+        unknown, garbage = Category.objects.get_or_create(name=DEFAULT_CATEGORY)
+        if self.id == unknown.id:
+            return
+            
         if apps.count() != 0:
-            unknown, garbage = Category.objects.get_or_create(name=DEFAULT_CATEGORY)
-            if self.id == unknown.id:
-                return
             apps.update(category=unknown)
-            super(Category,self).delete();
-        else:
-            super(Category,self).delete();
+        super(Category,self).delete();
         
 class Application(models.Model):
     name = models.CharField(max_length=255, unique=True)
