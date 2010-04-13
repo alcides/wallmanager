@@ -62,4 +62,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
+DEFAULT_CATEGORY = "Others"
+
 WALL_APP_DIR = relative('../mtmenu/apps/')

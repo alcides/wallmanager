@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
-DEFAULT_CATEGORY ="Unknown"
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
     
@@ -14,7 +14,7 @@ class Category(models.Model):
     def delete(self):
         """deletes a category"""
         apps = Application.objects.filter(category=self.id)
-        unknown, garbage = Category.objects.get_or_create(name=DEFAULT_CATEGORY)
+        unknown, garbage = Category.objects.get_or_create(name=settings.DEFAULT_CATEGORY)
         if self.id == unknown.id:
             return
             

@@ -1,11 +1,11 @@
 from datetime import datetime, time
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from appman.models import *
 
 import os
-DEFAULT_CATEGORY ="Unknown"
 
 def relative(*x):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
@@ -213,11 +213,11 @@ class ApplicationManagementTest(TestCase):
         self.assertRedirects(response, '/cat/list/')
         #confirm that category unknow appeared
         response = self.client.get('/cat/list/')
-        self.assertContains(response, DEFAULT_CATEGORY)        
+        self.assertContains(response, settings.DEFAULT_CATEGORY)        
         
         #confirm that the application category changed
         response = self.client.get('/app/%s/'%self.gps.id)
-        self.assertContains(response, DEFAULT_CATEGORY)                
+        self.assertContains(response, settings.DEFAULT_CATEGORY)                
         
         
     def tearDown(self):
