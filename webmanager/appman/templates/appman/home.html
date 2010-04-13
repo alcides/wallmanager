@@ -12,12 +12,11 @@
 	{% endif %}
 	<h1>General Menu</h1>
 	<ul>
-		{% if not user.is_authenticated %}
-		<li><a href="/accounts/login/">Login</a></li>
-		{% endif %}
 		{% if user.is_authenticated %}
 		<li><a href="{% url application-list %}">Applications</a></li>
 		<li><a href="{% url contact-admin %}">Contact Admin</a></li>
+		{% else %}
+		<li><a href="/accounts/login/">Login</a></li>
 		{% endif %}
 		<li><a href="{% url tech-doc %}">Technical Documentation</a></li>
 		<li><a href="{% url faq %}">FAQ</a></li>
