@@ -6,36 +6,4 @@
 	<li>Technical Documentation</li>
 {% endblock %}
 
-{% block menu %}
-	{% if user.is_authenticated %}
-	<h1>Authenticated User</h1>
-	<ul>
-		<li class="user"><b>{{ user }}</b></li>
-		<li><a href="/accounts/logout/">Logout</a></li>
-	</ul>
-	{% endif %}
-	<h1>General Menu</h1>
-	<ul>
-		{% if user.is_authenticated %}
-		<li><a href="{% url application-list %}">Applications</a></li>
-		<li><a href="{% url contact-admin %}">Contact Admin</a></li>
-		{% else %}
-		<li><a href="/accounts/login/">Login</a></li>
-		{% endif %}
-		<li><a href="{% url tech-doc %}">Technical Documentation</a></li>
-		<li><a href="{% url faq %}">FAQ</a></li>
-	</ul>
-	{% if user.is_staff %}
-	<h1>Admin Menu</h1>
-	<ul>
-		<li><a href="{% url projectors %}">Projectors</a></li>
-		<li><a href="{% url screensaver %}">ScreenSaver</a></li>
-		<li><a href="{% url suspension %}">Suspension</a></li>
-		<li><a href="{% url categories %}">Categories</a></li>
-		{% if user.is_superuser %}
-		<li><a href="{% url manage-admins %}">Manage Admins</a></li>
-		<li><a href="{% url define-admin %}">Define Contact Admin</a></li>
-		{% endif %} 
-	</ul>
-	{% endif %} 
-{% endblock %}
+
