@@ -6,15 +6,15 @@
 <table border="1">
 <tr>
 	<th>Name</th>	
-	<th>Edit</th>
-	<th>Remove</th>
+	<th></th>
+	<th></th>
 </tr>
 
 {% for cat in category_list %}
 <tr>
 	<td>{{ cat.name }}</td>
-	<td><a href="{% url category-edit cat.id %}">x</a></td>
-	<td><a href="{% url category-remove cat.id %}">x</a></td>
+	<td><a href="{% url category-edit cat.id %}">edit</a></td>
+	<td><a href="{% url category-remove cat.id %}">remove</a></td>
 </tr>
 {% endfor %}
 
