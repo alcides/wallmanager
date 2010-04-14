@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% block title %}
@@ -6,6 +5,16 @@
 		Edit Category
 	{% else %}
 		Add Category
+	{% endif %}
+{% endblock %}
+
+{% block breadcrumb%}
+	<li><a href="{% url category-list %}">Categories</a></li>
+	{% if object %}
+		<li><a href="{{ object.get_absolute_url }}">{{ object.name }}</a></li>
+		<li>Edit</li>
+	{% else %}
+		<li>Add Category</li>
 	{% endif %}
 {% endblock %}
 

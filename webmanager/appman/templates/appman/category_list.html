@@ -2,6 +2,10 @@
 
 {% block title %} All Categories {% endblock %}
 
+{% block breadcrumb %}
+	<li><a href="{% url category-list %}">Categories</a></li>
+{% endblock %}
+
 {% block content %}
 <div id="addcat" align="right">
 	<ul class="object-tools">
