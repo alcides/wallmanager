@@ -63,7 +63,7 @@ MIDDLEWARE_CLASSES = (
     'appman.middleware.swfupload.SWFUploadMiddleware',
 )
 
-LOGIN_REDIRECT_URL = '/app/list'
+LOGIN_REDIRECT_URL = '/applications/'
 
 WALL_APP_DIR = relative('../mtmenu/apps/')
 ZIP_FOLDER = "applications"
