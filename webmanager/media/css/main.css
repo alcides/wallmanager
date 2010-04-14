@@ -200,7 +200,7 @@ h1,h2,h3 {
 }
 
 /* App table list*/
-#gradient-style {
+.gradient-style {
 	border-collapse: collapse;
 	font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
 	font-size: 12px;
@@ -209,7 +209,7 @@ h1,h2,h3 {
 	width: 480px;
 }
 
-#gradient-style th {
+.gradient-style th {
 	background: #B9C9FE url(/media/img/gradhead.png) repeat-x;
 	border-bottom: 1px solid white;
 	color: #039;
@@ -218,7 +218,7 @@ h1,h2,h3 {
 	padding: 8px;
 }
 
-#gradient-style td {
+.gradient-style td {
 	background: #E8EDFF url(/media/img/gradback.png) repeat-x;
 	border-bottom: 1px solid white;
 	border-top: 1px solid white;
@@ -267,7 +267,7 @@ h1,h2,h3 {
 
 }
 
-.object-tools a.add-app {
+.object-tools a.add-button {
 	background-clip: border-box;
 	background-attachment: scroll;
 	background: #999 url(/media/img/tooltag-add.gif) no-repeat 100% 0%;

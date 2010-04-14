@@ -3,7 +3,13 @@
 {% block title %} All Categories {% endblock %}
 
 {% block content %}
-<table border="1">
+<div id="addcat" align="right">
+	<ul class="object-tools">
+		<li><a href='{% url category-add %}' class="add-button">Add Category</a></li>
+	</ul>	
+</div>
+
+<table class="gradient-style">
 <tr>
 	<th>Name</th>	
 	<th></th>
@@ -20,6 +26,4 @@
 
 </table>
 
-<br />
-<a href='{% url category-add %}'>Add a category</a>
 {% endblock %}
