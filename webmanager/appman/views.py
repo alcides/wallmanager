@@ -131,10 +131,6 @@ def screensaver(request):
 def suspension(request):
     return render(request,'appman/suspension.html')
 
-@staff_required()
-def categories(request):
-    return render(request,'appman/categories.html')
-
 @superuser_required()
 def manage_admins(request):
     return render(request,'appman/admins.html')
@@ -142,3 +138,33 @@ def manage_admins(request):
 @superuser_required()
 def contact_admin(request):
     return render(request,'appman/contact_admin.html')
+
+@staff_login_required
+def category_list(request):
+    cs = Category.objects.all()
+    return object_list(request, queryset=cs, template_object_name="category")
+
+@staff_login_required
+def category_add(request):
+    form_class = CategoryForm
+    if request.method == 'POST':
+        form = form_class(request.POST, request.FILES)
+        if form.is_valid():
+            cat = form.save(commit=False)
+            cat.save()
+            return HttpResponseRedirect(reverse('category-list'))
+    else:
+        form = form_class()
+
+    return render_to_response('appman/category_form.html', {'form': form,})
+
+@staff_login_required
+def category_edit(request, object_id):
+    return update_object(request, form_class=CategoryForm, 
+            object_id=object_id, post_save_redirect=reverse('category-list'))
+
+@staff_login_required
+def category_remove(request, object_id):
+    cat = get_object_or_404(Category, id=object_id)
+    cat.delete()
+    return HttpResponseRedirect(reverse('category-list'))

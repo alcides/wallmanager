@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} All Categories {% endblock %}
+
+{% block content %}
+<table border="1">
+<tr>
+	<th>Name</th>	
+	<th></th>
+	<th></th>
+</tr>
+
+{% for cat in category_list %}
+<tr>
+	<td>{{ cat.name }}</td>
+	<td><a href="{% url category-edit cat.id %}">edit</a></td>
+	<td><a href="{% url category-remove cat.id %}">remove</a></td>
+</tr>
+{% endfor %}
+
+</table>
+
+<br />
+<a href='{% url category-add %}'>Add a category</a>
+{% endblock %}

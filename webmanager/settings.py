@@ -67,3 +67,5 @@ LOGIN_REDIRECT_URL = '/app/list'
 
 WALL_APP_DIR = relative('../mtmenu/apps/')
 ZIP_FOLDER = "applications"
+
+DEFAULT_CATEGORY = "Others"

@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.conf import settings
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -11,6 +12,17 @@ class Category(models.Model):
     def __unicode__(self):
         return u"%s" % self.name
 
+    def delete(self):
+        """deletes a category"""
+        apps = Application.objects.filter(category=self.id)
+        unknown, garbage = Category.objects.get_or_create(name=settings.DEFAULT_CATEGORY)
+        if self.id == unknown.id:
+            return
+            
+        if apps.count() != 0:
+            apps.update(category=unknown)
+        super(Category,self).delete();
+        
 class Application(models.Model):
     name = models.CharField(max_length=255, unique=True)
     owner = models.ForeignKey(User)
