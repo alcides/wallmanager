@@ -1,15 +1,22 @@
+import os
+
 from django.views.generic.list_detail import *
 from django.views.generic.create_update import *
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required,user_passes_test
-from django.http import HttpResponseRedirect
+from django.template import RequestContext
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.core.files import File 
+from django.conf import settings
 
 from appman.forms import *
 from appman.models import *
 from appman.decorators import *
+from appman.utils.fileutils import *
 
 # Helper
+
 def render(request, template, opts = {}):
     return render_to_response(template, opts, context_instance=RequestContext(request))
     
@@ -32,21 +39,50 @@ def contact(request):
 def application_list(request):
     cs = Application.objects.all()
     return object_list(request, queryset=cs, template_object_name="application")
-	
+
 @login_required
 def application_add(request):
     form_class = ApplicationForm
     if request.method == 'POST':
+        filepath = ""
         form = form_class(request.POST, request.FILES)
+        if 'hidFileID' in request.POST:
+            # If SWFUpload was used, hidFieldID is set to the filename
+            filepath = fullpath(request.POST['hidFileID'].strip())
+            if os.path.exists(filepath):
+                form.fields['zipfile'].required=False
         if form.is_valid():
             app = form.save(commit=False)
             app.owner = request.user
+            if filepath:
+                app.zipfile = File(open("%s" % filepath))
             app.save()
             return HttpResponseRedirect(reverse('application-detail', args=[str(app.id)]))
     else:
         form = form_class()
-    return render(request,'appman/application_form.html', {'form': form,})
-	
+    return render(request,'appman/application_form.html', {
+        'form': form,
+    })
+
+def application_upload(request):
+    """ View that accepts SWFUpload uploads. Returns the filename of the saved file. """
+    if request.method == 'POST':
+        for field_name in request.FILES:
+            uploaded_file = request.FILES[field_name]
+            
+            destination_path = get_unique_path(uploaded_file.name)
+            destination = open(fullpath(destination_path), 'wb+')
+            for chunk in uploaded_file.chunks():
+                destination.write(chunk)
+            destination.close()
+
+        # indicate that everything is OK for SWFUpload
+        return HttpResponse(destination_path, mimetype="text/plain")
+
+    else:
+        return HttpResponseRedirect(reverse('application-add'))
+
+    
 def application_detail(request,object_id):
     cs = Application.objects.all()
     return object_detail(request, object_id=object_id, queryset=cs, template_object_name="application")
@@ -56,10 +92,16 @@ def application_admin_remove(request,object_id):
     """This function requires that the user is part of the staff"""
     #TODO SEND EMAIL
     return application_delete(request, object_id)
-    
+
 
 @login_required
 def application_edit(request, object_id):
+    if request.method == 'POST' and 'hidFileID' in request.POST:
+        filepath = fullpath(request.POST['hidFileID'].strip())
+        if os.path.exists(filepath):
+            app = Application.objects.get(id=object_id)
+            app.zipfile = File(open(filepath))
+            app.save()
     return update_object(request, form_class=ApplicationEditForm, 
             object_id=object_id, post_save_redirect=reverse('application-detail', args=[str(object_id)]))
             
@@ -67,7 +109,7 @@ def application_edit(request, object_id):
 def application_delete(request, object_id):
     app = get_object_or_404(Application, id=object_id)
     app.delete()
-    return HttpResponseRedirect("/app/list/")
+    return HttpResponseRedirect(reverse('application-list'))
 
 #Decorators
 def staff_required(login_url=None):

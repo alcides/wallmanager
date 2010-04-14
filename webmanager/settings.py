@@ -60,8 +60,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'appman.middleware.swfupload.SWFUploadMiddleware',
 )
 
-WALL_APP_DIR = relative('../mtmenu/apps/')
-
 LOGIN_REDIRECT_URL = '/app/list'
+
+WALL_APP_DIR = relative('../mtmenu/apps/')
+ZIP_FOLDER = "applications"

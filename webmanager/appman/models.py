@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 
 class Category(models.Model):
@@ -23,7 +24,7 @@ class Application(models.Model):
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
     
-    zipfile = models.FileField(upload_to='applications')
+    zipfile = models.FileField(upload_to=settings.ZIP_FOLDER)
     icon = models.ImageField(upload_to='icons')
     extraction_path = models.FilePathField()
     

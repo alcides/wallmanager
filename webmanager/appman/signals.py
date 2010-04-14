@@ -1,12 +1,10 @@
 import os
 from shutil import rmtree
-import threading
 
 from django.db.models import signals
 from django.conf import settings
 from django.dispatch import dispatcher
 
-from appman.utils.unzip import unzip
 from appman.models import Application
 
 
@@ -28,25 +26,7 @@ def remove_file(file):
         file.delete(save=True)
     except:
         pass
-
-class UncompressThread(threading.Thread):
-    """ Thread that uncompresses a certain zip file."""
-    def __init__(self, model, instance, path):
-        self.model = model
-        self.instance = instance
-        self.path = str(path)
-        threading.Thread.__init__(self)
-
-    def run(self):
-        try:
-            un = unzip()
-            un.extract( str(self.instance.zipfile.path) , self.path)
         
-            # Save in Database
-            self.model.objects.filter(id=self.instance.id).update(extraction_path=self.path)
-        except:
-            # Todo email user.
-            pass
         
     
 # Signals    
@@ -56,6 +36,7 @@ def uncompress(sender, instance, signal, *args, **kwargs):
     path = get_app_dir(instance)
     remove_dir(path)
     if instance.zipfile:
+        from appman.utils.uncompress import UncompressThread
         UncompressThread(sender,instance, path).start()
     
 def remove_app(sender, instance, signal, *args, **kwargs):

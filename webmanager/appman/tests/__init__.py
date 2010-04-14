@@ -1,16 +1,40 @@
+import os
+
 from datetime import datetime, time
+from django.core import mail
+from django.core.files import File
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.conf import settings
+from django.db.models.signals import pre_save, post_save, post_delete
 
 from appman.models import *
+from appman.signals import *
+from appman.utils.uncompress import UncompressThread
+from appman.utils.fileutils import *
+from appman.tests.settings import TestSettingsManager
 
-import os
 def relative(*x):
-    return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+	return os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), *x))
 
 class ApplicationManagementTest(TestCase):
     
+    def __init__(self, *args, **kwargs):
+        super(ApplicationManagementTest, self).__init__(*args, **kwargs)
+        self.settings_manager = TestSettingsManager()
+        
+        # Turn off signals
+        pre_save.receivers = []
+        post_save.receivers = []
+        post_delete.receivers = []
+    
     def setUp(self):
+        self.extracted_folder = relative('../../tests/unzipped')
+        if not os.path.exists(self.extracted_folder):
+            os.mkdir(self.extracted_folder)
+        self.settings_manager.set(WALL_APP_DIR=self.extracted_folder)
+        
+        
         #Creates usernames for Zacarias and Prof. Plum
         self.zacarias = User.objects.create_user(username="zacarias_stu", email="zacarias@student.dei.uc.pt", password="zacarias")
         self.plum = User.objects.create_user(username="plum_ede", email="plum@dei.uc.pt", password="plum")
@@ -57,6 +81,9 @@ class ApplicationManagementTest(TestCase):
 
     def test_list_app(self):
         response = self.client.get('/app/list/')
+        self.assertEqual(response.status_code, 302)
+        login = self.do_login()
+        response = self.client.get('/app/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Gps Application</a></td>")
         self.assertContains(response, "<tr>", 2) # 1 app, plus header
@@ -96,12 +123,57 @@ class ApplicationManagementTest(TestCase):
         response = self.client.post('/app/add/', post_data)
         zf.close()
         pf.close()
-        print response.content
         self.assertRedirects(response, '/app/%s/' % Application.objects.get(name='Example App').id)
         response = self.client.get('/app/list/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Example App</a></td>")
-
+        
+    def test_upload_app(self):
+        """ Tests the Upload of a Zip file through the SWFUpload method. """
+        login = self.do_login()
+        
+        zf = open(relative('../../tests/python_test_app.zip'),'rb')
+        response = self.client.post('/app/upload/', {
+            'test': zf 
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, ".zip")
+        name = response.content.strip()
+        zf.close()
+        
+        pf = open(relative('../../tests/wmlogo.png'),'rb')
+        post_data = {
+            'name': 'Yet another App',
+            'zipfile': '',
+            'hidFileID': name,
+            'icon': pf,
+            'category': self.educational.id, 
+            'description': "Example app"
+        }
+        c = Application.objects.count()
+        response = self.client.post('/app/add/', post_data)
+        self.assertEqual(c+1, Application.objects.count())
+        self.assertRedirects(response, '/app/%s/' % Application.objects.get(name='Yet another App').id)
+    
+    def test_get_unique_path(self):
+    	
+    	new_file = 'test132.txt'
+    	
+    	# Test if it still doesn't exist
+    	unique_file = get_unique_path(new_file)
+    	self.assertEqual(unique_file, 'test132.txt')
+    	
+    	# Create it
+    	new_file_path = relative(fullpath(new_file))
+    	open(new_file_path,'a').close()
+    	
+    	# Get a unique path, now that the file already exists
+    	unique_file = get_unique_path(new_file)
+    	# Assert if the proper unique file path was given
+    	self.assertEqual(unique_file, 'test132_.txt')
+    	
+    	os.remove(new_file_path)
+        
     def test_requires_login_to_edit_app(self):
         response = self.client.get('/app/%s/edit/' % self.gps.id)
         self.assertEqual(response.status_code, 302) # redirect to login
@@ -122,7 +194,6 @@ class ApplicationManagementTest(TestCase):
             'category': self.educational.id, 
             'description': "Example app"
         }
-        
         response = self.client.post('/app/%s/edit/' % self.gps.id, post_data)
         zf.close()
         pf.close()
@@ -156,5 +227,8 @@ class ApplicationManagementTest(TestCase):
 
     
     def tearDown(self):
-        pass
+        import shutil
+        shutil.rmtree(self.extracted_folder)
+        self.settings_manager.revert()
+        
         
