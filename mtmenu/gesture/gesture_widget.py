@@ -8,7 +8,7 @@ class GestureWidget( MTGestureWidget ):
         self.gestures = Gestures()
     
     def on_gesture(self, gesture, touch):
-        print 'gesture'
+        print 'gesture:\n'
         #print self.gestures.gesture_to_str( gesture )
         if self.gestures.find(gesture, 0.5):
             print "gesture recognized"

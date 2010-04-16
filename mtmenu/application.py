@@ -11,7 +11,7 @@ from settings import *
 __all__ = ['gel_all_apps', 'Application']
 
 
-def get_all_apps(proxy):
+def get_all_apps():
     """Loops through all APPS_REPOSITORY_PATH subdirectories. Takes in 
     consideration that each subdirectory is named after the application ID
     
@@ -21,13 +21,13 @@ def get_all_apps(proxy):
     
     apps = []
     for id in ids:
-        apps.append(Application(id, proxy))
+        apps.append(Application(id))
         
     return apps
 
 
 #class Application (models.Model): TO-DO
-class Application( threading.Thread ):
+class Application():
     """Class representing an application.
     
     Arguments:
@@ -39,18 +39,8 @@ class Application( threading.Thread ):
     http://stackoverflow.com/questions/302651/use-only-some-parts-of-django
     http://jystewart.net/process/2008/02/using-the-django-orm-as-a-standalone-component/
     """
-    def __init__(self, id=-1, proxy = 0):
+    def __init__(self, id=-1):
         self.id = id;
-        self.proxy = proxy
-        threading.Thread.__init__(self)
-        
-    def run(self):
-        try:
-            self.proxy.APP_RUNNING = True
-            self.execute()
-            self.proxy.APP_RUNNING = False
-        except:
-            pass
         
     def __unicode__(self):
         return u'AppName Nr%s' % self.id
@@ -70,34 +60,32 @@ class Application( threading.Thread ):
         Raises:
             An Exception is raised in case something goes wrong during
             process execution"""
+        
+        print "WILL RUN APP"
+        
         app_path = self.path()
         app_boot_file = self.boot_file()
         
-        success = False
+        log = []
         
         if app_boot_file:
             
-            try:
+            try:                
                 import platform
                 if platform.system()[:3].lower() == "win":
                     command = [app_boot_file]
                 else:
                     command = ["bash", app_boot_file]
                 
-                
                 # Starts application process and waits for it to terminate
                 process = Popen(command, stdout=PIPE, stderr=PIPE, cwd=app_path)
                 
-                
-                # Application's output should be handle here! 
-                for str in process.communicate():
-                    print "OUTPUT:\n %s" % str # TO-DO
+                log = process.communicate()
                     
-                success = True
             except:
                 raise
             
-        return success
+        return log
         
     def path(self):
         """Full path to application repository. Each application

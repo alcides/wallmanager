@@ -3,11 +3,12 @@ from settings import *
 import threading
 
 
-class Proxy2( threading.Thread ):
+class Proxy( threading.Thread ):
     APP_RUNNING = False
 
     def __init__(self):
         self.flag = True
+        
         threading.Thread.__init__(self)
     
     
@@ -36,3 +37,4 @@ class Proxy2( threading.Thread ):
             if self.APP_RUNNING:
                 self.send_sock.sendto( data, (UDP_IP, SENDING_PORT_TWO) )
 
+proxy = Proxy()
