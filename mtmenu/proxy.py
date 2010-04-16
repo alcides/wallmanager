@@ -3,10 +3,11 @@ from settings import *
 import threading
 
 
-class Proxy( threading.Thread ):
+class Proxy2( threading.Thread ):
+    APP_RUNNING = False
 
     def __init__(self):
-        self.flag = False
+        self.flag = True
         threading.Thread.__init__(self)
     
     
@@ -19,17 +20,19 @@ class Proxy( threading.Thread ):
 
     
     def run(self):
+        print "PROXY RUNNING"
         try:
             self.execute()
+            print "PROXY STOPPED"
         except:
-            pass
+            raise
 
 
     def execute(self):
         self.start_sockets()
         while self.flag:
-            data, addr = self.receive_sock.recvfrom( 1024 ) # buffer size is 1024 bytes
-            print data
+            data= self.receive_sock.recv( 1024 ) # buffer size is 1024 bytes
             self.send_sock.sendto( data, (UDP_IP, SENDING_PORT_ONE) )
-            self.send_sock.sendto( data, (UDP_IP, SENDING_PORT_TWO) )
+            if self.APP_RUNNING:
+                self.send_sock.sendto( data, (UDP_IP, SENDING_PORT_TWO) )
 

@@ -11,7 +11,7 @@ from settings import *
 __all__ = ['gel_all_apps', 'Application']
 
 
-def get_all_apps():
+def get_all_apps(proxy):
     """Loops through all APPS_REPOSITORY_PATH subdirectories. Takes in 
     consideration that each subdirectory is named after the application ID
     
@@ -21,7 +21,7 @@ def get_all_apps():
     
     apps = []
     for id in ids:
-        apps.append(Application(id))
+        apps.append(Application(id, proxy))
         
     return apps
 
@@ -39,13 +39,16 @@ class Application( threading.Thread ):
     http://stackoverflow.com/questions/302651/use-only-some-parts-of-django
     http://jystewart.net/process/2008/02/using-the-django-orm-as-a-standalone-component/
     """
-    def __init__(self, id=-1):
+    def __init__(self, id=-1, proxy = 0):
         self.id = id;
+        self.proxy = proxy
         threading.Thread.__init__(self)
         
     def run(self):
         try:
+            self.proxy.APP_RUNNING = True
             self.execute()
+            self.proxy.APP_RUNNING = False
         except:
             pass
         
