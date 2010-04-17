@@ -1,6 +1,6 @@
 import os
 def relative(*x):
-	return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+    return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -16,6 +16,7 @@ DATABASE_USER = ''
 DATABASE_PASSWORD = ''
 DATABASE_HOST = ''             # empty -> localhost
 DATABASE_PORT = ''             # empty -> default
+DATABASE_SUPPORTS_TRANSACTIONS = True
 
 SECRET_KEY = '%4)e8snda5-cewqsjx#%t$sg-j0txw)mb%leue1_^paa=(ft)e' # <------ Change this!
 
@@ -36,11 +37,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-	'appman',
+    'appman',
 )
 
 TEMPLATE_DIRS = (
-	relative('templates'),
+    relative('templates'),
 )
 
 TEMPLATE_LOADERS = (
@@ -60,6 +61,12 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'appman.middleware.swfupload.SWFUploadMiddleware',
 )
 
+LOGIN_REDIRECT_URL = '/applications/'
+
 WALL_APP_DIR = relative('../mtmenu/apps/')
+ZIP_FOLDER = "applications"
+
+DEFAULT_CATEGORY = "Others"

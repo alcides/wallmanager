@@ -21,7 +21,8 @@ class AppButton(MTKineticItem):
 
     """Execute application on click"""
     def on_press( self, touch ):
-        print '\nLoading %s...\n' % unicode(self.app)
-        print '\tPath: %s\n' % self.app.path()
-        print '\tBoot file: %s\n' % self.app.boot_file()
+        print '\nLoading %s...' % unicode(self.app)
+        print 'ID: %i' % self.app.id
+        print 'Path: %s' % self.app.get_extraction_fullpath()
+        print 'Boot file: %s' % self.app.get_boot_file()
         self.app.execute()

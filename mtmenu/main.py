@@ -2,7 +2,7 @@ from pymt import *
 from ui.mainwindow import MainWindow
 from ui.appslist import AppsList
 from ui.appbutton import AppButton
-from application import get_all_apps
+from models import ApplicationProxy
 
 #######
 # UI
@@ -19,7 +19,9 @@ scatter = MTScatterWidget(pos=(150,50),
 apps_grid = AppsList(pos=(20,20),
                      size=(460,460))
 
-for app in get_all_apps():
+all_apps = ApplicationProxy.objects.all()
+
+for app in all_apps:
     style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1}
     item = AppButton(app,
                            anchor_x='center',
