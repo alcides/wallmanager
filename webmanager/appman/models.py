@@ -38,7 +38,7 @@ class Application(models.Model):
     
     zipfile = models.FileField(upload_to=settings.ZIP_FOLDER)
     icon = models.ImageField(upload_to='icons')
-    extraction_path = models.FilePathField()
+    is_extracted = models.BooleanField(default=False)
     
     def value(self):
         """ The value of an application, based on the likes and dislikes """

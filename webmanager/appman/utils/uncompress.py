@@ -19,4 +19,4 @@ class UncompressThread(threading.Thread):
             extracted = False
     
         if extracted:
-            self.model.objects.filter(id=self.instance.id).update(extraction_path=self.path)
+            self.model.objects.filter(id=self.instance.id).update(is_extracted=True)
