@@ -12,7 +12,6 @@ def relative(*x):
 	return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 
 class ApplicationManagementTest(TestCase):
-    
     def setUp(self):
         #Creates usernames for Zacarias and Prof. Plum
         self.zacarias = User.objects.create_user(username="zacarias_stu", email="zacarias@student.dei.uc.pt", password="zacarias")
@@ -25,7 +24,7 @@ class ApplicationManagementTest(TestCase):
         self.games = Category.objects.create(name="Games")
         
         self.gps = Application.objects.create(name="Gps Application", owner=self.zacarias, category=self.educational)
- 
+        
     def do_login(self):
         login = self.client.login(username='zacarias_stu', password='zacarias')
         self.assertEqual(login, True)
