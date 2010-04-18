@@ -157,6 +157,7 @@ class ApplicationManagementTest(TestCase):
         response = self.client.post('/applications/add/', post_data)
         self.assertEqual(c+1, Application.objects.count())
         self.assertRedirects(response, '/applications/%s/' % Application.objects.get(name='Yet another App').id)
+        os.remove(relative('../../media/applications', name))
     
     def test_get_unique_path(self):
     	
@@ -296,6 +297,11 @@ class ApplicationManagementTest(TestCase):
         
     def tearDown(self):
         import shutil
+        for app in Application.objects.all():
+            if app.zipfile:
+                app.zipfile.delete()
+            if app.icon:
+                app.icon.delete()
         shutil.rmtree(self.extracted_folder)
         self.settings_manager.revert()
         
