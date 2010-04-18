@@ -1,24 +1,41 @@
 {% extends 'base.html' %}
 
-{% block title %} All Applications {% endblock %}
+{% block title %} Applications List {% endblock %}
+
+{% block breadcrumb%}
+	<li>Applications</li>
+{% endblock %}
 
 {% block content %}
-<table border="1">
-<tr>
-	<th>Name</th>	
-	<th>Author</th>
-	<th>Category</th>
-	<th>Rating</th>
-</tr>
+<div id="addapp" align="right">
+	<ul class="object-tools">
+		<li><a href='{% url application-add %}' class="add-button">Add Application</a></li>
+	</ul>	
+</div>
 
-{% for app in application_list %}
-<tr>
-	<td><a href="{{ app.get_absolute_url }}">{{ app.name }}</a></td>
-	<td>{{ app.owner }}</td>
-	<td>{{ app.category }}</td>
-	<td>{{ app.stars }}</td>
-</tr>
-{% endfor %}
-
-</table>
+<div id="applist">
+	<table class="gradient-style">
+		<thead>
+			<tr>
+				<th>Name</th>	
+				<th>Author</th>
+				<th>Category</th>
+				<th>Rating</th>
+			</tr>
+		</thead>
+	
+		<tbody>
+	
+		{% for app in application_list %}
+		<tr>
+			<td><a href="{{ app.get_absolute_url }}">{{ app.name }}</a></td>
+			<td>{{ app.owner }}</td>
+			<td>{{ app.category }}</td>
+			<td>{{ app.stars }}</td>
+		</tr>
+		{% endfor %}
+	
+		</tbody>
+	</table>
+</div>
 {% endblock %}

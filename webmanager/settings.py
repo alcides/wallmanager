@@ -36,7 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-	'appman'
+	'appman',
 )
 
 TEMPLATE_DIRS = (
@@ -60,4 +60,12 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'appman.middleware.swfupload.SWFUploadMiddleware',
 )
+
+LOGIN_REDIRECT_URL = '/applications/'
+
+WALL_APP_DIR = relative('../mtmenu/apps/')
+ZIP_FOLDER = "applications"
+
+DEFAULT_CATEGORY = "Others"

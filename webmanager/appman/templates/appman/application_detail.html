@@ -2,6 +2,11 @@
 
 {% block title %} {{ application.name }} {% endblock %}
 
+{% block breadcrumb%}
+	<li><a href="{% url application-list %}">Applications</a></li>
+	<li>{{ application.name }}</li>
+{% endblock %}
+
 {% block content%}
 
 <p><b>App Name:</b> {{ application.name }}</p>

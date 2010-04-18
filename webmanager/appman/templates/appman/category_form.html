@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	{% if object %}
+		Edit Category
+	{% else %}
+		Add Category
+	{% endif %}
+{% endblock %}
+
+{% block breadcrumb%}
+	<li><a href="{% url category-list %}">Categories</a></li>
+	{% if object %}
+		<li><a href="{{ object.get_absolute_url }}">{{ object.name }}</a></li>
+		<li>Edit</li>
+	{% else %}
+		<li>Add Category</li>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% if form.errors %}
+<h2>Please correct the following error{{ form.errors|pluralize }}:</h2>
+{% endif %}
+
+<form action="" method="post" enctype="multipart/form-data">
+  {{ form.as_p }}
+  <input type="submit" value="Save" />
+</form>
+{% endblock %}

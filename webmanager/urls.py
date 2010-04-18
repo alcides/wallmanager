@@ -8,6 +8,7 @@ urlpatterns = patterns('',
 
     (r'^admin/(.*)', admin.site.root),
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),
+    (r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login'),
     (r'^', include('appman.urls')),
 )
 
