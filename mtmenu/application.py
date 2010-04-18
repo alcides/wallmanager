@@ -1,11 +1,13 @@
-from os.path import join, exists, isdir
+from OpenGL.GLUT import *
+from global_objects import setAppRunning
 from os import chdir, getcwdu, listdir
+from os.path import join, exists, isdir
+from settings import *
 from subprocess import Popen, PIPE
+from threading import Thread
+import subprocess
 import threading
 
-from OpenGL.GLUT import *
-
-from settings import *
 
 
 __all__ = ['gel_all_apps', 'Application']
@@ -78,10 +80,14 @@ class Application():
                     command = ["bash", app_boot_file]
                 
                 # Starts application process and waits for it to terminate
-                process = Popen(command, stdout=PIPE, stderr=PIPE, cwd=app_path)
+                process = subprocess.Popen(command, stdout=PIPE, stderr=PIPE, cwd=app_path)
+                
+
+                setAppRunning(process)
                 
                 log = process.communicate()
-                    
+                
+                setAppRunning(None)
             except:
                 raise
             
@@ -116,8 +122,3 @@ class Application():
         
         if exists(boot_file): 
             return boot_file
-
-
-    
-    
-    

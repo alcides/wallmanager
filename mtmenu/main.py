@@ -5,6 +5,8 @@ from ui.appbutton import AppButton
 from application import get_all_apps
 from gesture.gesture_scan import GestureScan
 from proxy import *
+from pymt.ui.window.win_glut import MTWindowGlut
+from global_objects import scatter
 
 
 #######
@@ -17,9 +19,6 @@ proxy.start()
 
 
 main_window = MainWindow(width=800, height=600)
-
-# Scatter to make AppsList movable
-scatter = MTScatterWidget(pos=(150,50), size=(500, 500))
 
 # Construct AppsList looping through all apps
 apps_grid = AppsList(pos=(20,20), size=(460,460))
@@ -44,6 +43,9 @@ main_window.add_widget(scatter)
 
 #Add gesture recognition
 main_window.add_widget(GestureScan())
+
+
+
 
 # Execute main loop
 if __name__ == '__main__':
