@@ -98,7 +98,7 @@ def application_admin_remove(request,object_id):
 def application_edit(request, object_id):
     if request.method == 'POST' and 'hidFileID' in request.POST:
         filepath = fullpath(request.POST['hidFileID'].strip())
-        if os.path.exists(filepath):
+        if filepath and os.path.isfile(filepath):
             app = Application.objects.get(id=object_id)
             app.zipfile = File(open(filepath))
             app.save()
