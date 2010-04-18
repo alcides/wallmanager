@@ -43,8 +43,8 @@ def remove_app(sender, instance, signal, *args, **kwargs):
     """ Deletes the uncompressed folder """    
     if str(instance.is_extracted):
         remove_dir(get_app_dir(instance))
-        remove_file(instance.zipfile)
-        remove_file(instance.icon)
+    remove_file(instance.zipfile)
+    remove_file(instance.icon)
 
 signals.post_save.connect(uncompress, sender=Application)
 signals.post_delete.connect(remove_app, sender=Application)
