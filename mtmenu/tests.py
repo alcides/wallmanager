@@ -1,9 +1,9 @@
 from models import ApplicationLogProxy, ApplicationProxy, CategoryProxy, UserProxy
 from django.test import TestCase
 from settings import APPS_MAX_LOG_ENTRIES
-import unittest
+from unittest import TestLoader, TextTestRunner
 
-class TestMultiTouch(TestCase, unittest.TestCase):
+class TestMultiTouch(TestCase):
 
     def setUp(self):
         self.user = UserProxy.objects.create(username = "username",
@@ -51,4 +51,6 @@ class TestMultiTouch(TestCase, unittest.TestCase):
     
 
 if __name__ == '__main__':
-    unittest.main()
+    tests = TestLoader().loadTestsFromTestCase(TestMultiTouch)
+    TextTestRunner(verbosity = 2).run(tests)
+    
