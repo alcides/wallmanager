@@ -21,7 +21,7 @@ class User(models.Model):
         return u"%s" % self.email
     
 class Category(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=30, unique=True)
     
     class Meta:
         verbose_name_plural = "Categories"
@@ -30,7 +30,7 @@ class Category(models.Model):
         return u"%s" % self.name
 
 class Application(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=50, unique=True)
     owner = models.ForeignKey(User)
     category = models.ForeignKey(Category)
     description = models.TextField(blank=True)
@@ -44,7 +44,7 @@ class Application(models.Model):
     
     zipfile = models.FileField(upload_to='applications')
     icon = models.ImageField(upload_to='icons')
-    extraction_path = models.FilePathField()
+    is_extracted = models.BooleanField(default=False)
     
     def value(self):
         """ The value of an application, based on the likes and dislikes """
