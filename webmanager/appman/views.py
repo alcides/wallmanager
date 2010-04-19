@@ -22,7 +22,7 @@ def application_add(request):
             app = form.save(commit=False)
             app.owner = request.user
             app.save()
-            log_file.log_application_added(app)
+            log_file.log_app_event(app, 'added')
             return HttpResponseRedirect(reverse('application-detail', args=[str(app.id)]))
     else:
         form = form_class()
@@ -45,6 +45,6 @@ def application_delete(request, object_id):
     app = get_object_or_404(Application, id=object_id)
     app.delete()
     if (app is not Http404):
-        log_file.log_application_deleted(app)
+        log_file.log_app_event(app, 'deleted')
     return HttpResponseRedirect("/app/list/")
 

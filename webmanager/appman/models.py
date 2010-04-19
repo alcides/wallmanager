@@ -65,7 +65,7 @@ class Application(models.Model):
         
         super(Application, self).save(force_insert, force_update)
         if (application_was_edited):
-            log_file.log_application_edited(self)
+            log_file.log_app_event(self, 'edited')
     
     @models.permalink
     def get_absolute_url(self):
