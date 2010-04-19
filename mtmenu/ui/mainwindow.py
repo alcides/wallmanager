@@ -1,16 +1,11 @@
 from pymt import *
+from settings import WALL_DEFAULT_WIDTH, WALL_DEFAULT_HEIGHT
 
 __all__ = ['MainWindow']
 
 class MainWindow (MTWindow):
     """Menu main window"""
-    
-    DEFAULT_WIDTH = 2 * 1024
-    DEFAULT_HEIGHT = 748
-    
     def __init__(self, **kwargs):
-        kwargs.setdefault('width', DEFAULT_WIDTH)
-        kwargs.setdefault('height', DEFAULT_HEIGHT)
-        
+        kwargs.setdefault('width', WALL_DEFAULT_WIDTH)
+        kwargs.setdefault('height', WALL_DEFAULT_HEIGHT)
         super(kwargs)
-

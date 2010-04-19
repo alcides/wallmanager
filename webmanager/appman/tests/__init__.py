@@ -84,8 +84,8 @@ class ApplicationManagementTest(TestCase):
         self.assertContains(response, "Add Application")
         self.assertContains(response, "<form", 1)
 
-        zf = open(relative('../tests/python_test_app.zip'),'rb')
-        pf = open(relative('../tests/wmlogo.png'),'rb')
+        zf = open(relative('../../tests/python_test_app.zip'),'rb')
+        pf = open(relative('../../tests/wmlogo.png'),'rb')
         post_data = {
             'name': 'Example App',
             'zipfile': zf,
@@ -113,8 +113,8 @@ class ApplicationManagementTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Application")
         
-        zf = open(relative('../tests/python_test_app.zip'),'rb')
-        pf = open(relative('../tests/wmlogo.png'),'rb')
+        zf = open(relative('../../tests/python_test_app.zip'),'rb')
+        pf = open(relative('../../tests/wmlogo.png'),'rb')
         post_data = {
             'name': 'Example App 2',
             'zipfile': zf,
