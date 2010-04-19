@@ -27,5 +27,6 @@ urlpatterns = patterns('appman.views',
 	
 	url(r'^admins/$', 'manage_admins', name="manage-admins"),
 	url(r'^admin_contact/$', 'contact_admin', name="define-admin"),
+	url(r'^accounts/register/$', 'account_register', name = "account-register"),
 
 )

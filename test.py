@@ -19,6 +19,7 @@ if __name__ == '__main__':
         print 20*"+"
         
     sep("Web Application")
+
     execute_manager(webmanager.settings, argv=['','test','appman'])
     
     sep("Wall Application")

@@ -168,3 +168,20 @@ def category_remove(request, object_id):
     cat = get_object_or_404(Category, id=object_id)
     cat.delete()
     return HttpResponseRedirect(reverse('category-list'))
+
+def account_register(request):
+    form = UserCreationForm()
+
+    if request.method == 'POST':
+        data = request.POST.copy()
+        errors = form.get_validation_errors(data)
+        if not errors:
+            new_user = form.save()
+            return HttpResponseRedirect("/accounts/created/")
+
+	else:
+	    print form.errors
+    else:
+	data, errors = {}, {}
+
+    return render_to_response("registration/register.html", {'form' : form })
