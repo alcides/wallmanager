@@ -4,6 +4,7 @@ from subprocess import Popen, PIPE
 from settings import APPS_MAX_LOG_ENTRIES,APPS_BOOT_FILENAME,APPS_REPOSITORY_PATH
 from cStringIO import StringIO
 from threading import Thread
+from proxy import proxy
 
 import sys
 
@@ -18,7 +19,7 @@ environ['DJANGO_SETTINGS_MODULE'] = 'webmanager.settings'
 # webmanager models can now be imported
 from webmanager.appman import models
 from django.contrib.auth.models import User
-
+from application_runner import *
 
 class WallModelsProxy ():
     """This is an abstraction to be used by all models extended from appman"""
@@ -53,6 +54,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         Raises:
             An Exception is raised in case something goes wrong during
             process execution"""
+            
         app_boot_file = self.get_boot_file()
         
         success = False
@@ -70,12 +72,24 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 # Starts application process and waits for it to terminate
                 process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath())
                 
+                # orders proxy to send TUIO events to the new app
+                proxy.APP_RUNNING = True
+                
+                scatter.hide()
+                setAppRunning(process)
+                                
+                
                 # Concatenate output
                 output = StringIO()
                 for str in process.communicate(): output.write(str)
                     
                 # Save output to database
                 self.add_log_entry(output.getvalue())
+                
+                proxy.APP_RUNNING = False
+                scatter.show()
+                removeAppRunning()    
+                
                     
                 success = True
             except:
@@ -96,6 +110,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         
         if exists(full_path): 
             return full_path
+        
         
     def get_boot_file(self):
         """Full path to application boot file.

@@ -2,7 +2,6 @@ from pymt import *
 from ui.mainwindow import MainWindow
 from ui.appslist import AppsList
 from ui.appbutton import AppButton
-from application import get_all_apps
 from gesture.gesture_scan import GestureScan
 from proxy import *
 from pymt.ui.window.win_glut import MTWindowGlut

@@ -1,5 +1,4 @@
 from pymt import *
-from application_runner import AppRunner
 
 
 class AppButton(MTKineticItem):
@@ -24,7 +23,6 @@ class AppButton(MTKineticItem):
     def on_press( self, touch ):
         print '\nLoading %s...\n' % unicode(self.app)
         print 'ID: %i' % self.app.id
-        print '\tPath: %s\n' % self.app.path()
-        print '\tBoot file: %s\n' % self.app.boot_file()
-        appRunner = AppRunner(self.app)
-        appRunner.start()
+        print '\tPath: %s\n' % self.app.get_extraction_fullpath
+        print '\tBoot file: %s\n' % self.app.get_boot_file()
+        self.app.execute()
