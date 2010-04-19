@@ -1,5 +1,5 @@
 from OpenGL.GLUT import *
-from global_objects import setAppRunning
+from application_runner import *
 from os import chdir, getcwdu, listdir
 from os.path import join, exists, isdir
 from settings import *
@@ -7,6 +7,7 @@ from subprocess import Popen, PIPE
 from threading import Thread
 import subprocess
 import threading
+
 
 
 
@@ -87,7 +88,7 @@ class Application():
                 
                 log = process.communicate()
                 
-                setAppRunning(None)
+                removeAppRunning()
             except:
                 raise
             

@@ -1,5 +1,5 @@
 from gesture_db import *
-from global_objects import getAppRunning
+from application_runner import getAppRunning
 from pymt import *
 import subprocess
 
@@ -14,10 +14,11 @@ class GestureWidget( MTGestureWidget ):
         app = getAppRunning()
         
         # TODO: recognize gesture and replace or with and
-        if self.gestures.find(gesture, 0.5) or app != None:
+        if self.gestures.find(gesture, 0.5) and app != None:
             print "gesture recognized"
-            print "kill app "+str(app.pid)
-            subprocess.Popen("taskkill /F /T /PID %i"%app.pid , shell=True)
+            if app:
+                print "kill app " + str(app.pid)
+                subprocess.Popen("taskkill /F /T /PID %i"%app.pid , shell=True)
             
 
 
