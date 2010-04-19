@@ -300,7 +300,7 @@ class ApplicationManagementTest(TestCase):
     def test_default_category(self):
         self.assertEqual(Category.objects.filter(name=DEFAULT_CATEGORY).count(), 1)
         
-    def test_register_passwordproblem(self):
+    def test_register_with_different_passwords(self):
         u = User.objects.count()
         #try to register a user with different passwords
         post_data = {
@@ -310,29 +310,13 @@ class ApplicationManagementTest(TestCase):
             'password2': 'administrator'
         }
         response = self.client.post('/accounts/register/', post_data)
-	#check the error message
-	self.assertContains(response, DEFAULT_PASSWD_ERROR)
+    	#check the error message
+    	self.assertContains(response, "Passwords do not match.")
 
-	#confirm that there exists a new user
-	self.assertEqual(User.objects.count(), u)
-	
-    def test_register_usernameproblem(self):
-        u = User.objects.count()
-        #try to register a user with different passwords
-        post_data = {
-            'username': 'zacarias_stu',
-            'email': 'admin@student.dei.uc.pt',
-            'password1': 'admin',
-            'password2': 'admin'
-        }
-        response = self.client.post('/accounts/register/', post_data)
-	#check the error message
-	self.assertContains(response, DEFAULT_USERNAME_ERROR)
-
-	#confirm that there exists a new user
-	self.assertEqual(User.objects.count(), u)
+    	#confirm that there is no new user.
+    	self.assertEqual(User.objects.count(), u)
     
-    def test_register_emailproblem(self):
+    def test_register_with_wrong_email(self):
         u = User.objects.count()
         #try to register a user with different passwords
         post_data = {
@@ -342,13 +326,13 @@ class ApplicationManagementTest(TestCase):
             'password2': 'admin'
         }
         response = self.client.post('/accounts/register/', post_data)
-	#check the error message
-	self.assertContains(response, DEFAULT_EMAIL_ERROR)
+    	#check the error message
+    	self.assertContains(response, "Email must be on uc.pt domain.")
 
-	#confirm that there exists a new user
-	self.assertEqual(User.objects.count(), u)
+        #confirm that there is no new user
+    	self.assertEqual(User.objects.count(), u)
 	
-    def test_register_passwordinexistent(self):
+    def test_register_without_password(self):
         u = User.objects.count()
         #try to register a user with different passwords
         post_data = {
@@ -358,29 +342,28 @@ class ApplicationManagementTest(TestCase):
             'password2': ''
         }
         response = self.client.post('/accounts/register/', post_data)
-	#check the error message
-	self.assertContains(response, DEFAULT_INEXISTENT_PASSWD_ERROR)
-
-	#confirm that there exists a new user
-	self.assertEqual(User.objects.count(), u)
+    	#confirm that there is no new user
+    	self.assertEqual(User.objects.count(), u)
+	
+	
     def test_register_sucessfull(self):
         u = User.objects.count()
         #try to register a user with different passwords
         post_data = {
             'username': 'test',
             'email': 'test@student.dei.uc.pt',
-            'password1': 'test',
-            'password2': 'test'
+            'password1': 'testes',
+            'password2': 'testes'
         }
         response = self.client.post('/accounts/register/', post_data)
-	#check the error message
-	self.assertRedirects(response, 'http://testserver/accounts/login/')
+    	#check the error message
+    	self.assertRedirects(response, '/accounts/login/')
 
-	#confirm that there exists a new user
-	self.assertEqual(User.objects.count(), u+1)
+    	#confirm that there exists a new user
+    	self.assertEqual(User.objects.count(), u+1)
 	
-	#confirm that the email has been sent
-	self.assertEquals(len(mail.outbox),1)
+    	#confirm that the email has been sent
+    	self.assertEquals(len(mail.outbox),1)
         expected_subject = '[WallManager] Registration Complete'
         self.assertEquals(mail.outbox[0].subject, expected_subject)
         expected_from = 'wallmanager@dei.uc.pt'
@@ -389,7 +372,7 @@ class ApplicationManagementTest(TestCase):
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertEquals(mail.outbox[0].to[0], expected_to)
         username = 'test'
-	expected_body = 'Dear ' + username + ', \nYour registration has been sucessfully complete.\n Best regards'
+    	expected_body = 'Dear ' + username + ', \nYour registration has been sucessfully complete.\n Best regards'
         self.assertEquals(mail.outbox[0].body, expected_body)	
 
     def tearDown(self):

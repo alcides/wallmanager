@@ -20,12 +20,12 @@
 
 {% block content %}
 
-{% if form.errors %}
-<h2>Please correct the following error{{ form.errors|pluralize }}:</h2>
-{% endif %}
+	{% if form.errors %}
+	<h2>Please correct the following error{{ form.errors|pluralize }}:</h2>
+	{% endif %}
 
-<form action="" method="post" enctype="multipart/form-data">
-  {{ form.as_p }}
-  <input type="submit" value="Save" />
-</form>
+	<form action="" method="post" enctype="multipart/form-data">
+	  {{ form.as_p }}
+	  <input type="submit" value="Save" />
+	</form>
 {% endblock %}
