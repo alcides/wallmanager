@@ -73,9 +73,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 # Starts application process and waits for it to terminate
                 process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath())
                 
-                # orders proxy to send TUIO events to the new app
-                proxy.APP_RUNNING = True
-                
+                # hides the main menu and defines the application that is running
                 scatter.hide()
                 setAppRunning(process)
                                 
@@ -84,13 +82,13 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 output = StringIO()
                 for str in process.communicate(): output.write(str)
                     
-                # Save output to database
-                self.add_log_entry(output.getvalue())
                 
-                proxy.APP_RUNNING = False
                 scatter.show()
-                removeAppRunning()    
+                removeAppRunning()
                 
+                
+                # Save output to database
+                self.add_log_entry(output.getvalue())    
                     
                 success = True
             except:

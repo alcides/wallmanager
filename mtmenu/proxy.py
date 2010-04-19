@@ -1,10 +1,10 @@
 import socket
 from settings import *
 import threading
+from application_running import isAppRunning
 
 
 class Proxy( threading.Thread ):
-    APP_RUNNING = False
 
     def __init__(self):
         self.flag = True
@@ -34,7 +34,7 @@ class Proxy( threading.Thread ):
         while self.flag:
             data= self.receive_sock.recv( 1024 ) # buffer size is 1024 bytes
             self.send_sock.sendto( data, (UDP_IP, SENDING_PORT_ONE) )
-            if self.APP_RUNNING:
+            if isAppRunning():
                 self.send_sock.sendto( data, (UDP_IP, SENDING_PORT_TWO) )
 
 proxy = Proxy()
