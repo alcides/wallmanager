@@ -9,7 +9,7 @@ from appman.forms import *
 from appman.models import *
 
 from datetime import datetime
-import log_file
+from appman.utils import log_file
 
 def application_list(request):
 	cs = Application.objects.all()
@@ -25,7 +25,7 @@ def application_add(request):
             app.owner = request.user
             app.save()
             message = '[' + str(datetime.today()) + '] Application added: ' + app.name + ' | Owner: ' + app.owner.email +'\n'
-            log_file.open_write_and_close(message)
+            log_file.log(message)
             return HttpResponseRedirect(reverse('application-detail', args=[str(app.id)]))
     else:
         form = form_class()
@@ -49,6 +49,6 @@ def application_delete(request, object_id):
     app.delete()
     if (app is not Http404):
         message = '[' + str(datetime.today()) + '] Application deleted: ' + app.name + ' | Owner: ' + app.owner.email +'\n'
-        log_file.open_write_and_close(message)
+        log_file.log(message)
     return HttpResponseRedirect("/app/list/")
 
