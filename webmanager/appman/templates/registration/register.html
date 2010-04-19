@@ -3,7 +3,7 @@
 {% block title %}Create an account{% endblock %}
 
 {% block content %}
-      <form action="." method="post">
+      <form action="" method="post" enctype="multipart/form-data">
         {% if form.error_dict %}
           <p class="error">Please correct the errors below.</p>
           <ul class = "errorlist">
