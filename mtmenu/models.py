@@ -5,6 +5,8 @@ from settings import APPS_MAX_LOG_ENTRIES,APPS_BOOT_FILENAME,APPS_REPOSITORY_PAT
 from cStringIO import StringIO
 from threading import Thread
 from proxy import proxy
+from application_running import *
+from ui import scatter
 
 import sys
 
@@ -19,7 +21,6 @@ environ['DJANGO_SETTINGS_MODULE'] = 'webmanager.settings'
 # webmanager models can now be imported
 from webmanager.appman import models
 from django.contrib.auth.models import User
-from application_runner import *
 
 class WallModelsProxy ():
     """This is an abstraction to be used by all models extended from appman"""
