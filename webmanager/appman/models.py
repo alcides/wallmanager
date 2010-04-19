@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-from datetime import datetime
 from appman.utils import log_file
 
 class Category(models.Model):
@@ -67,8 +65,7 @@ class Application(models.Model):
         
         super(Application, self).save(force_insert, force_update)
         if (application_was_edited):
-            message = '[' + str(datetime.today()) + '] Application edited: ' + self.name + ' | Owner: ' + self.owner.email +'\n'
-            log_file.log(message)
+            log_file.log_application_edited(self)
     
     @models.permalink
     def get_absolute_url(self):

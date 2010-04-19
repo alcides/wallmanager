@@ -8,7 +8,6 @@ from django.dispatch import dispatcher
 
 from appman.utils.unzip import unzip
 from appman.models import Application
-from datetime import datetime
 from appman.utils import log_file
 
 def get_app_dir(app):
@@ -42,8 +41,7 @@ class UncompressThread(threading.Thread):
         try:
             un = unzip()
             un.extract( str(self.instance.zipfile.path) , self.path)
-            message = '[' + str(datetime.today()) + '] Application deployed: ' + self.instance.name + ' | Owner: ' + self.instance.owner.email + '\n'
-            log_file.log(message)
+            log_file.log_application_deployed(self.instance)
             # Save in Database
             self.model.objects.filter(id=self.instance.id).update(extraction_path=self.path)
         except:
@@ -66,8 +64,7 @@ def remove_app(sender, instance, signal, *args, **kwargs):
         remove_dir(instance.extraction_path)
         remove_file(instance.zipfile)
         remove_file(instance.icon)
-        message = '[' + str(datetime.today()) + '] Application folders and files deleted: ' + instance.name + ' | Owner: ' + instance.owner.email +'\n'
-        log_file.log(message)
+        log_file.log_application_removedfs(instance)
 
 signals.post_save.connect(uncompress, sender=Application)
 signals.post_delete.connect(remove_app, sender=Application)

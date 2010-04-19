@@ -7,8 +7,6 @@ from django.core.urlresolvers import reverse
 
 from appman.forms import *
 from appman.models import *
-
-from datetime import datetime
 from appman.utils import log_file
 
 def application_list(request):
@@ -24,8 +22,7 @@ def application_add(request):
             app = form.save(commit=False)
             app.owner = request.user
             app.save()
-            message = '[' + str(datetime.today()) + '] Application added: ' + app.name + ' | Owner: ' + app.owner.email +'\n'
-            log_file.log(message)
+            log_file.log_application_added(app)
             return HttpResponseRedirect(reverse('application-detail', args=[str(app.id)]))
     else:
         form = form_class()
@@ -48,7 +45,6 @@ def application_delete(request, object_id):
     app = get_object_or_404(Application, id=object_id)
     app.delete()
     if (app is not Http404):
-        message = '[' + str(datetime.today()) + '] Application deleted: ' + app.name + ' | Owner: ' + app.owner.email +'\n'
-        log_file.log(message)
+        log_file.log_application_deleted(app)
     return HttpResponseRedirect("/app/list/")
 
