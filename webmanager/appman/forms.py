@@ -23,7 +23,7 @@ class UserCreationForm(ModelForm):
     A form that creates a user, with no privileges, from the given username and password.
     """
     username = RegexField(label=("Username"), max_length=30, regex=r'^\w+$', required=True)
-    email = EmailField(label=("Email"), required=True, help_text="Should be a uc.pt account.")
+    email = EmailField(label=("Email"), required=True, help_text="Must be a uc.pt account.")
     password1 = CharField(label=("Password"), widget=PasswordInput, required=True)
     password2 = CharField(label=("Password confirmation"), widget=PasswordInput, required=True)
 
