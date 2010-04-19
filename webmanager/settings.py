@@ -76,7 +76,3 @@ WALL_APP_DIR = relative('../mtmenu/apps/')
 ZIP_FOLDER = "applications"
 
 DEFAULT_CATEGORY = "Others"
-DEFAULT_PASSWD_ERROR = "The two password fields do not match."
-DEFAULT_INEXISTENT_PASSWD_ERROR = "Please enter a password."
-DEFAULT_USERNAME_ERROR = "A user with that username already exists."
-DEFAULT_EMAIL_ERROR = "Must use a DEI email."

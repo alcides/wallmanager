@@ -16,12 +16,6 @@ from appman.utils.uncompress import UncompressThread
 from appman.utils.fileutils import *
 from appman.tests.settings import TestSettingsManager
 
-DEFAULT_CATEGORY = "Others"
-DEFAULT_PASSWD_ERROR = "The two password fields do not match."
-DEFAULT_INEXISTENT_PASSWD_ERROR = "Please enter a password."
-DEFAULT_USERNAME_ERROR = "A user with that username already exists."
-DEFAULT_EMAIL_ERROR = "Must use a DEI email."
-
 def relative(*x):
     return os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), *x))
 
