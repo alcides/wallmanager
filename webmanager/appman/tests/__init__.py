@@ -368,7 +368,7 @@ class ApplicationManagementTest(TestCase):
         #try to register a user with different passwords
         post_data = {
             'username': 'test',
-            'email': 'aglour@student.dei.uc.pt',
+            'email': 'test@student.dei.uc.pt',
             'password1': 'test',
             'password2': 'test'
         }
@@ -378,6 +378,19 @@ class ApplicationManagementTest(TestCase):
 
 	#confirm that there exists a new user
 	self.assertEqual(User.objects.count(), u+1)
+	
+	#confirm that the email has been sent
+	self.assertEquals(len(mail.outbox),1)
+        expected_subject = '[WallManager] Registration Complete'
+        self.assertEquals(mail.outbox[0].subject, expected_subject)
+        expected_from = 'wallmanager@dei.uc.pt'
+        self.assertEquals(mail.outbox[0].from_email, expected_from)
+        expected_to = 'test@student.dei.uc.pt'
+        self.assertEquals(len(mail.outbox[0].to), 1)
+        self.assertEquals(mail.outbox[0].to[0], expected_to)
+        username = 'test'
+	expected_body = 'Dear ' + username + ', \nYour registration has been sucessfully complete.\n Best regards'
+        self.assertEquals(mail.outbox[0].body, expected_body)	
 
     def tearDown(self):
         import shutil
