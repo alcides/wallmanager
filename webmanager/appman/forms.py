@@ -1,6 +1,7 @@
 from appman.models import *
 from django.forms import *
 from django.contrib.auth.models import User
+from django.conf import settings
 
 
 class CategoryForm(ModelForm):
@@ -36,14 +37,18 @@ class UserCreationForm(ModelForm):
             User.objects.get(username=username)
         except User.DoesNotExist:
             return username
-        self.error_dict['username']= "A user with that username already exists."
-        self.error_username_html= "A user with that username already exists."
+        self.error_dict['username']= settings.DEFAULT_USERNAME_ERROR
+        self.error_username_html= settings.DEFAULT_USERNAME_ERROR
+    
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1", "")
         password2 = self.cleaned_data["password2"]
         if password1 != password2:
-            self.error_dict['password2']= "The two password fields didn't match."
-            self.error_password2_html= "The two password fields didn't match."
+            self.error_dict['password2']= settings.DEFAULT_PASSWD_ERROR
+            self.error_password2_html= settings.DEFAULT_PASSWD_ERROR
+        elif password1 == "":
+            self.error_dict['password1']= settings.DEFAULT_INEXISTENT_PASSWD_ERROR
+            self.error_password1_html= settings.DEFAULT_INEXISTENT_PASSWD_ERROR
         return password2
 
     def clean_email(self):
@@ -51,13 +56,12 @@ class UserCreationForm(ModelForm):
         if '@student.dei.uc.pt' in email or '@dei.uc.pt' in email:
             return email
         else:
-            self.error_dict['email'] = "Must use a DEI email."
-            self.error_email_html = "Must use a DEI email."
+            self.error_dict['email'] = settings.DEFAULT_EMAIL_ERROR
+            self.error_email_html = settings.DEFAULT_EMAIL_ERROR
     
     def get_validation_errors(self,info):
         self.error_dict = {}
         self.cleaned_data = info
-        
         self.clean_email()
         self.clean_username()
         self.clean_password2()

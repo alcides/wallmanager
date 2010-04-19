@@ -7,11 +7,14 @@
         {% if form.error_dict %}
           <p class="error">Please correct the errors below.</p>
           <ul class = "errorlist">
-        {% if form.self.error_username_html %}
-          <li>form.self.error_username_html }}</li>
+        {% if form.error_username_html %}
+          <li>{{form.error_username_html }}</li>
         {% endif %}
         {% if form.error_email_html %}
           <li>{{ form.error_email_html}}</li>
+        {% endif %}
+        {% if form.error_password1_html %}
+          <li>{{ form.error_password1_html }}</li>
         {% endif %}
         {% if form.error_password2_html %}
           <li>{{ form.error_password2_html }}</li>

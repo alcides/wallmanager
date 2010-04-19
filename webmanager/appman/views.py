@@ -177,7 +177,7 @@ def account_register(request):
         errors = form.get_validation_errors(data)
         if not errors:
             new_user = form.save()
-            return HttpResponseRedirect("/accounts/created/")
+            return HttpResponseRedirect("/accounts/login/")
 
 	else:
 	    print form.errors

@@ -1,5 +1,6 @@
 import os
 
+from django.conf import settings
 from datetime import datetime, time
 from django.core import mail
 from django.core.files import File
@@ -16,9 +17,13 @@ from appman.utils.fileutils import *
 from appman.tests.settings import TestSettingsManager
 
 DEFAULT_CATEGORY = "Others"
+DEFAULT_PASSWD_ERROR = "The two password fields do not match."
+DEFAULT_INEXISTENT_PASSWD_ERROR = "Please enter a password."
+DEFAULT_USERNAME_ERROR = "A user with that username already exists."
+DEFAULT_EMAIL_ERROR = "Must use a DEI email."
 
 def relative(*x):
-	return os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), *x))
+    return os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), *x))
 
 class ApplicationManagementTest(TestCase):
     
@@ -295,6 +300,85 @@ class ApplicationManagementTest(TestCase):
     def test_default_category(self):
         self.assertEqual(Category.objects.filter(name=DEFAULT_CATEGORY).count(), 1)
         
+    def test_register_passwordproblem(self):
+        u = User.objects.count()
+        #try to register a user with different passwords
+        post_data = {
+            'username': 'test',
+            'email': 'admin@student.dei.uc.pt',
+            'password1': 'admin',
+            'password2': 'administrator'
+        }
+        response = self.client.post('/accounts/register/', post_data)
+	#check the error message
+	self.assertContains(response, DEFAULT_PASSWD_ERROR)
+
+	#confirm that there exists a new user
+	self.assertEqual(User.objects.count(), u)
+	
+    def test_register_usernameproblem(self):
+        u = User.objects.count()
+        #try to register a user with different passwords
+        post_data = {
+            'username': 'zacarias_stu',
+            'email': 'admin@student.dei.uc.pt',
+            'password1': 'admin',
+            'password2': 'admin'
+        }
+        response = self.client.post('/accounts/register/', post_data)
+	#check the error message
+	self.assertContains(response, DEFAULT_USERNAME_ERROR)
+
+	#confirm that there exists a new user
+	self.assertEqual(User.objects.count(), u)
+    
+    def test_register_emailproblem(self):
+        u = User.objects.count()
+        #try to register a user with different passwords
+        post_data = {
+            'username': 'test',
+            'email': 'admin@admin.pt',
+            'password1': 'admin',
+            'password2': 'admin'
+        }
+        response = self.client.post('/accounts/register/', post_data)
+	#check the error message
+	self.assertContains(response, DEFAULT_EMAIL_ERROR)
+
+	#confirm that there exists a new user
+	self.assertEqual(User.objects.count(), u)
+	
+    def test_register_passwordinexistent(self):
+        u = User.objects.count()
+        #try to register a user with different passwords
+        post_data = {
+            'username': 'test',
+            'email': 'admin@student.dei.uc.pt',
+            'password1': '',
+            'password2': ''
+        }
+        response = self.client.post('/accounts/register/', post_data)
+	#check the error message
+	self.assertContains(response, DEFAULT_INEXISTENT_PASSWD_ERROR)
+
+	#confirm that there exists a new user
+	self.assertEqual(User.objects.count(), u)
+    def test_register_sucessfull(self):
+        u = User.objects.count()
+        #try to register a user with different passwords
+        post_data = {
+            'username': 'test',
+            'email': 'aglour@student.dei.uc.pt',
+            'password1': 'test',
+            'password2': 'test'
+        }
+        response = self.client.post('/accounts/register/', post_data)
+	#check the error message
+	self.assertRedirects(response, 'http://testserver/accounts/login/')
+
+	#confirm that there exists a new user
+	self.assertEqual(User.objects.count(), u+1)
+
     def tearDown(self):
         import shutil
         for app in Application.objects.all():
@@ -304,5 +388,4 @@ class ApplicationManagementTest(TestCase):
                 app.icon.delete()
         shutil.rmtree(self.extracted_folder)
         self.settings_manager.revert()
-        
         
