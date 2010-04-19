@@ -2,7 +2,7 @@ from appman.models import *
 from django.forms import *
 from django.contrib.auth.models import User
 from django.conf import settings
-
+from django.core.mail import send_mail
 
 class CategoryForm(ModelForm):
     class Meta:
@@ -32,7 +32,7 @@ class UserCreationForm(ModelForm):
         fields = ("username",)
 
     def clean_username(self):
-        username = self.cleaned_data["username"]
+        username = self.cleaned_data["username"].strip()
         try:
             User.objects.get(username=username)
         except User.DoesNotExist:
@@ -43,16 +43,18 @@ class UserCreationForm(ModelForm):
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1", "")
         password2 = self.cleaned_data["password2"]
-        if password1 != password2:
-            self.error_dict['password2']= settings.DEFAULT_PASSWD_ERROR
-            self.error_password2_html= settings.DEFAULT_PASSWD_ERROR
-        elif password1 == "":
+        
+        if not password1 or not password2:
             self.error_dict['password1']= settings.DEFAULT_INEXISTENT_PASSWD_ERROR
             self.error_password1_html= settings.DEFAULT_INEXISTENT_PASSWD_ERROR
+
+	elif password1 != password2:
+            self.error_dict['password2']= settings.DEFAULT_PASSWD_ERROR
+            self.error_password2_html= settings.DEFAULT_PASSWD_ERROR
         return password2
 
     def clean_email(self):
-        email = self.cleaned_data["email"]
+	email = self.cleaned_data["email"].strip()
         if '@student.dei.uc.pt' in email or '@dei.uc.pt' in email:
             return email
         else:
@@ -61,15 +63,25 @@ class UserCreationForm(ModelForm):
     
     def get_validation_errors(self,info):
         self.error_dict = {}
+	self.info = {}
         self.cleaned_data = info
-        self.clean_email()
-        self.clean_username()
-        self.clean_password2()
+        self.info["email"] = self.clean_email()
+        self.info["username"] =self.clean_username()
+        self.info["password"] = self.clean_password2()
         return self.error_dict
         
     def save(self, commit=True):
         user = super(UserCreationForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
-        if commit:
+        user.username = self.info["username"]
+	user.set_password(self.info["password"])
+        user.email = self.info['email']
+
+	##send confirmation email
+	email_from = 'wallmanager@dei.uc.pt'
+	email_to = self.cleaned_data['email']
+	message = 'Dear ' + user.username + ', \nYour registration has been sucessfully complete.\n Best regards'
+	send_mail('[WallManager] Registration Complete', message, email_from, [email_to])
+
+	if commit:
             user.save()
         return user
