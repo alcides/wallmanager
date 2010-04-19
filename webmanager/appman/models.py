@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 class Category(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=30, unique=True)
     
     class Meta:
         verbose_name_plural = "Categories"
@@ -24,7 +24,7 @@ class Category(models.Model):
         super(Category,self).delete();
         
 class Application(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=50, unique=True)
     owner = models.ForeignKey(User)
     category = models.ForeignKey(Category)
     description = models.TextField(blank=True)
@@ -38,7 +38,7 @@ class Application(models.Model):
     
     zipfile = models.FileField(upload_to=settings.ZIP_FOLDER)
     icon = models.ImageField(upload_to='icons')
-    extraction_path = models.FilePathField()
+    is_extracted = models.BooleanField(default=False)
     
     def value(self):
         """ The value of an application, based on the likes and dislikes """

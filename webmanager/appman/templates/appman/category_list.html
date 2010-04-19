@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %} All Categories {% endblock %}
+
+{% block breadcrumb %}
+	<li><a href="{% url category-list %}">Categories</a></li>
+{% endblock %}
+
+{% block content %}
+<div id="addcat" align="right">
+	<ul class="object-tools">
+		<li><a href='{% url category-add %}' class="add-button">Add Category</a></li>
+	</ul>	
+</div>
+
+<table class="gradient-style">
+<tr>
+	<th>Name</th>	
+	<th></th>
+	<th></th>
+</tr>
+
+{% for cat in category_list %}
+<tr>
+	<td>{{ cat.name }}</td>
+	<td><a href="{% url category-edit cat.id %}">edit</a></td>
+	<td><a href="{% url category-remove cat.id %}">remove</a></td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

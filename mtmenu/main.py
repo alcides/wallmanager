@@ -5,7 +5,7 @@ from ui.appbutton import AppButton
 from application import get_all_apps
 from gesture.gesture_scan import GestureScan
 from proxy import *
-from pymt.ui.window.win_glut import MTWindowGlu
+from pymt.ui.window.win_glut import MTWindowGlut
 from models import ApplicationProxy
 
 if __name__ == '__main__':
@@ -18,19 +18,19 @@ if __name__ == '__main__':
     # Construct AppsList looping through all apps
     apps_grid = AppsList(pos=(20,20), size=(460,460))
     
-	all_apps = ApplicationProxy.objects.all()
+    all_apps = ApplicationProxy.objects.all()
 
-	for app in all_apps:
-		style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1}
-		item = AppButton(app,
+    for app in all_apps:
+        style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1}
+        item = AppButton(app,
 							   anchor_x='center',
 							   anchor_y='middle',
 							   halign='center', 
 							   valign='middle',
 							   style=style,
 							   size=(200,200))
-		apps_grid.add_widget(item)
-		
+        apps_grid.add_widget(item)
+
     from ui import scatter
     
     # Add appsList to Scatter
