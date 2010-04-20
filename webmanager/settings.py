@@ -71,6 +71,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 LOGIN_REDIRECT_URL = '/applications/'
+DEFAULT_FROM_EMAIL = 'wallmanager@dei.uc.pt'
 
 WALL_APP_DIR = relative('../mtmenu/apps/')
 ZIP_FOLDER = "applications"

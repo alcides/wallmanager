@@ -69,12 +69,5 @@ class UserCreationForm(ModelForm):
         user.set_password(self.cleaned_data["password1"])
         user.email = self.cleaned_data['email']
         if commit:
-    	    user.save()
-
-        # TODO: Move email to signal
-    	email_from = 'wallmanager@dei.uc.pt'
-    	email_to = self.cleaned_data['email']
-    	message = 'Dear ' + user.username + ', \nYour registration has been sucessfully complete.\n Best regards'
-    	send_mail('[WallManager] Registration Complete', message, email_from, [email_to])
-    	
+    	    user.save()    	
         return user

@@ -4,7 +4,7 @@ import threading
 from django.conf import settings
 
 from appman.utils.unzip import unzip
-from appman.signals import email_signal
+from appman.signals import extracted_email_signal
 
 class UncompressThread(threading.Thread):
     """ Thread that uncompresses a certain zip file."""
@@ -27,7 +27,7 @@ class UncompressThread(threading.Thread):
             extracted = False
     
         if extracted:
-            email_signal.send(sender=self, application=self.instance)
+            extracted_email_signal.send(sender=self, application=self.instance)
             try:
                 self.model.objects.filter(id=self.instance.id).update(is_extracted=True)
             except:

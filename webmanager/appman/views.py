@@ -90,7 +90,14 @@ def application_detail(request,object_id):
 @staff_login_required
 def application_admin_remove(request,object_id):
     """This function requires that the user is part of the staff"""
-    #TODO SEND EMAIL
+
+    app = get_object_or_404(Application, pk=object_id)
+
+    email_from = settings.DEFAULT_FROM_EMAIL
+    email_to = app.owner.email
+    message = 'Your application, ' + app.name + ', has been removed from the wallmanager by the staff for not respecting the Terms of Service.'
+    send_mail('[WallManager] Application removed from the wall.', message, email_from, [email_to])
+
     return application_delete(request, object_id)
 
 

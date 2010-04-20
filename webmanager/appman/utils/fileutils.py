@@ -2,6 +2,9 @@ import os
 
 from django.conf import settings
 
+def relative(*x):
+    return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+
 def fullpath(filepath):
     return "%s%s/%s" % (settings.MEDIA_ROOT, settings.ZIP_FOLDER, filepath)
 

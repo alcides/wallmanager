@@ -3,16 +3,22 @@ from django.core import mail
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files import File
+from django.db.models.signals import pre_save, post_save, post_delete
 
 from appman.models import *
 from appman.signals import get_app_dir
-from appman.utils.uncompress import UncompressThread
-
-import os
-def relative(*x):
-    return os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+from appman.utils.fileutils import relative
+from appman.tests.uncompress import UncompressTest
 
 class ApplicationManagementTest(TestCase):
+    def __init__(self, *args, **kwargs):
+        super(ApplicationManagementTest, self).__init__(*args, **kwargs)
+        
+        # Turn off signals
+        pre_save.receivers = []
+        post_save.receivers = []
+        post_delete.receivers = []
+    
     def setUp(self):
         #Creates usernames for Zacarias and Prof. Plum
         self.zacarias = User.objects.create_user(username="zacarias_stu", email="zacarias@student.dei.uc.pt", password="zacarias")
@@ -100,7 +106,7 @@ class ApplicationManagementTest(TestCase):
         response = self.client.post('/applications/add/', post_data)
         zf.close()
         pf.close()
-        print response.content
+
         self.assertRedirects(response, '/applications/%s/' % Application.objects.get(name='Example App').id)
         response = self.client.get('/applications/')
         self.assertEqual(response.status_code, 200)
@@ -142,29 +148,6 @@ class ApplicationManagementTest(TestCase):
         response = self.client.get('/applications/%s/delete/' % self.gps.id)
         self.assertRedirects(response, '/applications/')
         self.assertEqual(c-1, Application.objects.count())
-    
-    def test_zip_extraction(self):
-        extract_folder = relative("../../tests/temp")
-        
-        # Clean email inbox
-        mail.outbox = []
-        
-        app = Application.objects.create(name="E-mail Testing", owner=self.zacarias, category=self.educational)
-        app.zipfile = File(open(relative("../../tests/python_test_app.zip")))
-        app.save()
-        
-        thread = UncompressThread(Application, app, extract_folder)
-        thread.run()
-        
-        self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].subject, '[WallManager] Application successfully deployed')
-        self.assertEquals(len(mail.outbox[0].to), 1)
-        self.assertEquals(mail.outbox[0].to[0], 'zacarias@student.dei.uc.pt')
-        self.assertEquals(mail.outbox[0].body, 'Your application, ' + app.name + ', has been successfully deployed.')
-        
-        # Clean extracted folder
-        import shutil
-        shutil.rmtree(extract_folder)
 
     def test_requires_staff_to_remove_app(self):
         c = Application.objects.count()
@@ -174,11 +157,17 @@ class ApplicationManagementTest(TestCase):
         self.assertEqual(c, Application.objects.count())
         
     def test_remove_app(self):
+        # Clean email inbox
+        mail.outbox = []
+        
         c = Application.objects.count()
         login = self.do_admin_login()
         response = self.client.get('/applications/%s/remove/' % self.gps.id)
         self.assertRedirects(response, '/applications/')
         self.assertEqual(c-1, Application.objects.count())
+        
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertTrue("Application removed from the wall" in mail.outbox[0].subject)
         
 
     
