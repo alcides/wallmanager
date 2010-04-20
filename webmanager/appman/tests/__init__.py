@@ -1,3 +1,5 @@
+import os
+
 from datetime import datetime, time
 from django.core import mail
 from django.test import TestCase
@@ -7,8 +9,10 @@ from django.db.models.signals import pre_save, post_save, post_delete
 
 from appman.models import *
 from appman.signals import get_app_dir
-from appman.utils.fileutils import relative
+from appman.utils.fileutils import *
 from appman.tests.uncompress import UncompressTest
+
+DEFAULT_CATEGORY = "Others"
 
 class ApplicationManagementTest(TestCase):
     def __init__(self, *args, **kwargs):
@@ -121,6 +125,53 @@ class ApplicationManagementTest(TestCase):
         response = self.client.get('/applications/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Example App</a></td>")
+        
+    def test_upload_app(self):
+        """ Tests the Upload of a Zip file through the SWFUpload method. """
+        login = self.do_login()
+
+        zf = open(relative('../../tests/python_test_app.zip'),'rb')
+        response = self.client.post('/applications/upload/', {
+            'test': zf 
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, ".zip")
+        name = response.content.strip()
+        zf.close()
+
+        pf = open(relative('../../tests/wmlogo.png'),'rb')
+        post_data = {
+            'name': 'Yet another App',
+            'zipfile': '',
+            'hidFileID': name,
+            'icon': pf,
+            'category': self.educational.id, 
+            'description': "Example app"
+        }
+        c = Application.objects.count()
+        response = self.client.post('/applications/add/', post_data)
+        self.assertEqual(c+1, Application.objects.count())
+        self.assertRedirects(response, '/applications/%s/' % Application.objects.get(name='Yet another App').id)
+        os.remove(relative('../../media/applications', name))
+
+    def test_get_unique_path(self):
+        """ Tests if get_unique_path works. """
+    	new_file = 'test132.txt'
+
+    	# Test if it still doesn't exist
+    	unique_file = get_unique_path(new_file)
+    	self.assertEqual(unique_file, 'test132.txt')
+
+    	# Create it
+    	new_file_path = relative(fullpath(new_file))
+    	open(new_file_path,'a').close()
+
+    	# Get a unique path, now that the file already exists
+    	unique_file = get_unique_path(new_file)
+    	# Assert if the proper unique file path was given
+    	self.assertEqual(unique_file, 'test132_.txt')
+
+    	os.remove(new_file_path)
             
     def test_requires_login_to_edit_app(self):
         """ Tests login requirements for edit application. """
@@ -258,6 +309,73 @@ class ApplicationManagementTest(TestCase):
     def test_default_category(self):
         """ Test existence of default category. """
         self.assertEqual(Category.objects.filter(name=DEFAULT_CATEGORY).count(), 1)
+    
+    def test_register_with_different_passwords(self):
+        """ Test different passwords in register form. """
+        u = User.objects.count()
+        #try to register a user with different passwords
+        post_data = {
+            'username': 'test',
+            'email': 'admin@student.dei.uc.pt',
+            'password1': 'admin',
+            'password2': 'administrator'
+        }
+        response = self.client.post('/accounts/register/', post_data)
+    	#check the error message
+    	self.assertContains(response, "Passwords do not match.")
+
+    	#confirm that there is no new user.
+    	self.assertEqual(User.objects.count(), u)
+
+    def test_register_with_wrong_email(self):
+        """ Tests email restrictions in register form. """
+        u = User.objects.count()
+        #try to register a user with different passwords
+        post_data = {
+            'username': 'test',
+            'email': 'admin@admin.pt',
+            'password1': 'admin',
+            'password2': 'admin'
+        }
+        response = self.client.post('/accounts/register/', post_data)
+    	#check the error message
+    	self.assertContains(response, "Email must be on uc.pt domain.")
+
+        #confirm that there is no new user
+    	self.assertEqual(User.objects.count(), u)
+
+    def test_register_without_password(self):
+        """ Tests register form without any password. """
+        u = User.objects.count()
+        #try to register a user with different passwords
+        post_data = {
+            'username': 'test',
+            'email': 'admin@student.dei.uc.pt',
+            'password1': '',
+            'password2': ''
+        }
+        response = self.client.post('/accounts/register/', post_data)
+    	#confirm that there is no new user
+    	self.assertEqual(User.objects.count(), u)
+
+
+    def test_register_sucessfull(self):
+        """ Test register form. """
+        u = User.objects.count()
+        #try to register a user with different passwords
+        post_data = {
+            'username': 'test',
+            'email': 'test@student.dei.uc.pt',
+            'password1': 'testes',
+            'password2': 'testes'
+        }
+        response = self.client.post('/accounts/register/', post_data)
+    	#check the error message
+    	self.assertRedirects(response, '/accounts/login/')
+
+    	#confirm that there exists a new user
+    	self.assertEqual(User.objects.count(), u+1)
+  
     
     def tearDown(self):
         pass
