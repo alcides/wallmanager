@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.core.files import File
 
 from appman.models import *
-from appman.signals import UncompressThread, get_app_dir
+from appman.signals import get_app_dir
+from appman.utils.uncompress import UncompressThread
 
 import os
 def relative(*x):
@@ -58,30 +59,31 @@ class ApplicationManagementTest(TestCase):
         self.assertEqual( unicode(self.log),  u"Gps Application log at 2010-01-01 15:00:01")
 
     def test_list_app(self):
-        response = self.client.get('/app/list/')
+        login = self.do_login()
+        response = self.client.get('/applications/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Gps Application</a></td>")
         self.assertContains(response, "<tr>", 2) # 1 app, plus header
         
     def test_detail_app(self):
-        response = self.client.get('/app/%s/' % self.gps.id )
+        response = self.client.get('/applications/%s/' % self.gps.id )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Gps Application")
         self.assertContains(response, "Edit Application",0)
         
         login = self.do_login()
-        response = self.client.get('/app/%s/' % self.gps.id )
+        response = self.client.get('/applications/%s/' % self.gps.id )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Application",1)
 
     def test_requires_login_to_add_app(self):
-        response = self.client.get('/app/add/')
+        response = self.client.get('/applications/add/')
         self.assertEqual(response.status_code, 302) # redirect to login
-        self.assertRedirects(response, '/accounts/login/?next=/app/add/')
+        self.assertRedirects(response, '/accounts/login/?next=/applications/add/')
     
     def test_add_app(self):
         login = self.do_login()
-        response = self.client.get('/app/add/')
+        response = self.client.get('/applications/add/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Add Application")
         self.assertContains(response, "<form", 1)
@@ -95,23 +97,23 @@ class ApplicationManagementTest(TestCase):
             'category': self.educational.id, 
             'description': "Example app"
         }
-        response = self.client.post('/app/add/', post_data)
+        response = self.client.post('/applications/add/', post_data)
         zf.close()
         pf.close()
         print response.content
-        self.assertRedirects(response, '/app/%s/' % Application.objects.get(name='Example App').id)
-        response = self.client.get('/app/list/')
+        self.assertRedirects(response, '/applications/%s/' % Application.objects.get(name='Example App').id)
+        response = self.client.get('/applications/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Example App</a></td>")
             
     def test_requires_login_to_edit_app(self):
-        response = self.client.get('/app/%s/edit/' % self.gps.id)
+        response = self.client.get('/applications/%s/edit/' % self.gps.id)
         self.assertEqual(response.status_code, 302) # redirect to login
-        self.assertRedirects(response, '/accounts/login/?next=/app/%s/edit/' % self.gps.id)
+        self.assertRedirects(response, '/accounts/login/?next=/applications/%s/edit/' % self.gps.id)
 
     def test_edit_app(self):
         login = self.do_login()
-        response = self.client.get('/app/%s/edit/' % self.gps.id)
+        response = self.client.get('/applications/%s/edit/' % self.gps.id)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Application")
         
@@ -125,52 +127,57 @@ class ApplicationManagementTest(TestCase):
             'description': "Example app"
         }
         
-        response = self.client.post('/app/%s/edit/' % self.gps.id, post_data)
+        response = self.client.post('/applications/%s/edit/' % self.gps.id, post_data)
         zf.close()
         pf.close()
         
-        self.assertRedirects(response, '/app/%s/' % self.gps.id)
-        response = self.client.get('/app/list/')
+        self.assertRedirects(response, '/applications/%s/' % self.gps.id)
+        response = self.client.get('/applications/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Example App 2</a></td>")
 
     def test_delete_app(self):
         c = Application.objects.count()
         login = self.do_login()
-        response = self.client.get('/app/%s/delete/' % self.gps.id)
-        self.assertRedirects(response, '/app/list/')
+        response = self.client.get('/applications/%s/delete/' % self.gps.id)
+        self.assertRedirects(response, '/applications/')
         self.assertEqual(c-1, Application.objects.count())
     
-    def test_email_after_zip_extraction(self):
-        file = File(relative("../../tests/python_test_app.zip"))
-        app = Application.objects.create(name="E-mail Testing", owner=self.zacarias, category=self.educational, zipfile=file)
-        thread = UncompressThread(Application, app, "../../tests/temp")
+    def test_zip_extraction(self):
+        extract_folder = relative("../../tests/temp")
+        
+        # Clean email inbox
+        mail.outbox = []
+        
+        app = Application.objects.create(name="E-mail Testing", owner=self.zacarias, category=self.educational)
+        app.zipfile = File(open(relative("../../tests/python_test_app.zip")))
+        app.save()
+        
+        thread = UncompressThread(Application, app, extract_folder)
         thread.run()
+        
         self.assertEquals(len(mail.outbox), 1)
-        #Is the message correct?
-        expected_subject = '[WallManager] Application successfully deployed'
-        self.assertEquals(mail.outbox[0].subject, expected_subject)
-        expected_from = 'wallmanager@dei.uc.pt'
-        self.assertEquals(mail.outbox[0].from_email, expected_from)
-        expected_to = 'zacarias@student.dei.uc.pt'
+        self.assertEquals(mail.outbox[0].subject, '[WallManager] Application successfully deployed')
         self.assertEquals(len(mail.outbox[0].to), 1)
-        self.assertEquals(mail.outbox[0].to[0], expected_to)
-        application_name = 'Example App'
-        expected_body = 'Your application, ' + application_name + ', has been successfully deployed.'
-        self.assertEquals(mail.outbox[0].body, expected_body)
+        self.assertEquals(mail.outbox[0].to[0], 'zacarias@student.dei.uc.pt')
+        self.assertEquals(mail.outbox[0].body, 'Your application, ' + app.name + ', has been successfully deployed.')
+        
+        # Clean extracted folder
+        import shutil
+        shutil.rmtree(extract_folder)
 
     def test_requires_staff_to_remove_app(self):
         c = Application.objects.count()
         login = self.do_login()
-        response = self.client.get('/app/%s/remove/' % self.gps.id)
-        self.assertRedirects(response, '/accounts/login/?next=/app/%s/remove/'% self.gps.id)
+        response = self.client.get('/applications/%s/remove/' % self.gps.id)
+        self.assertRedirects(response, '/accounts/login/?next=/applications/%s/remove/'% self.gps.id)
         self.assertEqual(c, Application.objects.count())
         
     def test_remove_app(self):
         c = Application.objects.count()
         login = self.do_admin_login()
-        response = self.client.get('/app/%s/remove/' % self.gps.id)
-        self.assertRedirects(response, '/app/list/')
+        response = self.client.get('/applications/%s/remove/' % self.gps.id)
+        self.assertRedirects(response, '/applications/')
         self.assertEqual(c-1, Application.objects.count())
         
 

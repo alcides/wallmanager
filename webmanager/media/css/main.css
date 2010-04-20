@@ -1,0 +1,282 @@
+/*#############################################################
+Name: Transparentia
+Date: 2006-08-20
+Description: Simple, lightweight and slightly blue.
+Author: Viktor Persson
+URL: http://templates.arcsin.se
+
+Feel free to use and modify but please provide credits.
+#############################################################*/
+
+/* standard elements */
+* {
+	margin: 0;
+	padding: 0;
+}
+a {
+	color: #36C;
+}
+a:hover {
+	color: #06F;
+}
+
+html {
+	height: 100%;
+}
+
+body {
+	background: #EEE url(/media/img/bg.gif);
+	color: #444;
+	font: normal 62.5% "Lucida Sans Unicode",sans-serif;
+	margin: 0;
+	height: 100%;
+}
+
+p,ul {
+	font-size: 1.2em;
+	padding-bottom: 1.2em;
+}
+h1 {
+	font-size: 1.7em;
+	margin-bottom: 15px;
+}
+
+.content h1 {
+	margin-bottom: 50px;
+}
+
+h1,h2,h3 {
+	color: #367EA6;
+	padding-top: 6px;
+}
+
+/* misc */
+.clearer {
+	clear: both;
+}
+
+/* structure */
+.container {
+	background: url(/media/img/bgcontainer.gif) repeat-y;
+	margin: 0 auto;
+	width: 767px;
+	height: 100%;
+}
+
+/* title */
+.title h1 {
+	font: normal 3em Verdana,sans-serif;
+	height: 150px;
+	line-height: 150px;
+	margin-bottom: 8px;
+	text-align: center;
+}
+
+/* breadcrumb */
+#breadcrumb
+{
+    font: 11px Arial, Helvetica, sans-serif;
+    background-image:url('/media/img/bc_bg.png'); 
+    background-repeat:repeat-x;
+    height:30px;
+    line-height:30px;
+    color:#9b9b9b;
+    border:solid 1px #cacaca;
+    width:99.8%;
+    overflow:hidden;
+    margin:0px;
+    margin-bottom:8px;
+    padding:0px;
+}
+#breadcrumb li 
+{
+    list-style-type:none;
+    float:left;
+    padding-left:10px;
+}
+#breadcrumb a
+{
+    height:30px;
+    display:block;
+    background-image:url('/media/img/bc_separator.png'); 
+    background-repeat:no-repeat; 
+    background-position:right;
+    padding-right: 15px;
+    text-decoration: none;
+    color:#454545;
+}
+.home
+{
+    border:none;
+    margin: 8px 0px;
+}
+
+#breadcrumb a:hover
+{
+	color:#35acc5;
+}
+
+
+/* main */
+.main {
+	clear: both;
+	padding: 8px 18px;
+}
+
+/* main left */
+.sidenav h1,.sidenav ul {
+	padding-left: 12px;
+}
+.sidenav {
+	background: #EEE;
+	border: 1px solid #E5E5E5;
+	float: left;
+	width: 200px;
+}
+.sidenav h1 {
+	color: #666;
+	font-size: 1.2em;
+	height: 20px;
+	margin-top: 1.2em;
+}
+.sidenav ul {
+	border-top: 1px solid #FAFAFA;
+	background: url(/media/img/bgul.gif) repeat-x;
+	margin: 0;
+	padding: 0;
+}
+.sidenav li {
+	border: 1px solid #FAFAFA;
+	border-top: none;
+	list-style: none;
+	margin: 0;
+}
+.sidenav li a, .user {
+	color: #777;
+	display: block;
+	font-size: 0.9em;
+	padding: 3px 6px 3px 14px;
+	text-decoration: none;
+}
+.sidenav li a:hover {
+	color: #111;
+}
+
+/* content */
+.content {
+	float: right;
+	width: 520px;
+}
+.content .item {
+	padding: 6px 12px;
+	border: 1px solid #EEE;
+	background: #FFF;
+	margin-bottom: 8px;
+}
+
+.content li {
+	list-style: url(/media/img/li.gif);
+	margin-left: 18px;
+}
+
+/* footer */
+.footer {
+	background: #FFF;
+	border: 1px solid #EEE;
+	color: #666;
+	font-size: 1.1em;
+	margin: 0 auto;
+	text-align: center;
+	padding: 6px;
+	width: 720px;
+}
+.footer a {
+	color: #36C;
+	text-decoration: none;
+}
+.footer a:hover {
+	color: #06F;
+	text-decoration: underline;
+}
+
+/* App table list*/
+.gradient-style {
+	border-collapse: collapse;
+	font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+	font-size: 12px;
+	margin: 20px;
+	text-align: left;
+	width: 480px;
+}
+
+.gradient-style th {
+	background: #B9C9FE url(/media/img/gradhead.png) repeat-x;
+	border-bottom: 1px solid white;
+	color: #039;
+	font-size: 13px;
+	font-weight: normal;
+	padding: 8px;
+}
+
+.gradient-style td {
+	background: #E8EDFF url(/media/img/gradback.png) repeat-x;
+	border-bottom: 1px solid white;
+	border-top: 1px solid white;
+	color: #669;
+	padding: 8px;
+}
+
+/* Add app button*/
+.object-tools {
+	display: block;
+	float: right;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	margin-bottom: -20px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: -24px;
+	padding-left: 0px;
+	position: relative;
+	list-style-type: disc;
+	height: 16px;
+}
+
+.object-tools ul {
+	list-style-type: disc;
+	-webkit-padding-start: 40px;
+	display: block;
+	margin: 0.2em 0px 0.8em;
+}
+
+.object-tools li {
+	background: url(/media/img/tool-left.gif) no-repeat 0px 0px;
+	display: block;
+	float: left;
+	height: 16px;
+	margin-left: 2px;
+	padding: 0px 0px 0px 8px;
+	list-style-type: square;
+	line-height: 14px;
+	font-size: 11px;
+	background-origin: padding-box;
+	background-color: transparent;
+	background-clip: border-box;
+	background-attachment: scroll;
+
+}
+
+.object-tools a.add-button {
+	background-clip: border-box;
+	background-attachment: scroll;
+	background: #999 url(/media/img/tooltag-add.gif) no-repeat 100% 0%;
+	color: white;
+	padding: 0.1em 25px 0.1em 8px;
+	height: 14px;
+	float: left;
+	display: block;
+	text-decoration: none;
+	cursor: auto;
+}
+

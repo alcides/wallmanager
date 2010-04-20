@@ -1,13 +1,11 @@
 import os
 from shutil import rmtree
-import threading
 
 from django.db.models import signals
 from django.conf import settings
 from django.dispatch import dispatcher
 from django.core.mail import send_mail
 
-from appman.utils.unzip import unzip
 from appman.models import Application
 
 import django.dispatch
@@ -33,25 +31,6 @@ def remove_file(file):
         file.delete(save=True)
     except:
         pass
-
-class UncompressThread(threading.Thread):
-    """ Thread that uncompresses a certain zip file."""
-    def __init__(self, model, instance, path):
-        self.model = model
-        self.instance = instance
-        self.path = str(path)
-        threading.Thread.__init__(self)
-
-    def run(self):
-        try:
-            un = unzip()
-            un.extract( str(self.instance.zipfile.path) , self.path)
-            # Save in Database
-            self.model.objects.filter(id=self.instance.id).update(extraction_path=self.path)
-            email_signal.send(sender=self, application=self.instance)
-        except:
-            # Todo email user.
-            pass
         
     
 # Signals    
@@ -61,15 +40,15 @@ def uncompress(sender, instance, signal, *args, **kwargs):
     path = get_app_dir(instance)
     remove_dir(path)
     if instance.zipfile:
+        from appman.utils.uncompress import UncompressThread
         UncompressThread(sender,instance, path).start()
     
 def remove_app(sender, instance, signal, *args, **kwargs):
     """ Deletes the uncompressed folder """    
-    if str(instance.extraction_path) != "":
-        remove_dir(instance.extraction_path)
-        remove_file(instance.zipfile)
-        remove_file(instance.icon)
-        
+    if instance.is_extracted:
+        remove_dir(get_app_dir(instance))
+    remove_file(instance.zipfile)
+    remove_file(instance.icon)
 
 def send_mail_when_app_available(sender, **kwargs):
     """ Sends an e-mail message informing the user that the application is ready to be used """

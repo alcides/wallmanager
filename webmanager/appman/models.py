@@ -1,8 +1,10 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.conf import settings
 
 class Category(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=30, unique=True)
     
     class Meta:
         verbose_name_plural = "Categories"
@@ -10,8 +12,19 @@ class Category(models.Model):
     def __unicode__(self):
         return u"%s" % self.name
 
+    def delete(self):
+        """deletes a category"""
+        apps = Application.objects.filter(category=self.id)
+        unknown, garbage = Category.objects.get_or_create(name=settings.DEFAULT_CATEGORY)
+        if self.id == unknown.id:
+            return
+            
+        if apps.count() != 0:
+            apps.update(category=unknown)
+        super(Category,self).delete();
+        
 class Application(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=50, unique=True)
     owner = models.ForeignKey(User)
     category = models.ForeignKey(Category)
     description = models.TextField(blank=True)
@@ -23,9 +36,9 @@ class Application(models.Model):
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
     
-    zipfile = models.FileField(upload_to='applications')
+    zipfile = models.FileField(upload_to=settings.ZIP_FOLDER)
     icon = models.ImageField(upload_to='icons')
-    extraction_path = models.FilePathField()
+    is_extracted = models.BooleanField(default=False)
     
     def value(self):
         """ The value of an application, based on the likes and dislikes """
