@@ -51,11 +51,9 @@ def remove_app(sender, instance, signal, *args, **kwargs):
 def send_mail_when_app_available(sender, **kwargs):
     """ Sends an e-mail message informing the user that the application is ready to be used """
     application = kwargs['application']
-    application_name = application.name
-    application_owner = application.owner
     email_from = settings.DEFAULT_FROM_EMAIL
-    email_to = application_owner.email
-    message = 'Your application, ' + application_name + ', has been successfully deployed.'
+    email_to = application.owner.email
+    message = 'Your application, ' + application.name + ', has been successfully deployed.'
     send_mail('[WallManager] Application successfully deployed', message, email_from, [email_to])
             
 signals.post_save.connect(uncompress, sender=Application)
