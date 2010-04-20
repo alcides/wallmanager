@@ -12,6 +12,7 @@ class UncompressTest(TestCase):
         self.educational = Category.objects.create(name="Educational")
         
     def test_zip_extraction(self):
+        """ Tests if Zipfiles are extracted and email is sent. """
         extract_folder = relative("../../tests/temp")
     
         # Clean email inbox

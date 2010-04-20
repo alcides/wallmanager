@@ -33,20 +33,24 @@ class ApplicationManagementTest(TestCase):
         self.gps = Application.objects.create(name="Gps Application", owner=self.zacarias, category=self.educational)
         
     def do_login(self):
+        """ Fakes login as standard user. """
         login = self.client.login(username='zacarias_stu', password='zacarias')
         self.assertEqual(login, True)
         return login
 
     def do_admin_login(self):
+        """ Fakes login as administrator. """
         login = self.client.login(username='plum_ede', password='plum')
         self.assertEqual(login, True)
         return login
    
     def test_models_representation(self):
+        """ Tests if categories are being well represented as strings. """
         self.assertEqual( unicode(self.educational), u"Educational" )
         self.assertEqual( unicode(self.gps), u"Gps Application" )
     
     def test_application_value(self):
+        """ Tests application ratings. """
         self.gps.likes = 5
         self.gps.dislikes = 3
         self.gps.save()
@@ -54,17 +58,20 @@ class ApplicationManagementTest(TestCase):
         self.assertEqual( self.gps.stars(), 3)
     
     def test_uniqueness_control(self):
+        """ Tests uniqueness of the Projector Control object. """
         c1 = ProjectorControl.objects.create(inactivity_time=1, startup_time=time(1), shutdown_time=time(2))
         c2 = ProjectorControl.objects.create(inactivity_time=1, startup_time=time(1), shutdown_time=time(3))
         self.assertEqual( ProjectorControl.objects.count(), 1)
         
     def test_application_log_representation(self):
+        """ Tests if logs are well represented. """
         self.log = ApplicationLog.objects.create(application=self.gps, error_description="Error importing library X.")
         self.log.datetime = datetime(2010,1,1,15,0,1)
         self.log.save()
         self.assertEqual( unicode(self.log),  u"Gps Application log at 2010-01-01 15:00:01")
 
     def test_list_app(self):
+        """ Tests application listing. """
         login = self.do_login()
         response = self.client.get('/applications/')
         self.assertEqual(response.status_code, 200)
@@ -72,6 +79,7 @@ class ApplicationManagementTest(TestCase):
         self.assertContains(response, "<tr>", 2) # 1 app, plus header
         
     def test_detail_app(self):
+        """ Tests the application page. """
         response = self.client.get('/applications/%s/' % self.gps.id )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Gps Application")
@@ -83,11 +91,13 @@ class ApplicationManagementTest(TestCase):
         self.assertContains(response, "Edit Application",1)
 
     def test_requires_login_to_add_app(self):
+        """ Tests the login requirement for the add application page. """
         response = self.client.get('/applications/add/')
         self.assertEqual(response.status_code, 302) # redirect to login
         self.assertRedirects(response, '/accounts/login/?next=/applications/add/')
     
     def test_add_app(self):
+        """ Tests the application insersion. """
         login = self.do_login()
         response = self.client.get('/applications/add/')
         self.assertEqual(response.status_code, 200)
@@ -113,11 +123,13 @@ class ApplicationManagementTest(TestCase):
         self.assertContains(response, "Example App</a></td>")
             
     def test_requires_login_to_edit_app(self):
+        """ Tests login requirements for edit application. """
         response = self.client.get('/applications/%s/edit/' % self.gps.id)
         self.assertEqual(response.status_code, 302) # redirect to login
         self.assertRedirects(response, '/accounts/login/?next=/applications/%s/edit/' % self.gps.id)
 
     def test_edit_app(self):
+        """ Tests edit application page. """
         login = self.do_login()
         response = self.client.get('/applications/%s/edit/' % self.gps.id)
         self.assertEqual(response.status_code, 200)
@@ -143,6 +155,7 @@ class ApplicationManagementTest(TestCase):
         self.assertContains(response, "Example App 2</a></td>")
 
     def test_delete_app(self):
+        """ Tests delete application page. """
         c = Application.objects.count()
         login = self.do_login()
         response = self.client.get('/applications/%s/delete/' % self.gps.id)
@@ -150,6 +163,7 @@ class ApplicationManagementTest(TestCase):
         self.assertEqual(c-1, Application.objects.count())
 
     def test_requires_staff_to_remove_app(self):
+        """ Tests administration permition to remove application. """
         c = Application.objects.count()
         login = self.do_login()
         response = self.client.get('/applications/%s/remove/' % self.gps.id)
@@ -157,6 +171,7 @@ class ApplicationManagementTest(TestCase):
         self.assertEqual(c, Application.objects.count())
         
     def test_remove_app(self):
+        """ Tests remove application by admin. """
         # Clean email inbox
         mail.outbox = []
         
@@ -168,8 +183,6 @@ class ApplicationManagementTest(TestCase):
         
         self.assertEquals(len(mail.outbox), 1)
         self.assertTrue("Application removed from the wall" in mail.outbox[0].subject)
-        
-
     
     def tearDown(self):
         pass
