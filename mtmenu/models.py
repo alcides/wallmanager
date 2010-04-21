@@ -136,7 +136,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         ApplicationLogProxy.objects.create(application = self, error_description = app_log_text)
             
         # Get all entries associated with this application
-        entries = ApplicationLogProxy.objects.order_by('-datetime').filter(application = self)
+        entries = ApplicationLogProxy.objects.filter(application = self).order_by('-datetime')
         
         # If maximum number of entries reached, delete older ones
         if len(entries) > APPS_MAX_LOG_ENTRIES:
