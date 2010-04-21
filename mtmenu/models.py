@@ -40,6 +40,14 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         t = Thread(target=self._execute, args=())
         t.start()
         
+    def build_command(self, boot_file):
+        """ Returns the command to be executed on the shell """
+        import platform
+        if platform.system()[:3].lower() == "win":
+            return [boot_file]
+        else:
+            return ["bash", boot_file]
+        
     def _execute(self):
         """Tries to execute application's batch file.
         
@@ -57,18 +65,12 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             process execution"""
             
         app_boot_file = self.get_boot_file()
-        
         success = False
         
         if app_boot_file:
             
             try:
-                import platform
-                if platform.system()[:3].lower() == "win":
-                    command = [app_boot_file]
-                else:
-                    command = ["bash", app_boot_file]
-                
+                command = self.build_command(app_boot_file)
                 
                 # Starts application process and waits for it to terminate
                 process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath())
@@ -76,23 +78,21 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 # hides the main menu and defines the application that is running
                 scatter.hide()
                 setAppRunning(process)
-                                
-                
+
                 # Concatenate output
                 output = StringIO()
-                for str in process.communicate(): output.write(str)
-                    
-                
+                for line in process.communicate():
+                    output.write(line)
+
                 scatter.show()
                 removeAppRunning()
-                
                 
                 # Save output to database
                 self.add_log_entry(output.getvalue())    
                     
                 success = True
             except:
-                raise
+                pass
             
         return success
         
