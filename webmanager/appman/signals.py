@@ -53,7 +53,7 @@ def send_mail_when_app_available(sender, **kwargs):
     application = kwargs['application']
     email_from = settings.DEFAULT_FROM_EMAIL
     email_to = application.owner.email
-    message = 'Your application, ' + application.name + ', has been successfully deployed.'
+    message = 'Your application, %s, has been successfully deployed.' % application.name
     send_mail('[WallManager] Application successfully deployed', message, email_from, [email_to])
             
 signals.post_save.connect(uncompress, sender=Application)
