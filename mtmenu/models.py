@@ -1,14 +1,13 @@
-from os.path import join, exists, abspath, dirname
-from os import environ
+import sys
+from os import environ, path
 from subprocess import Popen, PIPE
-from settings import APPS_MAX_LOG_ENTRIES,APPS_BOOT_FILENAME,APPS_REPOSITORY_PATH
+from settings import *
 from cStringIO import StringIO
 from threading import Thread
 from proxy import proxy
 from application_running import *
 from ui import scatter
 
-import sys
 
 # Go back one directory and adds it to sys.path
 add_dir = lambda x: sys.path.append(join(abspath(dirname(__file__)), *x))
@@ -39,14 +38,6 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         """Executes within a thread"""
         t = Thread(target=self._execute, args=())
         t.start()
-        
-    def build_command(self, boot_file):
-        """ Returns the command to be executed on the shell """
-        import platform
-        if platform.system()[:3].lower() == "win":
-            return [boot_file]
-        else:
-            return ["bash", boot_file]
         
     def _execute(self):
         """Tries to execute application's batch file.
@@ -104,12 +95,21 @@ class ApplicationProxy(models.Application, WallModelsProxy):
 
         Returns:
             Full path to application repository if exists otherwise
-            returns None"""
-        full_path = join(APPS_REPOSITORY_PATH, str(self.id))
+            returns empty string"""
+        full_path = path.join(APPS_REPOSITORY_PATH, str(self.id))
         
-        if exists(full_path): 
+        if path.exists(full_path): 
             return full_path
+        else:
+            return ""
         
+    def build_command(self, boot_file):
+        """ Returns the command to be executed on the shell """
+        import platform
+        if platform.system()[:3].lower() == "win":
+            return [boot_file]
+        else:
+            return ["bash", boot_file]    
         
     def get_boot_file(self):
         """Full path to application boot file.
@@ -117,9 +117,9 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         Returns:
             Full path to application boot file if exists otherwise
             returns nothing"""
-        boot_file = join(self.get_extraction_fullpath(), APPS_BOOT_FILENAME)
+        boot_file = path.join(self.get_extraction_fullpath(), APPS_BOOT_FILENAME)
         
-        if exists(boot_file): 
+        if path.exists(boot_file): 
             return boot_file
     
     def add_log_entry(self, app_log_text = '(none)'):
@@ -137,16 +137,6 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             
         # Get all entries associated with this application
         entries = ApplicationLogProxy.objects.filter(application = self).order_by('-datetime')
-        
-        # If maximum number of entries reached, delete older ones
-        if len(entries) > APPS_MAX_LOG_ENTRIES:
-            
-            index = len(entries) - 1
-            end = APPS_MAX_LOG_ENTRIES
-            
-            while index >= end:
-                entries[index].delete()
-                index -= 1
 
             
 class CategoryProxy(models.Category, WallModelsProxy):
@@ -170,23 +160,5 @@ class UserProxy(User, WallModelsProxy):
     It allows the representation of an user through django models abling it to
     be extended with other locally-used functions"""
     pass
-
-
-
-if __name__ == '__main__':
-    """For testing purposes:
-        1) run 'python models.py' on command line to generate two applications
-        2) on 'apps/' path unzip two example applications to foldes '1/' and '2/' """
-
-    user = UserProxy.objects.create(username = "username",
-                                    email = "username@email.com",
-                                    password = "password")
-    games = CategoryProxy.objects.create(name = "GamesCategory")
-    ApplicationProxy.objects.create(name = "Tetris Game App",
-                                    owner = user,
-                                    category = games)
-    ApplicationProxy.objects.create(name = "Another Game",
-                                    owner = user,
-                                    category = games)
 
 

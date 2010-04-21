@@ -1,8 +1,6 @@
-'''
-This module keeps the running application object and provides an interface to kill it
-
-@author: msimoes
-'''
+"""
+This module keeps the running application object and provides an interface to kill it.
+"""
 
 from subprocess import Popen
 

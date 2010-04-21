@@ -1,7 +1,10 @@
+import os
+
 from models import ApplicationLogProxy, ApplicationProxy, CategoryProxy, UserProxy
 from django.test import TestCase
-from settings import APPS_MAX_LOG_ENTRIES
 from unittest import TestLoader, TextTestRunner
+
+from settings import APPS_MAX_LOG_ENTRIES, relative
 from mtmenu import application_running
 
 class TestMultiTouch(TestCase):
@@ -18,6 +21,19 @@ class TestMultiTouch(TestCase):
         self.tetris = ApplicationProxy.objects.create(name="Tetris Game App",
                                                       owner=self.user,
                                                       category=self.games)
+                                                      
+        folder = relative('./apps/%s' % self.tetris.id)
+        if not os.path.exists(folder):
+            os.mkdir(folder)
+            import platform
+            if platform.system()[:3].lower() == "win":
+                boot_txt = "notepad.exe"
+            else:
+                boot_txt = "python -c 'raw_input()'"
+            open(os.path.join(folder,'boot.bat'), 'w').write(boot_txt)
+            self.created_test_app = folder
+        else:
+            self.created_test_app = False
 
     def test_application_log_add (self):
         """ Tests to add some log messages to an application log """
@@ -29,37 +45,9 @@ class TestMultiTouch(TestCase):
         logs = ApplicationLogProxy.objects.filter(application = self.tetris)
         
         self.assertEqual(logs[logs.count() - 1].error_description, log_message2)
-
-        
-    def test_application_log_add_more_than_max_entries (self):
-        """ add several logs above the max allowed to an application and checks if the last inserted are kept """
-        
-        max = APPS_MAX_LOG_ENTRIES
-        added = 0
-        
-        # Add 4 more log entries than the max allowed
-        for index in range(1, max + 4):
-            self.tetris.add_log_entry('debug_msg%i' % index)
-            added += 1
-        
-        # Get total entries stored on database
-        total = ApplicationLogProxy.objects.filter(application = self.tetris).count()
-        
-        # Total shouldn't be higher that the max allowed
-        self.assertEqual(total, max)
-        
-        # Verifies if the last APPS_MAX_LOG_ENTRIES are correct
-        entries = ApplicationLogProxy.objects.order_by('-error_description').filter(application = self.tetris)
-        
-        for entry in entries:
-            self.assertEqual(entry.error_description, 'debug_msg%i' % added)
-            added -= 1
-            if (added == max): break
-            
-            
     
     def test_run_application(self):
-        """ tests running an application """
+        """ Tests running an application """
         self.tetris.execute()
         
         import time
@@ -77,7 +65,7 @@ class TestMultiTouch(TestCase):
         import application_running
         import time
         
-        if (not application_running.isAppRunning()):
+        if not application_running.isAppRunning():
             self.tetris.execute()
             time.sleep(5)
             
@@ -93,7 +81,9 @@ class TestMultiTouch(TestCase):
         self.assertNotEqual(app.poll(), None)
     
     def tearDown(self):
-        pass
+        if self.created_test_app:
+            os.remove(os.path.join(self.created_test_app,'boot.bat'))
+            os.rmdir(self.created_test_app)
     
 
 if __name__ == '__main__':
