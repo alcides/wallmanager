@@ -8,20 +8,22 @@ from django.core.files import File
 from django.db.models.signals import pre_save, post_save, post_delete
 
 from appman.models import *
-from appman.signals import get_app_dir
+from appman.signals import get_app_dir, remove_extra_logs
 from appman.utils.fileutils import *
 from appman.tests.uncompress import UncompressTest
 
+APPS_MAX_LOG_ENTRIES = 5
 DEFAULT_CATEGORY = "Others"
 
 class ApplicationManagementTest(TestCase):
     def __init__(self, *args, **kwargs):
         super(ApplicationManagementTest, self).__init__(*args, **kwargs)
         
-        # Turn off signals
-        pre_save.receivers = []
+        # Turn off signals except remove_logs
         post_save.receivers = []
         post_delete.receivers = []
+
+        post_save.connect(remove_extra_logs, sender=ApplicationLog)
     
     def setUp(self):
         #Creates usernames for Zacarias and Prof. Plum
@@ -376,6 +378,13 @@ class ApplicationManagementTest(TestCase):
     	#confirm that there exists a new user
     	self.assertEqual(User.objects.count(), u+1)
   
+    def test_application_log_limit(self):
+        """ Test if application log is deleting element besides the limit. """
+        for i in range(10):
+            ApplicationLog.objects.create(application = self.gps, error_description="Debug %s" % i)
+        
+        self.assertEqual(ApplicationLog.objects.count(), APPS_MAX_LOG_ENTRIES)
+    
     
     def tearDown(self):
         pass
