@@ -104,7 +104,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
 
         Returns:
             Full path to application repository if exists otherwise
-            returns nothing"""
+            returns None"""
         full_path = join(APPS_REPOSITORY_PATH, str(self.id))
         
         if exists(full_path): 
