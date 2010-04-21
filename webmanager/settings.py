@@ -78,3 +78,4 @@ WALL_APP_DIR = relative('../mtmenu/apps/')
 ZIP_FOLDER = "applications"
 
 DEFAULT_CATEGORY = "Others"
+APPS_MAX_LOG_ENTRIES = 5

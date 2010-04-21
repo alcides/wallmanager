@@ -6,7 +6,7 @@ from django.conf import settings
 from django.dispatch import dispatcher, Signal
 from django.core.mail import send_mail
 
-from appman.models import Application
+from appman.models import Application, ApplicationLog
 
 #Custom signal declarations
 extracted_email_signal = Signal(providing_args=["application"])
@@ -55,7 +55,15 @@ def send_mail_when_app_available(sender, **kwargs):
     email_to = application.owner.email
     message = 'Your application, ' + application.name + ', has been successfully deployed.'
     send_mail('[WallManager] Application successfully deployed', message, email_from, [email_to])
+    
+def remove_extra_logs(sender, **kwargs):
+    """ Removes logs after a certain limit by Application. """
+    app = kwargs['instance'].application
+    for log in ApplicationLog.objects.filter(application=app).order_by('-datetime')[settings.APPS_MAX_LOG_ENTRIES:]:
+        log.delete()
+    
             
 signals.post_save.connect(uncompress, sender=Application)
+signals.post_save.connect(remove_extra_logs, sender=ApplicationLog)
 signals.post_delete.connect(remove_app, sender=Application)
 extracted_email_signal.connect(send_mail_when_app_available)
