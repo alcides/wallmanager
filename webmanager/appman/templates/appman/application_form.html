@@ -58,7 +58,8 @@
 		window.onload = function() {
 			var replaceable_div = document.getElementById('id_zipfile');
 			var new_div = document.createElement('div');
-			new_div.innerHTML = '<span id="upload_btn"></span><span class="flash" id="fsUploadProgress"></span><input type="hidden" name="hidFileID" id="hidFileID" value="" />';
+			new_div.innerHTML = '<span id="upload_btn"></span><span class="flash" id="fsUploadProgress"> \
+				</span><input type="hidden" name="hidFileID" id="hidFileID" value="" />';
 			new_div.id = 'upload_container';
 			replaceable_div.parentNode.replaceChild(new_div, replaceable_div);
 			
