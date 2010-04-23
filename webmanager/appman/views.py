@@ -42,7 +42,7 @@ def application_list(request):
 
 @login_required
 def application_add(request):
-    form_class = ApplicationForm
+    form_class = ApplicationAddForm
     if request.method == 'POST':
         filepath = ""
         form = form_class(request.POST, request.FILES)

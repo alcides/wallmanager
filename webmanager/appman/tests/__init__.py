@@ -109,6 +109,7 @@ class ApplicationManagementTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Add Application")
         self.assertContains(response, "<form", 1)
+        self.assertContains(response, "I agree to ") # terms of service.
 
         zf = open(relative('../../tests/python_test_app.zip'),'rb')
         pf = open(relative('../../tests/wmlogo.png'),'rb')
@@ -117,12 +118,24 @@ class ApplicationManagementTest(TestCase):
             'zipfile': zf,
             'icon': pf,
             'category': self.educational.id, 
-            'description': "Example app"
+            'description': "Example app",
+            'tos': False
         }
+        
+        # Test without TOS
         response = self.client.post('/applications/add/', post_data)
-        zf.close()
-        pf.close()
-
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'You have to agree')
+        
+        # Move file pointers to the beginning of a file
+        map(lambda x: x.seek(0), [zf, pf])
+        
+        post_data['tos'] = True
+        response = self.client.post('/applications/add/', post_data)
+        map(lambda x: x.close(), [zf, pf])
+        
+        
+        self.assertEqual(Application.objects.filter(name='Example App').count(), 1)
         self.assertRedirects(response, '/applications/%s/' % Application.objects.get(name='Example App').id)
         response = self.client.get('/applications/')
         self.assertEqual(response.status_code, 200)
@@ -148,7 +161,8 @@ class ApplicationManagementTest(TestCase):
             'hidFileID': name,
             'icon': pf,
             'category': self.educational.id, 
-            'description': "Example app"
+            'description': "Example app",
+            'tos':True
         }
         c = Application.objects.count()
         response = self.client.post('/applications/add/', post_data)

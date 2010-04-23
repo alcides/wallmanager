@@ -13,6 +13,16 @@ class ApplicationForm(ModelForm):
     class Meta:
         model = Application
         fields = ('name', 'zipfile','icon','category','description')
+
+
+class ApplicationAddForm(ApplicationForm):
+    tos = BooleanField(label='I agree to the terms of service.',
+            required=False) # it is required, but handled below for a custom error message.
+
+    def clean_tos(self):
+        tos = self.cleaned_data['tos']
+        if not tos:
+            raise ValidationError("You have to agree to the Terms of Service.")
 	
 class ApplicationEditForm(ApplicationForm):
     zipfile = FileField(required=False)
