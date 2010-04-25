@@ -21,6 +21,7 @@
 				<th>Author</th>
 				<th>Category</th>
 				<th>Rating</th>
+                <th>Report abuse</th>
 			</tr>
 		</thead>
 	
@@ -32,6 +33,11 @@
 			<td>{{ app.owner }}</td>
 			<td>{{ app.category }}</td>
 			<td>{{ app.stars }}</td>
+            <td>
+                <form action="{{app.id}}/report_abuse/" method="get">
+                <input type="submit" value="Submit" />
+                </form>
+            </td>
 		</tr>
 		{% endfor %}
 	
