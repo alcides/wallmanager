@@ -4,6 +4,7 @@ from datetime import datetime, time
 from django.core import mail
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.contrib.flatpages.models import FlatPage
 from django.core.files import File
 from django.db.models.signals import pre_save, post_save, post_delete
 
@@ -398,8 +399,20 @@ class ApplicationManagementTest(TestCase):
             ApplicationLog.objects.create(application = self.gps, error_description="Debug %s" % i)
         
         self.assertEqual(ApplicationLog.objects.count(), APPS_MAX_LOG_ENTRIES)
+
+    def test_documentation_edit(self):
+        login = self.do_admin_login()
+        post_data = {
+            'content': 'New content.',
+            'title': 'Documents'
+        }
+        response = self.client.post('/documentation/edit/', post_data)
+
+        f = FlatPage.objects.get(title='Documents')
+        self.assertEqual(f.content, "New content.")
     
     
     def tearDown(self):
         pass
         
+    
