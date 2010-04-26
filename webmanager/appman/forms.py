@@ -81,3 +81,6 @@ class UserCreationForm(ModelForm):
         if commit:
     	    user.save()    	
         return user
+
+class ReportAbuseForm(Form):
+    abuse_description = CharField(widget=widgets.Textarea())

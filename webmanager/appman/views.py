@@ -123,6 +123,22 @@ def application_delete(request, object_id):
     app = get_object_or_404(Application, id=object_id)
     app.delete()
     return HttpResponseRedirect(reverse('application-list'))
+    
+@login_required    
+def report_abuse(request, object_id):
+    app = get_object_or_404(Application, id=object_id)
+    if request.method == 'POST':
+        abuse_description = request.POST['abuse_description']
+        email_from = settings.DEFAULT_FROM_EMAIL
+        email_to = "report_abuse_admin@dei.uc.pt"
+        message = 'Dear administrator. The user ' + request.user.email.strip() \
+            + ' made an abuse report for the application whose name is ' + app.name + '.\n' \
+            + 'The description provided for this report is as follows: ' + abuse_description
+        send_mail('[WallManager] Application ' + app.name + ' received an abuse report.', message, email_from, [email_to])
+        return render(request,'appman/report_abuse_success.html')
+    else:
+        form = ReportAbuseForm()
+        return render_to_response('appman/report_abuse.html', {'form': form})
 
 #Decorators
 def staff_required(login_url=None):

@@ -10,7 +10,7 @@ from django.db.models.signals import pre_save, post_save, post_delete
 from appman.models import *
 from appman.signals import get_app_dir, remove_extra_logs
 from appman.utils.fileutils import *
-from appman.tests.uncompress import UncompressTest
+#from appman.tests.uncompress import UncompressTest
 
 APPS_MAX_LOG_ENTRIES = 5
 DEFAULT_CATEGORY = "Others"
@@ -398,8 +398,42 @@ class ApplicationManagementTest(TestCase):
             ApplicationLog.objects.create(application = self.gps, error_description="Debug %s" % i)
         
         self.assertEqual(ApplicationLog.objects.count(), APPS_MAX_LOG_ENTRIES)
-    
-    
+        
+    def test_requires_login_to_report_abuse(self):
+        """ Tests the login requirement for the report abuse page. """
+        response = self.client.get('/applications/%s/report_abuse/' % self.gps.id )
+        self.assertEqual(response.status_code, 302) # redirect to login
+        self.assertRedirects(response, '/accounts/login/?next=/applications/%s/report_abuse/' % self.gps.id)
+        
+    def test_report_abuse(self):
+        """ Tests for a sample abuse report """
+        # Clean email inbox
+        mail.outbox = []
+        
+        login = self.do_login()
+        response = self.client.get('/applications/%s/report_abuse/' % self.gps.id )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Report abuse")
+        self.assertContains(response, "<form", 1)
+        self.assertContains(response, "abuse_description")
+        self.assertContains(response, "submit")
+        
+        sample_abuse_description = 'This application contains some sort of innapropriate content.'
+        post_data = {
+            'abuse_description': sample_abuse_description,
+        }
+        response = self.client.post('/applications/%s/report_abuse/' % self.gps.id, post_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Report successfully submitted.")
+        
+        self.assertEqual(len(mail.outbox), 1)
+        expected_body = 'Dear administrator. The user ' + self.zacarias.email \
+            + ' made an abuse report for the application whose name is ' + self.gps.name + '.\n' \
+            + 'The description provided for this report is as follows: ' + sample_abuse_description
+        self.assertEqual(len(mail.outbox[0].to), 1)
+        self.assertEqual(mail.outbox[0].to[0], "report_abuse_admin@dei.uc.pt")
+        self.assertEqual(mail.outbox[0].subject, '[WallManager] Application ' + self.gps.name + ' received an abuse report.')
+        self.assertEqual(mail.outbox[0].body, expected_body)
+        
     def tearDown(self):
         pass
-        
