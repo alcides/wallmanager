@@ -54,8 +54,8 @@
 					<li><a href="/accounts/login/">Login</a></li>
 					<li><a href="/accounts/register/">Register</a></li>
 					{% endif %}
+					<li><a href="/documentation/">Documentation</a></li>
 					<li><a href="{% url tech-doc %}">Technical Documentation</a></li>
-					<li><a href="/documentation/read/">Read Documentation</a></li>
 					<li><a href="{% url faq %}">FAQ</a></li>
 				</ul>
 				{% if user.is_staff %}
@@ -65,7 +65,7 @@
 					<li><a href="{% url screensaver %}">ScreenSaver</a></li>
 					<li><a href="{% url suspension %}">Suspension</a></li>
 					<li><a href="{% url category-list %}">Categories</a></li>
-					<li><a href="{% url documentation-edit %}">Documentation</a></li>
+					<li><a href="{% url documentation-edit %}">Edit Documentation</a></li>
 					{% if user.is_superuser %}
 					<li><a href="{% url manage-admins %}">Manage Admins</a></li>
 					<li><a href="{% url define-admin %}">Define Contact Admin</a></li>

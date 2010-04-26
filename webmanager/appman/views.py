@@ -9,6 +9,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.files import File 
 from django.conf import settings
+from django.contrib.flatpages.models import FlatPage
 
 from appman.forms import *
 from appman.models import *
@@ -196,5 +197,5 @@ def account_register(request):
 @staff_login_required
 def documentation_edit(request):
     return update_object(request, form_class=DocumentationForm, 
-            object_id="1")
+            object_id=str(FlatPage.objects.get().id))
     
