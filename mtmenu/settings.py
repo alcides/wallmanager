@@ -1,5 +1,9 @@
 from os.path import join, dirname, abspath
 
+import sys
+
+sys.path.append('..')
+
 from webmanager.settings import APPS_MAX_LOG_ENTRIES
 
 
