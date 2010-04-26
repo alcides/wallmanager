@@ -124,7 +124,7 @@ def report_abuse(request, object_id):
     if request.method == 'POST':
         abuse_description = request.POST['abuse_description']
         email_from = settings.DEFAULT_FROM_EMAIL
-        email_to = app.owner.email
+        email_to = "report_abuse_admin@dei.uc.pt"
         message = 'Dear administrator. The user ' + request.user.email.strip() \
             + ' made an abuse report for the application whose name is ' + app.name + '.\n' \
             + 'The description provided for this report is as follows: ' + abuse_description
