@@ -85,7 +85,7 @@ def application_upload(request):
     
 def application_detail(request,object_id):
     cs = Application.objects.all()
-    return object_detail(request, object_id=object_id, queryset=cs, template_object_name="application")
+    return object_detail(request, extra_context={'form': ReportAbuseForm()}, object_id=object_id, queryset=cs, template_object_name="application")
 
 @staff_login_required
 def application_admin_remove(request,object_id):
@@ -128,11 +128,13 @@ def report_abuse(request, object_id):
         message = 'Dear administrator. The user ' + request.user.email.strip() \
             + ' made an abuse report for the application whose name is ' + app.name + '.\n' \
             + 'The description provided for this report is as follows: ' + abuse_description
-        send_mail('[WallManager] Application ' + app.name + ' received an abuse report.', message, email_from, [email_to])
-        return render(request,'appman/report_abuse_success.html')
+        try:
+            send_mail('[WallManager] Application ' + app.name + ' received an abuse report.', message, email_from, [email_to])
+            return render(request,'appman/report_abuse_success.html')
+        except:
+            return HttpResponse('<h1>Failed to send e-mail message containing the report!</h1>')
     else:
-        form = ReportAbuseForm()
-        return render_to_response('appman/report_abuse.html', {'form': form})
+        return HttpResponse('<h1>Method is not POST!</h1>')
 
 #Decorators
 def staff_required(login_url=None):
