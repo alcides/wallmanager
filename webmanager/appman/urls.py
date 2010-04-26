@@ -24,6 +24,7 @@ urlpatterns = patterns('appman.views',
 	url(r'^projectors/$', 'projectors', name="projectors"),
 	url(r'^screensaver/$', 'screensaver', name="screensaver"),
 	url(r'^suspension/$', 'suspension', name="suspension"),
+	url(r'^documentation/edit/$','documentation_edit', name="documentation-edit"),
 	
 	url(r'^admins/$', 'manage_admins', name="manage-admins"),
 	url(r'^admin_contact/$', 'contact_admin', name="define-admin"),

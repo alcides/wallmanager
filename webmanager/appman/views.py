@@ -192,3 +192,9 @@ def account_register(request):
             return HttpResponseRedirect("/accounts/login/")
 
     return render_to_response("registration/register.html", {'form' : form })
+    
+@staff_login_required
+def documentation_edit(request):
+    return update_object(request, form_class=DocumentationForm, 
+            object_id="1")
+    
