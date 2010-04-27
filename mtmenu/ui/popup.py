@@ -8,9 +8,13 @@ class Popup( MTPopup ):
         kwargs.setdefault('title', self.text)
         kwargs.setdefault('size', POPUP_SIZE)
         kwargs.setdefault('pos', POPUP_POSITION)
-        kwargs.setdefault('label_sumit', 'Play')
+        kwargs.setdefault('label_submit', 'Play')
+        kwargs.setdefault('label_cancel', 'Cancel')
         kwargs.setdefault('show_cancel', True)
         kwargs.setdefault('exit_on_submit', True)
         
         super(Popup, self).__init__(**kwargs)
 
+
+    def on_cancel(self):
+        self.get_root_window().remove_widget(self)
