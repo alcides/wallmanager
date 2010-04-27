@@ -61,6 +61,9 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         if app_boot_file:
             
             try:
+                
+                self.start_run()
+                
                 command = self.build_command(app_boot_file)
                 
                 # Starts application process and waits for it to terminate
@@ -77,6 +80,8 @@ class ApplicationProxy(models.Application, WallModelsProxy):
 
                 scatter.show()
                 removeAppRunning()
+                
+                self.end_run()
                 
                 # Save output to database
                 self.add_log_entry(output.getvalue())    
@@ -144,6 +149,19 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             self.likes = self.likes + 1
         else:
             self.dislikes = self.dislikes + 1
+        self.save()
+            
+    def start_run(self):
+        self.is_running = True
+        self.save(False, True)
+        
+    def end_run(self):
+        self.is_running = False
+        self.add_run()
+        self.save(False, True)
+        
+    def add_run(self):
+        self.runs = self.runs + 1
 
             
 class CategoryProxy(models.Category, WallModelsProxy):

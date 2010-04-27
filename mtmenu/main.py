@@ -7,6 +7,7 @@ from proxy import *
 from pymt.ui.window.win_glut import MTWindowGlut
 from models import ApplicationProxy
 from mtmenu.models import CategoryProxy
+from utils import *
 
 
 if __name__ == '__main__':
