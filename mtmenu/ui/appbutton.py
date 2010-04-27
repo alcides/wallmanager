@@ -14,10 +14,14 @@ class AppButton(MTKineticItem):
 
         kwargs.setdefault('label', unicode(app))
         kwargs.setdefault('deletable', False)
-        #kwargs.setdefault('width', 90)
-        #kwargs.setdefault('height', 40)
-        #kwargs.setdefault('font_size', 16)
+        kwargs.setdefault('anchor_x', 'center')
+        kwargs.setdefault('anchor_y', 'middle')
+        kwargs.setdefault('halign', 'center')
+        kwargs.setdefault('valign', 'middle')
+        kwargs.setdefault('size', (200,200))        
         super(AppButton, self).__init__(**kwargs)
+
+        
 
     """Execute application on click"""
     def on_press( self, touch ):
