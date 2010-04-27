@@ -9,7 +9,6 @@ from utils import *
 from ui import *
 
 
-
 if __name__ == '__main__':
     # Start TUIO proxy
     proxy.start()
