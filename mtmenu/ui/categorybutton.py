@@ -17,9 +17,10 @@ class CategoryButton( MTKineticItem ):
 
 
     def on_press( self, touch ):
-        from ui import apps_grid
+        from ui import apps_grid, category_grid
         apps_grid.refresh( self.category )
-
+        category_grid.refresh()
+        
 
     def on_release( self, touch ):
         return
