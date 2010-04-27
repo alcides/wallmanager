@@ -1,5 +1,6 @@
 from pymt import *
 from pymt.input.postproc.doubletap import InputPostprocDoubleTap
+from popup import Popup
 
 class AppButton(MTKineticItem):
     """Widget representing an application on main window. 
@@ -25,12 +26,18 @@ class AppButton(MTKineticItem):
     """Execute application on click"""
     def on_press( self, touch ):
         if touch.is_double_tap:
-            self.handle_double_tap()
+            self.execute_app()
         else:
-            return
+            p = Popup(self.app)
+            self.get_root_window().add_widget(p)
+            
+            @p.event
+            def on_submit():
+                self.execute_app()
+
         
         
-    def handle_double_tap(self):
+    def execute_app(self):
         print '\nLoading %s...\n' % unicode(self.app)
         print 'ID: %i' % self.app.id
         print '\tPath: %s\n' % self.app.get_extraction_fullpath
