@@ -137,6 +137,13 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             
         # Get all entries associated with this application
         entries = ApplicationLogProxy.objects.filter(application = self).order_by('-datetime')
+        
+        
+    def vote(self, like):
+        if like:
+            self.likes = self.likes + 1
+        else:
+            self.dislikes = self.dislikes + 1
 
             
 class CategoryProxy(models.Category, WallModelsProxy):

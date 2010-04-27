@@ -8,6 +8,8 @@ from gesture.gesture_scan import GestureScan
 from proxy import *
 from pymt.ui.window.win_glut import MTWindowGlut
 from models import ApplicationProxy
+from mtmenu.models import CategoryProxy
+
 
 if __name__ == '__main__':
     # Start TUIO proxy
@@ -19,7 +21,7 @@ if __name__ == '__main__':
     # Construct AppsList looping through all apps
     apps_grid = AppsList(pos=(200,20), size=(460,460))
     
-    all_apps = ApplicationProxy.objects.all()
+    all_apps = getAllApplications()
 
     style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1}
     for app in all_apps:
