@@ -30,31 +30,21 @@ class AppButton(MTKineticItem):
 
     """Execute application on click"""
     def on_press( self, touch ):
-        print 'on_press'
         self.double_tap_detected = touch.is_double_tap
         if self.double_tap_detected:
             self.open_app()
         #if single tap and popup not already open
         elif not self.pop:    
-            print 'single tap and no popup'
             self.pop = Popup(self.app, pos= self.pos)
-            self.time_delay(0.5, self.open_popup) #make sure is not a double tap
-            
-
-    def time_delay(self, time, function):
-        print 'start timer'
-        self.timer = Timer(time, function).start()
+            self.timer = Timer(0.5, self.open_popup).start() #make sure is not a double tap
 
 
     def open_popup(self):
-        print 'in open popup'
         if self.double_tap_detected:
             return
-        
-        
+  
         self.get_root_window().add_widget(self.pop)
         self.pop = None
-
 
 
     def open_app(self):

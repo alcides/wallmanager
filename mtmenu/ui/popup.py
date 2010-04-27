@@ -22,7 +22,6 @@ class Popup( MTPopup ):
     
     def on_cancel(self):
         if self.get_root_window(): 
-            print 'on_cancel'
             self.get_root_window().remove_widget(self)
     
 
@@ -37,5 +36,4 @@ class Popup( MTPopup ):
         print '\tPath: %s\n' % self.app.get_extraction_fullpath
         print '\tBoot file: %s\n' % self.app.get_boot_file()
         self.app.execute()
-
 
