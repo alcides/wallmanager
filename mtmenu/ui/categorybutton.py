@@ -18,11 +18,8 @@ class CategoryButton( MTKineticItem ):
 
 
     def on_press( self, touch ):
-        if self.category:
-            apps_grid.replace( self.category )
-        else:
-            apps_grid.replace( None )
-        
+        apps_grid.refresh( self.category )
+
 
     def on_release( self, touch ):
         return
