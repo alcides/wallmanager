@@ -130,12 +130,11 @@ def report_abuse(request, object_id):
             + 'The description provided for this report is as follows: ' + abuse_description
         try:
             send_mail('[WallManager] Application ' + app.name + ' received an abuse report.', message, email_from, [email_to])
-            return render(request,'appman/report_abuse_success.html')
+            request.user.message_set.create(message="Your report was sent successfully.")
         except:
-            return HttpResponse('<h1>Failed to send e-mail message containing the report!</h1>')
-    else:
-        return HttpResponse('<h1>Method is not POST!</h1>')
-
+            request.user.message_set.create(message="Failure while sending e-mail message containing the report. Please try again later.")
+        return HttpResponseRedirect(reverse('application-list'))
+        
 #Decorators
 def staff_required(login_url=None):
     return user_passes_test(lambda u: u.is_staff, login_url=login_url)

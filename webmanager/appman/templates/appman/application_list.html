@@ -7,6 +7,16 @@
 {% endblock %}
 
 {% block content %}
+
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+<br/>
+</ul>
+{% endif %}
+
 <div id="addapp" align="right">
 	<ul class="object-tools">
 		<li><a href='{% url application-add %}' class="add-button">Add Application</a></li>
