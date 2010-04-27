@@ -10,6 +10,7 @@ from django.db.models.signals import pre_save, post_save, post_delete
 from appman.models import *
 from appman.signals import get_app_dir, remove_extra_logs
 from appman.utils.fileutils import *
+from appman.utils.other import *
 #from appman.tests.uncompress import UncompressTest
 
 APPS_MAX_LOG_ENTRIES = 5
@@ -424,7 +425,7 @@ class ApplicationManagementTest(TestCase):
             + ' made an abuse report for the application whose name is ' + self.gps.name + '.\n' \
             + 'The description provided for this report is as follows: ' + sample_abuse_description
         self.assertEqual(len(mail.outbox[0].to), 1)
-        self.assertEqual(mail.outbox[0].to[0], "report_abuse_admin@dei.uc.pt")
+        self.assertEqual(mail.outbox[0].to[0], get_contact_admin_email())
         self.assertEqual(mail.outbox[0].subject, '[WallManager] Application ' + self.gps.name + ' received an abuse report.')
         self.assertEqual(mail.outbox[0].body, expected_body)
         
