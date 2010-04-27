@@ -14,3 +14,9 @@ def getAllApplications():
 
 def getApplicationsOfCategory(cat):
     return ApplicationProxy.objects.filter(category = cat)
+
+def existsCategory(category_name):
+    print "I am here..."
+    print CategoryProxy.objects.filter(name = category_name)
+    print len(CategoryProxy.objects.filter(name = category_name))
+    return len(CategoryProxy.objects.filter(name = category_name)) > 0

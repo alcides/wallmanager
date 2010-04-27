@@ -7,6 +7,8 @@ from threading import Thread
 from proxy import proxy
 from application_running import *
 from ui import scatter
+from mtmenu.ui import apps_grid
+from copy import deepcopy
 
 
 # Go back one directory and adds it to sys.path
@@ -78,10 +80,15 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 for line in process.communicate():
                     output.write(line)
 
+                
                 scatter.show()
                 removeAppRunning()
                 
-                self.end_run()
+                from ui import category_grid
+                
+                category_grid.refresh()
+                        
+                self.end_run()                
                 
                 # Save output to database
                 self.add_log_entry(output.getvalue())    
