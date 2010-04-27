@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from appman.models import *
+from appman.utils.log_file import LOG_FILENAME
 
 import os
 def relative(*x):
@@ -133,6 +134,13 @@ class ApplicationManagementTest(TestCase):
         response = self.client.get('/app/%s/delete/' % self.gps.id)
         self.assertRedirects(response, '/app/list/')
         self.assertEqual(c-1, Application.objects.count())
+        
+    def test_logging(self):
+        #What should have been logged so far: 1 application add, 1 application edit, 1 application delete
+        file = open(LOG_FILENAME, 'r')
+        contents = file.read()
+        self.assertNotEqual(contents.find('Application added: Example App | Owner: ' + self.zacarias.email +'\n'), -1)
+        self.assertNotEqual(contents.find('Application deleted: Gps Application | Owner: ' + self.zacarias.email +'\n'), -1)
 
     def tearDown(self):
         pass
