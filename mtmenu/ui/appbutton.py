@@ -42,29 +42,21 @@ class AppButton(MTKineticItem):
             
 
     def time_delay(self, time, function):
+        print 'start timer'
         self.timer = Timer(time, function).start()
 
 
     def open_popup(self):
+        print 'in open popup'
         if self.double_tap_detected:
             return
-        pop = self.pop    
+        
         
         self.get_root_window().add_widget(self.pop)
-        self.time_delay(5.0, self.close_popup) #retirar popup 
-   
-        
-        
-    def close_popup(self):
-        print 'close popup'
-        self.get_root_window().remove_widget(self.pop)
         self.pop = None
-        
-        
-    def on_submit():
-        self.open_app()
-        
-    
+
+
+
     def open_app(self):
         print '\nLoading %s...\n' % unicode(self.app)
         print 'ID: %i' % self.app.id
