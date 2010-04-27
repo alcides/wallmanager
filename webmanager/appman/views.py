@@ -14,6 +14,7 @@ from appman.forms import *
 from appman.models import *
 from appman.decorators import *
 from appman.utils.fileutils import *
+from appman.utils.other import *
 
 # Helper
 
@@ -85,7 +86,7 @@ def application_upload(request):
     
 def application_detail(request,object_id):
     cs = Application.objects.all()
-    return object_detail(request, object_id=object_id, queryset=cs, template_object_name="application")
+    return object_detail(request, extra_context={'form': ReportAbuseForm()}, object_id=object_id, queryset=cs, template_object_name="application")
 
 @staff_login_required
 def application_admin_remove(request,object_id):
@@ -130,16 +131,17 @@ def report_abuse(request, object_id):
     if request.method == 'POST':
         abuse_description = request.POST['abuse_description']
         email_from = settings.DEFAULT_FROM_EMAIL
-        email_to = "report_abuse_admin@dei.uc.pt"
+        email_to = get_contact_admin_email()
         message = 'Dear administrator. The user ' + request.user.email.strip() \
             + ' made an abuse report for the application whose name is ' + app.name + '.\n' \
             + 'The description provided for this report is as follows: ' + abuse_description
-        send_mail('[WallManager] Application ' + app.name + ' received an abuse report.', message, email_from, [email_to])
-        return render(request,'appman/report_abuse_success.html')
-    else:
-        form = ReportAbuseForm()
-        return render_to_response('appman/report_abuse.html', {'form': form})
-
+        try:
+            send_mail('[WallManager] Application ' + app.name + ' received an abuse report.', message, email_from, [email_to])
+            request.user.message_set.create(message="Your report was sent successfully.")
+        except:
+            request.user.message_set.create(message="Failure while sending e-mail message containing the report. Please try again later.")
+        return HttpResponseRedirect(reverse('application-list'))
+        
 #Decorators
 def staff_required(login_url=None):
     return user_passes_test(lambda u: u.is_staff, login_url=login_url)

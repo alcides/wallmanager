@@ -7,6 +7,16 @@
 {% endblock %}
 
 {% block content %}
+
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+<br/>
+</ul>
+{% endif %}
+
 <div id="addapp" align="right">
 	<ul class="object-tools">
 		<li><a href='{% url application-add %}' class="add-button">Add Application</a></li>
@@ -21,7 +31,6 @@
 				<th>Author</th>
 				<th>Category</th>
 				<th>Rating</th>
-                <th>Report abuse</th>
 			</tr>
 		</thead>
 	
@@ -33,11 +42,6 @@
 			<td>{{ app.owner }}</td>
 			<td>{{ app.category }}</td>
 			<td>{{ app.stars }}</td>
-            <td>
-                <form action="{{app.id}}/report_abuse/" method="get">
-                <input type="submit" value="Submit" />
-                </form>
-            </td>
 		</tr>
 		{% endfor %}
 	
