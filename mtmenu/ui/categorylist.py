@@ -28,5 +28,5 @@ class CategoryList (MTKineticList):
        
     def refresh(self):
         self.clear()
-        add( getAllCategories() )
+        self.add( getAllCategories() )
 
