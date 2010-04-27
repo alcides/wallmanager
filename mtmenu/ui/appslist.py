@@ -32,3 +32,5 @@ class AppsList (MTKineticList):
         ''' replace the current list of the applications with the apps provided '''
         self.clear()
         self.add(apps)
+
+    
