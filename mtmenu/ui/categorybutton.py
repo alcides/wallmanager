@@ -1,5 +1,4 @@
 from pymt import *
-from utils import *
 from ui import apps_grid
 
 
@@ -19,12 +18,12 @@ class CategoryButton( MTKineticItem ):
 
 
     def on_press( self, touch ):
-        print self.category
         if self.category:
-            apps_grid.replace( getApplicationsOfCategory(self.category) )
+            apps_grid.replace( self.category )
         else:
-            apps_grid.replace( getAllApplications() )
+            apps_grid.replace( None )
         
 
     def on_release( self, touch ):
         return
+

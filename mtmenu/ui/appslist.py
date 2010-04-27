@@ -1,5 +1,6 @@
 from pymt import *
 from appbutton import AppButton
+from utils import *
 
 class AppsList (MTKineticList):
     
@@ -16,6 +17,7 @@ class AppsList (MTKineticList):
         kwargs.setdefault('w_limit',0)
         kwargs.setdefault('font_size', 12)
         self.apps = None
+        self.current_category = None
 
         super(AppsList, self).__init__(**kwargs)
         
@@ -28,7 +30,13 @@ class AppsList (MTKineticList):
             item = AppButton(app, style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1})
             self.add_widget(item)
             
-    def replace(self, apps):
+            
+    def replace(self, category):
         ''' replace the current list of the applications with the apps provided '''
         self.clear()
-        self.add(apps)
+        self.current_category = category
+        if category :
+            self.add( getApplicationsOfCategory(category) )
+        else:
+            self.add( getAllApplications() )
+
