@@ -1,9 +1,9 @@
-from pymt.ui.widgets.scatter import MTScatterWidget
-from settings import SCATTER_POSITION, SCATTER_SIZE, APPS_GRID_POSITION, APPS_GRID_SIZE, CATEGORY_GRID_POSITION, CATEGORY_GRID_SIZE
+from settings import APPS_GRID_POSITION, APPS_GRID_SIZE, CATEGORY_GRID_POSITION, CATEGORY_GRID_SIZE
 
 
 # Scatter to make AppsList movable
-scatter = MTScatterWidget(pos= SCATTER_POSITION, size= SCATTER_SIZE)
+from scatter import Scatter
+scatter = Scatter()
 
 
 # Construct AppsList looping through all apps

@@ -7,7 +7,7 @@ class Popup( MTPopup ):
 
     def __init__(self, app, **kwargs):
         self.app = app
-        self.text = "Name: %s\nCategory: %s\nOwner: %s\nLikes: %s\nDislikes: %s" % (app.name, app.category, app.owner, app.likes, app.dislikes)
+        self.text = "Name: %s\nCategory: %s\nOwner: %s\nRuns: %s\nLikes: %s\nDislikes: %s" % (app.name, app.category, app.owner, app.runs, app.likes, app.dislikes)
         kwargs.setdefault('title', self.text)
         kwargs.setdefault('size', POPUP_SIZE)
         kwargs.setdefault('pos', POPUP_POSITION)
@@ -16,18 +16,21 @@ class Popup( MTPopup ):
         kwargs.setdefault('show_cancel', True)
         kwargs.setdefault('exit_on_submit', True)
         
-        self.timer = Timer(5.0, self.on_cancel).start()
+        self.timer = Timer(5.0, self.on_cancel)
+        self.timer.start()
         super(Popup, self).__init__(**kwargs)
 
     
     def on_cancel(self):
-        if self.get_root_window(): 
-            self.get_root_window().remove_widget(self)
+        if self.timer:
+            self.timer.cancel()
+        self.get_root_window().remove_widget(self)
     
 
     def on_submit(self):
         self.on_cancel()
         self.open_app() 
+        
         
     #eu tb nao gosto de ter isto repetido x)
     def open_app(self): 

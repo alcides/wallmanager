@@ -32,11 +32,8 @@ class AppsList (MTKineticList):
             
             
     def refresh(self, category):
-        ''' replace the current list of the applications with the apps provided '''
-        
-        
+        ''' replace the current list of the applications with the apps provided ''' 
         self.clear()
-        
         self.current_category = category
         
         from utils import *

@@ -6,7 +6,6 @@ from cStringIO import StringIO
 from threading import Thread
 from proxy import proxy
 from application_running import *
-from ui import scatter
 from mtmenu.ui import apps_grid
 from copy import deepcopy
 
@@ -72,6 +71,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath())
                 
                 # hides the main menu and defines the application that is running
+                from ui import scatter
                 scatter.hide()
                 setAppRunning(process)
 
@@ -79,9 +79,9 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 output = StringIO()
                 for line in process.communicate():
                     output.write(line)
-
                 
-                scatter.show()
+                
+                scatter.resume(self)
                 removeAppRunning()
                 
                         
@@ -95,6 +95,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 pass
             
         return success
+        
         
     def get_extraction_fullpath(self):
         """Full path to application repository.
