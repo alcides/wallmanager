@@ -28,7 +28,8 @@ class AppButton(MTKineticItem):
         if touch.is_double_tap:
             self.execute_app()
         else:
-            p = Popup(self.app)
+            print self.pos
+            p = Popup(self.app, pos= self.pos)
             self.get_root_window().add_widget(p)
             
             @p.event
