@@ -1,4 +1,5 @@
 from pymt import *
+from appbutton import AppButton
 
 class AppsList (MTKineticList):
     
@@ -16,3 +17,10 @@ class AppsList (MTKineticList):
         kwargs.setdefault('font_size', 12)
 
         super(AppsList, self).__init__(**kwargs)
+        
+        
+    def add(self, apps):
+        for app in apps:
+            item = AppButton(app, style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1})
+            self.add_widget(item)
+
