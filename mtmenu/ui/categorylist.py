@@ -1,5 +1,6 @@
 from pymt import *
 from categorybutton import CategoryButton
+from utils import *
 
 class CategoryList (MTKineticList):
     
@@ -23,4 +24,9 @@ class CategoryList (MTKineticList):
         for category in categories:
             self.add_widget( CategoryButton(category, style = style) )        
         self.add_widget( CategoryButton(None, style=style) )
+        
+       
+    def refresh(self):
+        self.clear()
+        self.add( getAllCategories() )
 

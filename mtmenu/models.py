@@ -84,9 +84,6 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 scatter.show()
                 removeAppRunning()
                 
-                from ui import category_grid
-                
-                category_grid.refresh()
                         
                 self.end_run()                
                 
