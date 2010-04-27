@@ -1,5 +1,4 @@
 from pymt import *
-from ui import apps_grid
 
 
 class CategoryButton( MTKineticItem ):
@@ -18,6 +17,7 @@ class CategoryButton( MTKineticItem ):
 
 
     def on_press( self, touch ):
+        from ui import apps_grid
         apps_grid.refresh( self.category )
 
 

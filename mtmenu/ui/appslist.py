@@ -1,6 +1,6 @@
 from pymt import *
 from appbutton import AppButton
-from utils import *
+
 
 class AppsList (MTKineticList):
     
@@ -33,10 +33,15 @@ class AppsList (MTKineticList):
             
     def refresh(self, category):
         ''' replace the current list of the applications with the apps provided '''
+        
+        
         self.clear()
+        
         self.current_category = category
-        if category :
-            self.add( getApplicationsOfCategory(category) )
+        
+        from utils import *
+        if category:
+            self.add( getApplicationsOfCategory(self.current_category) )
         else:
             self.add( getAllApplications() )
 
