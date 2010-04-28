@@ -202,6 +202,5 @@ def documentation_edit(request, documentation_id):
 @staff_login_required
 def documentation_menu(request):
     #shows the menu for selecting the documentation to edit
-    from django.contrib.flatpages.models import FlatPage
     cs = FlatPage.objects.all()
     return object_list(request, queryset=cs, template_object_name="flatpage")
