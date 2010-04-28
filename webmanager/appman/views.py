@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.core.files import File 
 from django.contrib.sites.models import Site
 from django.conf import settings
+from django.contrib.flatpages.models import FlatPage
 
 from appman.forms import *
 from appman.models import *
@@ -214,3 +215,14 @@ def account_register(request):
             return HttpResponseRedirect("/accounts/login/")
 
     return render_to_response("registration/register.html", {'form' : form })
+    
+@staff_login_required
+def documentation_edit(request, documentation_id):
+    return update_object(request, form_class=DocumentationForm, 
+            object_id=documentation_id)
+            
+@staff_login_required
+def documentation_menu(request):
+    #shows the menu for selecting the documentation to edit
+    cs = FlatPage.objects.all()
+    return object_list(request, queryset=cs, template_object_name="flatpage")
