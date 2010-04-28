@@ -197,7 +197,7 @@ def account_register(request):
 @staff_login_required
 def documentation_edit(request, documentation_id):
     return update_object(request, form_class=DocumentationForm, 
-            object_id=str(FlatPage.objects.get().id))
+            object_id=documentation_id)
             
 @staff_login_required
 def documentation_menu(request):

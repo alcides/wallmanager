@@ -402,15 +402,37 @@ class ApplicationManagementTest(TestCase):
 
     def test_documentation_edit(self):
         login = self.do_admin_login()
+        #test the menu
+        c = FlatPage.objects.count()
+        response = self.client.post('/documentation/menu/')
+        self.assertContains(response, ">edit</a>", Category.objects.count()) 
+
+        #update documentation 
         post_data = {
             'content': 'New content.',
             'title': 'Documents'
         }
-        response = self.client.post('/documentation/edit/', post_data)
-
+        response = self.client.post('/documentation/1/edit/', post_data)
         f = FlatPage.objects.get(title='Documents')
         self.assertEqual(f.content, "New content.")
-    
+       
+        #update faq 
+        post_data = {
+            'content': 'New faq content.',
+            'title': 'FaqDocuments'
+        }
+        response = self.client.post('/documentation/2/edit/', post_data)
+        f = FlatPage.objects.get(title='FaqDocuments')
+        self.assertEqual(f.content, "New faq content.")
+        #update tech documentation 
+        post_data = {
+            'content': 'New tech content.',
+            'title': 'TDocuments'
+        }
+        response = self.client.post('/documentation/3/edit/', post_data)
+        f = FlatPage.objects.get(title='TDocuments')
+        self.assertEqual(f.content, "New tech content.")
+        
     
     def tearDown(self):
         pass
