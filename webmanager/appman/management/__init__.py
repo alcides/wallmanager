@@ -12,7 +12,13 @@ def create_default_category(app, created_models, verbosity, **kwargs):
 
 def create_default_documentation(app, created_models, verbosity, **kwargs):
     from django.contrib.flatpages.models import FlatPage
-    f = FlatPage.objects.create(title="Read documentation", url="/documentation/read/", template_name="flatpages/docs.html", content="Please fill this.Please fill this.Please fill this.Please fill this.Please fill this.Please fill this.Please fill this.")
+    f = FlatPage.objects.create(title="Documentation", url="/doc/", template_name="flatpages/default.html", content="Please fill this with the documentation page.")
+    f.sites.add(Site.objects.get(id=1))
+    f.save()
+    f = FlatPage.objects.create(title="Tech documentation", url="/techdoc/", template_name="flatpages/default.html", content="Please fill this with the tech documentation page.")
+    f.sites.add(Site.objects.get(id=1))
+    f.save()
+    f = FlatPage.objects.create(title="FAQ", url="/faq/", template_name="flatpages/default.html", content="Please fill this with the FAQ page.")
     f.sites.add(Site.objects.get(id=1))
     f.save()
     

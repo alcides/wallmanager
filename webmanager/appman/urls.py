@@ -5,8 +5,6 @@ from appman.models import *
 urlpatterns = patterns('appman.views',
 
 	url(r'^$', 'home', name="home"),
-	url(r'^doc/$', 'documentation', name="tech-doc"),
-	url(r'^faq/$', 'faq', name="faq"),
 	url(r'^contact/$', 'contact', name="contact-admin"),
 
 	url(r'^applications/$', 'application_list', name="application-list"),
@@ -24,7 +22,8 @@ urlpatterns = patterns('appman.views',
 	url(r'^projectors/$', 'projectors', name="projectors"),
 	url(r'^screensaver/$', 'screensaver', name="screensaver"),
 	url(r'^suspension/$', 'suspension', name="suspension"),
-	url(r'^documentation/edit/$','documentation_edit', name="documentation-edit"),
+	url(r'^documentation/menu/$','documentation_menu', name="documentation-menu"),
+	url(r'^documentation/(?P<documentation_id>\d+)/edit/$','documentation_edit', name="documentation-edit"),
 	
 	url(r'^admins/$', 'manage_admins', name="manage-admins"),
 	url(r'^admin_contact/$', 'contact_admin', name="define-admin"),
