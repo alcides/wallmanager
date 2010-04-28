@@ -56,6 +56,10 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             An Exception is raised in case something goes wrong during
             process execution"""
             
+        #hide scatter    
+        from ui import scatter
+        scatter.hide()
+        
         app_boot_file = self.get_boot_file()
         success = False
         
@@ -77,8 +81,8 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 output = StringIO()
                 for line in process.communicate():
                     output.write(line)
-                
-                from ui import scatter
+
+
                 scatter.resume(self)
                 removeAppRunning()
                 

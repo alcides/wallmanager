@@ -32,7 +32,6 @@ class AppButton(MTKineticItem):
     def on_press( self, touch ):  
         self.double_tap_detected = touch.is_double_tap
         if touch.is_double_tap:
-            self.parent().parent.hide() #hide scatter
             self.pop = None
             self.open_app()
                         
