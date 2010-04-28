@@ -7,7 +7,7 @@ class AppsList (MTKineticList):
     """Widget to handle applications list"""
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('title', 'Applications List')
+        kwargs.setdefault('title', 'Application List')
         kwargs.setdefault('size', (500,500))
         kwargs.setdefault('deletable', False)
         kwargs.setdefault('searchable', False)
@@ -41,4 +41,8 @@ class AppsList (MTKineticList):
             self.add( getApplicationsOfCategory(self.current_category) )
         else:
             self.add( getAllApplications() )
+            
+            
+    def __call__(self):
+        return self
 

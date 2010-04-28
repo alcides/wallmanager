@@ -70,9 +70,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 # Starts application process and waits for it to terminate
                 process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath())
                 
-                # hides the main menu and defines the application that is running
-                from ui import scatter
-                scatter.hide()
+                # defines the application that is running
                 setAppRunning(process)
 
                 # Concatenate output
@@ -80,7 +78,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 for line in process.communicate():
                     output.write(line)
                 
-                
+                from ui import scatter
                 scatter.resume(self)
                 removeAppRunning()
                 

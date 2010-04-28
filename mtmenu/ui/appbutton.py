@@ -1,5 +1,4 @@
 from pymt import *
-from pymt.input.postproc.doubletap import InputPostprocDoubleTap
 from popup import Popup
 from threading import Timer
 
@@ -28,16 +27,20 @@ class AppButton(MTKineticItem):
         
 
 
-    """Execute application on click"""
-    def on_press( self, touch ):
+    """Execute application on double click
+       Open popup on single click"""
+    def on_press( self, touch ):  
         self.double_tap_detected = touch.is_double_tap
-        if self.double_tap_detected:
+        if touch.is_double_tap:
+            self.parent().parent.hide() #hide scatter
             self.pop = None
             self.open_app()
+                        
         #if single tap and popup not already open
-        elif not self.pop:    
+        elif not self.pop:   
             self.pop = Popup(self.app, pos= self.pos)
             Timer(0.5, self.open_popup).start() #make sure is not a double tap
+
 
 
     def open_popup(self):
@@ -45,6 +48,7 @@ class AppButton(MTKineticItem):
             return  
         self.get_root_window().add_widget(self.pop)
         self.pop = None
+
 
 
     def open_app(self):

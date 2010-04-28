@@ -22,9 +22,9 @@ class Popup( MTPopup ):
 
     
     def on_cancel(self):
-        if self.timer:
-            self.timer.cancel()
-        self.get_root_window().remove_widget(self)
+        self.timer.cancel()
+        if self.get_root_window():
+            self.get_root_window().remove_widget(self)
     
 
     def on_submit(self):
