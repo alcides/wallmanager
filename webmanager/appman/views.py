@@ -8,6 +8,7 @@ from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.files import File 
+from django.contrib.sites.models import Site
 from django.conf import settings
 
 from appman.forms import *
@@ -132,9 +133,11 @@ def report_abuse(request, object_id):
         abuse_description = request.POST['abuse_description']
         email_from = settings.DEFAULT_FROM_EMAIL
         email_to = get_contact_admin_email()
-        message = 'Dear administrator. The user ' + request.user.email.strip() \
-            + ' made an abuse report for the application whose name is ' + app.name + '.\n' \
-            + 'The description provided for this report is as follows: ' + abuse_description
+        current_site = Site.objects.get_current()
+        message = """ User %s reported an abuse in application %s (http://%s%s) described as: 
+        
+        %s """ % (request.user.email.strip(), app.name, current_site.domain, app.get_absolute_url(), abuse_description) 
+
         try:
             send_mail('[WallManager] Application ' + app.name + ' received an abuse report.', message, email_from, [email_to])
             request.user.message_set.create(message="Your report was sent successfully.")
