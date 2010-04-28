@@ -421,13 +421,11 @@ class ApplicationManagementTest(TestCase):
         self.assertRedirects(response, '/applications/')
         
         self.assertEqual(len(mail.outbox), 1)
-        expected_body = 'Dear administrator. The user ' + self.zacarias.email \
-            + ' made an abuse report for the application whose name is ' + self.gps.name + '.\n' \
-            + 'The description provided for this report is as follows: ' + sample_abuse_description
         self.assertEqual(len(mail.outbox[0].to), 1)
         self.assertEqual(mail.outbox[0].to[0], get_contact_admin_email())
         self.assertEqual(mail.outbox[0].subject, '[WallManager] Application ' + self.gps.name + ' received an abuse report.')
-        self.assertEqual(mail.outbox[0].body, expected_body)
+        self.assertTrue( sample_abuse_description in mail.outbox[0].body)
+        self.assertTrue( self.gps.name in mail.outbox[0].body)
         
     def tearDown(self):
         pass
