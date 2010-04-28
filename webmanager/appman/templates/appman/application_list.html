@@ -26,9 +26,10 @@
 	
 		<tbody>
 	
+		{% load sizelimit %}
 		{% for app in application_list %}
 		<tr>
-			<td><a href="{{ app.get_absolute_url }}">{{ app.name|slice:":25" }}</a></td>
+			<td><a href="{{ app.get_absolute_url }}">{{ app.name|limit:25 }}</a></td>
 			<td>{{ app.owner }}</td>
 			<td>{{ app.category }}</td>
 			<td>{{ app.stars }}</td>
