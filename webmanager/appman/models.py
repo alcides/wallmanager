@@ -13,14 +13,13 @@ class Category(models.Model):
         return u"%s" % self.name
 
     def delete(self):
-        """deletes a category"""
-        apps = Application.objects.filter(category=self.id)
-        unknown, garbage = Category.objects.get_or_create(name=settings.DEFAULT_CATEGORY)
-        if self.id == unknown.id:
+        """ Deletes a category and moves apps to Default Category."""
+        if self.name == settings.DEFAULT_CATEGORY:
             return
-            
-        if apps.count() != 0:
-            apps.update(category=unknown)
+        
+        defcat, g = Category.objects.get_or_create(name=settings.DEFAULT_CATEGORY)
+        Application.objects.filter(category=self.id).update(category=defcat)
+
         super(Category,self).delete();
         
 class Application(models.Model):

@@ -173,7 +173,8 @@ def contact_admin(request):
 @staff_login_required
 def category_list(request):
     cs = Category.objects.all()
-    return object_list(request, queryset=cs, template_object_name="category")
+    return object_list(request, queryset=cs, template_object_name="category", 
+        extra_context={'DEFAULT_CATEGORY': settings.DEFAULT_CATEGORY})
 
 @staff_login_required
 def category_add(request):
