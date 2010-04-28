@@ -1,4 +1,5 @@
 import os
+import shutil
 import threading
 
 from django.conf import settings
@@ -34,4 +35,10 @@ class UncompressThread(threading.Thread):
                 # TODO: Remove: SQLite3 related
                 pass
         else:
+            shutil.rmtree(self.path)
+            try:
+                self.model.objects.filter(id=self.instance.id)
+            except:
+                # TODO: Remove: SQLite3 related
+                pass
             extracted_email_signal.send(sender=self, application=self.instance, success=False)
