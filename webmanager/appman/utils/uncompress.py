@@ -1,4 +1,5 @@
 import os
+import shutil
 import threading
 
 from django.conf import settings
@@ -22,7 +23,7 @@ class UncompressThread(threading.Thread):
         try:
             un = unzip()
             un.extract( str(self.instance.zipfile.path) , self.path)
-            extracted = True            
+            extracted = os.path.exists(os.path.join(self.path, 'boot.bat'))
         except IOError:
             extracted = False
     
@@ -33,3 +34,11 @@ class UncompressThread(threading.Thread):
             except:
                 # TODO: Remove: SQLite3 related
                 pass
+        else:
+            shutil.rmtree(self.path)
+            try:
+                self.model.objects.filter(id=self.instance.id)
+            except:
+                # TODO: Remove: SQLite3 related
+                pass
+            extracted_email_signal.send(sender=self, application=self.instance, success=False)

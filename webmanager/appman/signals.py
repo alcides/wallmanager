@@ -50,11 +50,22 @@ def remove_app(sender, instance, signal, *args, **kwargs):
 
 def send_mail_when_app_available(sender, **kwargs):
     """ Sends an e-mail message informing the user that the application is ready to be used """
+    if 'success' in kwargs:
+        success = kwargs['success']
+    else:
+        success = True
     application = kwargs['application']
     email_from = settings.DEFAULT_FROM_EMAIL
     email_to = application.owner.email
-    message = 'Your application, %s, has been successfully deployed.' % application.name
-    send_mail('[WallManager] Application successfully deployed', message, email_from, [email_to])
+    if success:
+        message = 'Your application, %s, has been successfully deployed.' % application.name
+        send_mail('[WallManager] Application successfully deployed', message, email_from, [email_to])
+    else:
+        message = """Your application, %s, was not deployed. \n
+        Please check if the zipfile is valid, contains a boot.bat \n
+        and follows the technical guidelines.""" % application.name
+        
+        send_mail('[WallManager] Error deploying application.', message, email_from, [email_to])
     
 def remove_extra_logs(sender, **kwargs):
     """ Removes logs after a certain limit by Application. """
