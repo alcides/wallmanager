@@ -1,1 +1,1 @@
-from appman import signals
+from webmanager.appman import signals

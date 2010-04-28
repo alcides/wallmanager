@@ -4,6 +4,8 @@ This module keeps the running application object and provides an interface to ki
 
 from subprocess import Popen
 
+__all__ = ['getAppRunning', 'setAppRunning', 'removeAppRunning', 'isAppRunning', 'killAppRunning']
+
 app_running = None
 
 def getAppRunning():

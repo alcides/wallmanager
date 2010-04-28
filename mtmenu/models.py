@@ -1,19 +1,18 @@
 import sys
 from os import environ, path
 from subprocess import Popen, PIPE
-from settings import *
+from mtmenu.settings import *
 from cStringIO import StringIO
 from threading import Thread
 from proxy import proxy
-from application_running import *
+from mtmenu.application_running import setAppRunning, removeAppRunning, getAppRunning
 from mtmenu.ui import apps_grid
 from copy import deepcopy
 
 
 # Go back one directory and adds it to sys.path
-add_dir = lambda x: sys.path.append(join(abspath(dirname(__file__)), *x))
-add_dir(['..'])
-add_dir(['..', 'webmanager'])
+sys.path.append('..')
+sys.path.append('../webmanager')
 
 # Set needed environment variable
 environ['DJANGO_SETTINGS_MODULE'] = 'webmanager.settings'
@@ -56,6 +55,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             An Exception is raised in case something goes wrong during
             process execution"""
             
+            
         #hide scatter    
         from ui import scatter
         scatter.hide()
@@ -77,14 +77,18 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 # defines the application that is running
                 setAppRunning(process)
 
+                getAppRunning()
                 # Concatenate output
                 output = StringIO()
                 for line in process.communicate():
                     output.write(line)
 
 
-                scatter.resume(self)
                 removeAppRunning()
+                try:
+                    scatter.resume(self)
+                except:
+                    pass
                 
                         
                 self.end_run()                
@@ -94,7 +98,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                     
                 success = True
             except:
-                pass
+                raise
             
         return success
         

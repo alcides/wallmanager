@@ -1,5 +1,5 @@
 from pymt import *
-from settings import POPUP_SIZE, POPUP_POSITION
+from mtmenu.settings import POPUP_SIZE, POPUP_POSITION
 from threading import Timer
 
 

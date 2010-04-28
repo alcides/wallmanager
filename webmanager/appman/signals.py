@@ -6,7 +6,7 @@ from django.conf import settings
 from django.dispatch import dispatcher, Signal
 from django.core.mail import send_mail
 
-from appman.models import Application, ApplicationLog
+from webmanager.appman.models import Application, ApplicationLog
 
 #Custom signal declarations
 extracted_email_signal = Signal(providing_args=["application"])
