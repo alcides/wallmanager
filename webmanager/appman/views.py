@@ -47,7 +47,7 @@ def application_add(request):
     if request.method == 'POST':
         filepath = ""
         form = form_class(request.POST, request.FILES)
-        if 'hidFileID' in request.POST:
+        if 'hidFileID' in request.POST and request.POST['hidFileID']:
             # If SWFUpload was used, hidFieldID is set to the filename
             filepath = fullpath(request.POST['hidFileID'].strip())
             if os.path.exists(filepath):
