@@ -1,8 +1,8 @@
-from application_running import getAppRunning, killAppRunning
-from gesture_db import *
+from mtmenu.application_running import getAppRunning, killAppRunning
+from mtmenu.gesture.gesture_db import *
 from pymt import *
 import subprocess
-from settings import ACCEPTANCE_MARGIN
+from mtmenu.settings import ACCEPTANCE_MARGIN
 
 class GestureWidget( MTGestureWidget ):
     def __init__(self):

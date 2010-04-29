@@ -1,7 +1,7 @@
 import socket
 from settings import *
 import threading
-from application_running import isAppRunning
+from mtmenu.application_running import isAppRunning
 
 
 class Proxy( threading.Thread ):
