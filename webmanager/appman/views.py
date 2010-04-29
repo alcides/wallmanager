@@ -196,6 +196,13 @@ def category_add(request):
 
 @staff_login_required
 def category_edit(request, object_id):
+    try:
+        cat = Category.objects.get(id=object_id)
+    except Category.DoesNotExist:
+        #TODO send message
+        cs = Category.objects.all()
+        return object_list(request, queryset=cs, template_object_name="category", 
+            extra_context={'DEFAULT_CATEGORY': settings.DEFAULT_CATEGORY})
     return update_object(request, form_class=CategoryForm, 
             object_id=object_id, post_save_redirect=reverse('category-list'))
 
