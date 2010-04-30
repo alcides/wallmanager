@@ -1,12 +1,11 @@
 from pymt import *
-from ui.mainwindow import MainWindow
-from gesture.gesture_scan import GestureScan
-from proxy import *
+from mtmenu.ui.mainwindow import MainWindow
+from mtmenu.gesture.gesture_scan import GestureScan
+from mtmenu.proxy import *
 from pymt.ui.window.win_glut import MTWindowGlut
-from models import ApplicationProxy
-from mtmenu.models import CategoryProxy
-from utils import *
-from ui import *
+from mtmenu.models import ApplicationProxy, CategoryProxy
+from mtmenu.utils import *
+from mtmenu.ui import *
 
 
 if __name__ == '__main__':

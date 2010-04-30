@@ -4,7 +4,7 @@ from subprocess import Popen, PIPE
 from mtmenu.settings import *
 from cStringIO import StringIO
 from threading import Thread
-from proxy import proxy
+from mtmenu.proxy import proxy
 from mtmenu.application_running import setAppRunning, removeAppRunning, getAppRunning
 from mtmenu.ui import apps_grid
 from copy import deepcopy

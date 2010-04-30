@@ -1,5 +1,5 @@
 from pymt import *
-from popup import Popup
+from mtmenu.ui.popup import Popup
 from threading import Timer
 
 

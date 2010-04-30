@@ -1,5 +1,5 @@
 import socket
-from settings import *
+from mtmenu.settings import *
 import threading
 from mtmenu.application_running import isAppRunning
 

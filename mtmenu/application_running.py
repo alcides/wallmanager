@@ -19,7 +19,7 @@ def setAppRunning(app):
     app_running = app
     
 def removeAppRunning():
-    ''' Sets the running application to be None'''
+    ''' Sets the running application to None'''
     global app_running
     app_running = None
     
