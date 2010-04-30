@@ -27,6 +27,6 @@ class VotePopup( MTPopup ):
 
 
     def resume(self):
-        from ui import scatter
+        from mtmenu.ui import scatter
         scatter.display()
 

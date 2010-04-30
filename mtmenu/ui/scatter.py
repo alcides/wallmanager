@@ -1,6 +1,6 @@
 from pymt.ui.widgets.scatter import MTScatterWidget
 from mtmenu.settings import SCATTER_POSITION, SCATTER_SIZE
-from votepopup import VotePopup
+from mtmenu.ui.votepopup import VotePopup
 from threading import Timer
 
 
