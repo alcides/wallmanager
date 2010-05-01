@@ -20,7 +20,7 @@ class CategoryList (MTKineticList):
         
         
     def add(self, categories):
-        style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1}
+        style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1, 'draw-border': True, 'border-radius': 5}
         for category in self.order_categories( categories ):
             self.add_widget( CategoryButton(category, style = style) )        
         self.add_widget( CategoryButton(None, style=style) )

@@ -1,4 +1,4 @@
-from gesture_widget import *
+from mtmenu.gesture.gesture_widget import *
 
 class GestureScan(MTWidget):
     def __init__(self, **kwargs):

@@ -17,17 +17,15 @@ class AppsList (MTKineticList):
         kwargs.setdefault('w_limit',0)
         kwargs.setdefault('font_size', 12)
         self.apps = None
-        self.current_category = None
-
+        self.order = 'name'
         super(AppsList, self).__init__(**kwargs)
         
         
     def add(self, apps):
         ''' add widgets to the applications list '''
-        self.apps = self.order_by(apps, 'name')
+        self.apps = apps
         
-        for app in self.apps:
-            print app.name
+        for app in self.order_apps():
             item = AppButton(app, style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1})
             self.add_widget(item)
             
@@ -35,18 +33,17 @@ class AppsList (MTKineticList):
     def refresh(self, category):
         ''' replace the current list of the applications with the apps provided ''' 
         self.clear()
-        self.current_category = category
         
         from utils import *
         if category:
-            self.add( getApplicationsOfCategory(self.current_category) )
+            self.add( getApplicationsOfCategory(category) )
         else:
             self.add( getAllApplications() )
             
             
-    def order_by(self, apps, str):
-        return sorted(apps, key = lambda app: eval('app.'+str), reverse= True)
-            
+    def order_apps(self):
+        return sorted(self.apps, key = lambda app: eval('app.'+self.order), reverse= True)
+                
             
     def __call__(self):
         return self

@@ -25,5 +25,7 @@ class Scatter( MTScatterWidget ):
         self.get_root_window().remove_widget( self.vote )
         self.show()
  
+ 
     def __call__(self):
         return self
+
