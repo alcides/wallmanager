@@ -78,6 +78,7 @@ DEFAULT_FROM_EMAIL = 'wallmanager@dei.uc.pt'
 
 WALL_APP_DIR = relative('../mtmenu/apps/')
 ZIP_FOLDER = "applications"
+ZIP_TEMP_FOLDER = "app_temp"
 
 DEFAULT_CATEGORY = "Others"
 APPS_MAX_LOG_ENTRIES = 5

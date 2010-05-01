@@ -51,9 +51,15 @@ def application_add(request):
         form = form_class(request.POST, request.FILES)
         if 'hidFileID' in request.POST and request.POST['hidFileID']:
             # If SWFUpload was used, hidFieldID is set to the filename
-            filepath = fullpath(request.POST['hidFileID'].strip())
-            if os.path.exists(filepath):
+
+            uploaded_file = request.POST['hidFileID'].strip()
+            filepath = fullpath(get_unique_path(uploaded_file))
+            file_temp_path = temp_path(get_id_path(uploaded_file,request.user.id))
+
+            if path_exists(file_temp_path):
                 form.fields['zipfile'].required=False
+                move_file(file_temp_path,filepath)
+                
         if form.is_valid():
             app = form.save(commit=False)
             app.owner = request.user
@@ -69,18 +75,23 @@ def application_add(request):
 
 def application_upload(request):
     """ View that accepts SWFUpload uploads. Returns the filename of the saved file. """
-    if request.method == 'POST':
+    if request.method == 'POST' and request.GET and request.GET['user_id']:
         for field_name in request.FILES:
             uploaded_file = request.FILES[field_name]
+            user_id = request.GET['user_id']
             
-            destination_path = get_unique_path(uploaded_file.name)
-            destination = open(fullpath(destination_path), 'wb+')
+            file_temp_path = temp_path(get_id_path(uploaded_file.name,user_id))
+            
+            if path_exists(file_temp_path):
+                delete_path(file_temp_path)
+            
+            destination = open(file_temp_path, 'wb+')
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
             destination.close()
-
+            
         # indicate that everything is OK for SWFUpload
-        return HttpResponse(destination_path, mimetype="text/plain")
+        return HttpResponse(uploaded_file.name, mimetype="text/plain")
 
     else:
         return HttpResponseRedirect(reverse('application-add'))
