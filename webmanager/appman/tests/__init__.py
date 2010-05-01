@@ -148,7 +148,7 @@ class ApplicationManagementTest(TestCase):
         login = self.do_login()
 
         zf = open(relative('../../tests/python_test_app.zip'),'rb')
-        response = self.client.post('/applications/upload/', {
+        response = self.client.post('/applications/upload/?user_id=%s' % self.zacarias.id, {
             'test': zf 
         })
         self.assertEqual(response.status_code, 200)
