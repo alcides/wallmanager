@@ -5,7 +5,7 @@ from django.views.generic.create_update import *
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.core.files import File 
 from django.contrib.sites.models import Site
@@ -51,10 +51,13 @@ def application_add(request):
         form = form_class(request.POST, request.FILES)
         if 'hidFileID' in request.POST and request.POST['hidFileID']:
             # If SWFUpload was used, hidFieldID is set to the filename
-
             uploaded_file = request.POST['hidFileID'].strip()
-            filepath = fullpath(get_unique_path(uploaded_file))
-            file_temp_path = temp_path(get_id_path(uploaded_file,request.user.id))
+            
+            # The file is saved on a temporary zip named user_ID.zip to prevent duplicates
+            # Then we rename it to the real filename before saving to the database.
+            
+            filepath = temp_path(get_unique_path(uploaded_file))
+            file_temp_path = temp_path(get_id_path(uploaded_file,request.user.id)) 
 
             if path_exists(file_temp_path):
                 form.fields['zipfile'].required=False
@@ -66,7 +69,12 @@ def application_add(request):
             if filepath:
                 app.zipfile = File(open("%s" % filepath))
             app.save()
+            if path_exists(filepath):
+                os.remove(filepath)
             return HttpResponseRedirect(reverse('application-detail', args=[str(app.id)]))
+        else:
+            if path_exists(filepath):
+                os.remove(filepath)
     else:
         form = form_class()
     return render(request,'appman/application_form.html', {
@@ -76,9 +84,10 @@ def application_add(request):
 def application_upload(request):
     """ View that accepts SWFUpload uploads. Returns the filename of the saved file. """
     if request.method == 'POST' and request.GET and request.GET['user_id']:
+        user_id = request.GET['user_id']
+        
         for field_name in request.FILES:
             uploaded_file = request.FILES[field_name]
-            user_id = request.GET['user_id']
             
             file_temp_path = temp_path(get_id_path(uploaded_file.name,user_id))
             
@@ -90,9 +99,10 @@ def application_upload(request):
                 destination.write(chunk)
             destination.close()
             
-        # indicate that everything is OK for SWFUpload
-        return HttpResponse(uploaded_file.name, mimetype="text/plain")
-
+            # indicate that everything is OK for SWFUpload
+            return HttpResponse(uploaded_file.name, mimetype="text/plain")
+        else:
+            return HttpResponseBadRequest("A file is required for upload to work", mimetype="text/plain")
     else:
         return HttpResponseRedirect(reverse('application-add'))
 
