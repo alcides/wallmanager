@@ -1,5 +1,5 @@
 from pymt import *
-from mtmenu.ui.mainwindow import MainWindow
+from ui.mainwindow import MainWindow
 from mtmenu.gesture.gesture_scan import GestureScan
 from mtmenu.proxy import *
 from pymt.ui.window.win_glut import MTWindowGlut

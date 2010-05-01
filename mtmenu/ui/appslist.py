@@ -24,9 +24,10 @@ class AppsList (MTKineticList):
         
     def add(self, apps):
         ''' add widgets to the applications list '''
-        self.apps = apps
+        self.apps = self.order_by(apps, 'name')
         
-        for app in apps:
+        for app in self.apps:
+            print app.name
             item = AppButton(app, style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1})
             self.add_widget(item)
             
@@ -41,6 +42,10 @@ class AppsList (MTKineticList):
             self.add( getApplicationsOfCategory(self.current_category) )
         else:
             self.add( getAllApplications() )
+            
+            
+    def order_by(self, apps, str):
+        return sorted(apps, key = lambda app: eval('app.'+str), reverse= True)
             
             
     def __call__(self):

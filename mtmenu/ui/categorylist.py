@@ -21,7 +21,7 @@ class CategoryList (MTKineticList):
         
     def add(self, categories):
         style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1}
-        for category in categories:
+        for category in self.order_categories( categories ):
             self.add_widget( CategoryButton(category, style = style) )        
         self.add_widget( CategoryButton(None, style=style) )
         
@@ -29,4 +29,9 @@ class CategoryList (MTKineticList):
     def refresh(self):
         self.clear()
         self.add( getAllCategories() )
+
+
+    def order_categories(self, categories):
+        return sorted(categories, key = lambda cat: cat.name, reverse= True)
+        
 
