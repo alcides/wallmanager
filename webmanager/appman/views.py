@@ -47,7 +47,7 @@ def application_list(request):
 def application_add(request):
     form_class = ApplicationAddForm
     if request.method == 'POST':
-        filepath = ""
+        temporary_named_path = ""
         form = form_class(request.POST, request.FILES)
         if 'hidFileID' in request.POST and request.POST['hidFileID']:
             # If SWFUpload was used, hidFieldID is set to the filename
@@ -56,25 +56,26 @@ def application_add(request):
             # The file is saved on a temporary zip named user_ID.zip to prevent duplicates
             # Then we rename it to the real filename before saving to the database.
             
-            filepath = temp_path(get_unique_path(uploaded_file))
-            file_temp_path = temp_path(get_id_path(uploaded_file,request.user.id)) 
+            user_unique_path = fullpath(get_filename_for_id(request.user.id), media_subfolder=settings.ZIP_TEMP_FOLDER)
+            temporary_named_path = fullpath(get_unique_path(uploaded_file), media_subfolder=settings.ZIP_TEMP_FOLDER)
 
-            if path_exists(file_temp_path):
-                form.fields['zipfile'].required=False
-                move_file(file_temp_path,filepath)
+            if os.path.exists(user_unique_path):
+                form.fields['zipfile'].required=False # allow form validation
+                move_file(user_unique_path, temporary_named_path)
                 
         if form.is_valid():
             app = form.save(commit=False)
             app.owner = request.user
-            if filepath:
-                app.zipfile = File(open("%s" % filepath))
-            app.save()
-            if path_exists(filepath):
-                os.remove(filepath)
+            if temporary_named_path:
+                app.zipfile = File(open("%s" % temporary_named_path))
+                app.save()
+                delete_path(temporary_named_path)
+            else:
+                app.save()
             return HttpResponseRedirect(reverse('application-detail', args=[str(app.id)]))
         else:
-            if path_exists(filepath):
-                os.remove(filepath)
+            if temporary_named_path:
+                delete_path(temporary_named_path)
     else:
         form = form_class()
     return render(request,'appman/application_form.html', {
@@ -85,16 +86,13 @@ def application_upload(request):
     """ View that accepts SWFUpload uploads. Returns the filename of the saved file. """
     if request.method == 'POST' and request.GET and request.GET['user_id']:
         user_id = request.GET['user_id']
+        user_unique_path = fullpath(get_filename_for_id(user_id), media_subfolder=settings.ZIP_TEMP_FOLDER)        
+        delete_path(user_unique_path) # Delete previous files
         
         for field_name in request.FILES:
             uploaded_file = request.FILES[field_name]
             
-            file_temp_path = temp_path(get_id_path(uploaded_file.name,user_id))
-            
-            if path_exists(file_temp_path):
-                delete_path(file_temp_path)
-            
-            destination = open(file_temp_path, 'wb+')
+            destination = open(user_unique_path, 'wb')
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
             destination.close()
