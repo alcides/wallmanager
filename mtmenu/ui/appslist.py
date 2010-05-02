@@ -25,12 +25,15 @@ class AppsList (MTKineticList):
     def add(self, apps):
         ''' add widgets to the applications list '''
         self.apps = self.order(apps)
-        
-        for app in self.apps:
-            item = AppButton(app, style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1})
-            self.add_widget(item)
-            
-            
+        chunks = lambda lis, step:  map(lambda i: lis[i:i+step],  xrange(0, len(lis), step))
+
+        for chunk in chunks(self.apps, 2):
+            chunk.reverse()
+            for app in chunk:
+                item = AppButton(app, style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1})
+                self.add_widget(item)
+
+                   
     def refresh(self, category):
         ''' replace the current list of the applications with the apps provided '''  
         if category == self.current_category:
