@@ -9,6 +9,9 @@ class Scatter( MTScatterWidget):
     def __init__(self, **kwargs):
         kwargs.setdefault('pos', SCATTER_POSITION)
         kwargs.setdefault('size', SCATTER_SIZE)
+        kwargs.setdefault('do_rotation', False)
+        #kwargs.setdefault('do_translation', False)
+        kwargs.setdefault('do_scale', False)
         self.vote = VotePopup()
         self.timer = Timer(10.0, self.display)
         super(Scatter, self).__init__(**kwargs)
@@ -24,7 +27,7 @@ class Scatter( MTScatterWidget):
         self.timer.cancel()
         self.get_root_window().remove_widget( self.vote )
         self.show()
- 
+
  
     def __call__(self):
         return self

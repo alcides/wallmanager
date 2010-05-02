@@ -16,10 +16,19 @@ if __name__ == '__main__':
 
     apps_grid.add( getAllApplications() )
     category_grid.add( getAllCategories() )
+    
+    # Top left logo
+    icon = MTScatterImage(filename= 'images/logo.png', pos=(30,580), scale= 0.5)
+    main_label =  MTLabel(label='SenseWall', pos= (100, 590), font_size= 40)
+    secondary_label = MTLabel(label='http://sensewall.dei.uc.pt', pos= (100, 580), font_size= 16)
 
-    # Add appsList to Scatter
+
+    # Add widgets to Scatter
     scatter.add_widget(apps_grid)
     scatter.add_widget(category_grid)
+    scatter.add_widget( icon )
+    scatter.add_widget( main_label )
+    scatter.add_widget( secondary_label )
     
     # Add Scatter to MainWindow
     main_window.add_widget(scatter)
