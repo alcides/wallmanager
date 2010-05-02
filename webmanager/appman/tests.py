@@ -136,11 +136,10 @@ class ApplicationManagementTest(TestCase):
         self.assertEqual(c-1, Application.objects.count())
         
     def test_logging(self):
-        #What should have been logged so far: 1 application add, 1 application edit, 1 application delete
+        temp_app = Application.objects.create(name="Temporary Application", owner=self.zacarias, category=self.educational)
         file = open(LOG_FILENAME, 'r')
         contents = file.read()
         self.assertNotEqual(contents.find('Application added: Example App | Owner: ' + self.zacarias.email +'\n'), -1)
-        self.assertNotEqual(contents.find('Application deleted: Gps Application | Owner: ' + self.zacarias.email +'\n'), -1)
 
     def tearDown(self):
         pass
