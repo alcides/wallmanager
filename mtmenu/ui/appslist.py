@@ -7,7 +7,7 @@ class AppsList (MTKineticList):
     """Widget to handle applications list"""
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('title', 'Application List')
+        kwargs.setdefault('title', None)
         kwargs.setdefault('size', (500,500))
         kwargs.setdefault('deletable', False)
         kwargs.setdefault('searchable', False)
@@ -17,32 +17,40 @@ class AppsList (MTKineticList):
         kwargs.setdefault('w_limit',0)
         kwargs.setdefault('font_size', 12)
         self.apps = None
-        self.order = 'name'
+        self.current_category = None
+        self.criteria = 'name'
         super(AppsList, self).__init__(**kwargs)
         
         
     def add(self, apps):
         ''' add widgets to the applications list '''
-        self.apps = apps
+        self.apps = self.order(apps)
         
-        for app in self.order_apps():
+        for app in self.apps:
             item = AppButton(app, style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1})
             self.add_widget(item)
             
             
     def refresh(self, category):
-        ''' replace the current list of the applications with the apps provided ''' 
-        self.clear()
+        ''' replace the current list of the applications with the apps provided '''  
+        if category == self.current_category:
+            return          
+        self.clear()  
+        self.current_category = category
         
-        from utils import *
-        if category:
-            self.add( getApplicationsOfCategory(category) )
-        else:
-            self.add( getAllApplications() )
+        from utils import getApplications
+        self.add( getApplications(self.current_category) )
             
             
-    def order_apps(self):
-        return sorted(self.apps, key = lambda app: eval('app.'+self.order), reverse= True)
+    def reorder(self, order):
+        if order != self.criteria:
+            self.clear() 
+            self.criteria = order
+            self.add( self.apps )
+          
+                    
+    def order(self, apps):
+        return sorted(apps, key = lambda app: eval('app.'+self.criteria), reverse= True)
                 
             
     def __call__(self):

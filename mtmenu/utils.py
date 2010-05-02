@@ -6,6 +6,11 @@ Created on 2010/04/27
 
 from mtmenu.models import *
 
+def getApplications(cat= None):
+    if cat: 
+        return getApplicationsOfCategory(cat)
+    return getAllApplications()
+
 def getAllCategories():
     return CategoryProxy.objects.all()    
     

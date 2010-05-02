@@ -7,7 +7,7 @@ class CategoryList (MTKineticList):
     """Widget to handle applications list"""
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('title', 'Categories')
+        kwargs.setdefault('title', None)
         kwargs.setdefault('deletable', False)
         kwargs.setdefault('searchable', False)
         kwargs.setdefault('do_x', False)
@@ -21,7 +21,7 @@ class CategoryList (MTKineticList):
         
     def add(self, categories):
         style = {'bg-color': (0, .2, 0, 1), 'draw-background': 1, 'draw-border': True, 'border-radius': 5}
-        for category in self.order_categories( categories ):
+        for category in self.order( categories ):
             self.add_widget( CategoryButton(category, style = style) )        
         self.add_widget( CategoryButton(None, style=style) )
         
@@ -31,7 +31,7 @@ class CategoryList (MTKineticList):
         self.add( getAllCategories() )
 
 
-    def order_categories(self, categories):
+    def order(self, categories):
         return sorted(categories, key = lambda cat: cat.name, reverse= True)
         
 

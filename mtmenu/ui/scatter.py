@@ -4,7 +4,7 @@ from mtmenu.ui.votepopup import VotePopup
 from threading import Timer
 
 
-class Scatter( MTScatterWidget ):
+class Scatter( MTScatterWidget):
     
     def __init__(self, **kwargs):
         kwargs.setdefault('pos', SCATTER_POSITION)
