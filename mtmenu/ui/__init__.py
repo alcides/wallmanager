@@ -12,5 +12,5 @@ apps_grid = AppsList(pos= APPS_GRID_POSITION, size= APPS_GRID_SIZE)
  
 # Construct CategoryList looping through all categories 
 from mtmenu.ui.categorylist import CategoryList
-category_grid = CategoryList(pos= CATEGORY_GRID_POSITION, size= CATEGORY_GRID_SIZE) 
+category_grid = CategoryList(pos= CATEGORY_GRID_POSITION, size= CATEGORY_GRID_SIZE, style={'scrollbar-size':0}) 
 
