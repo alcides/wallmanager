@@ -46,6 +46,10 @@ class Application(models.Model):
     def __unicode__(self):
         return u"%s" % self.name
     
+    def delete(self):
+        super(Application, self).delete()
+        log_file.log_app_event(self, 'deleted')
+        
     def save(self, force_insert=False, force_update=False):
         application_was_edited = False
         try:
@@ -66,6 +70,8 @@ class Application(models.Model):
         super(Application, self).save(force_insert, force_update)
         if (application_was_edited):
             log_file.log_app_event(self, 'edited')
+        else:
+            log_file.log_app_event(self, 'added')
     
     @models.permalink
     def get_absolute_url(self):
