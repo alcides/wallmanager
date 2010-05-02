@@ -15,6 +15,7 @@ class CategoryList (MTKineticList):
         kwargs.setdefault('h_limit', 0)
         kwargs.setdefault('w_limit', 1)
         kwargs.setdefault('font_size', 14)
+
         super(CategoryList, self).__init__(**kwargs)
         
         

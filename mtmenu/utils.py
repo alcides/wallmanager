@@ -4,7 +4,7 @@ Created on 2010/04/27
 @author: msimoes
 '''
 
-from mtmenu.models import *
+from models import *
 
 def getApplications(cat= None):
     if cat: 
@@ -22,3 +22,4 @@ def getApplicationsOfCategory(cat):
 
 def existsCategory(category_name):
     return len(CategoryProxy.objects.filter(name = category_name)) > 0
+

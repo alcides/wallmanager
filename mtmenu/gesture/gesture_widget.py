@@ -1,5 +1,5 @@
-from mtmenu.application_running import getAppRunning, killAppRunning
-from mtmenu.gesture.gesture_db import *
+from application_running import getAppRunning, killAppRunning
+from gesture.gesture_db import *
 from pymt import *
 import subprocess
 from mtmenu.settings import ACCEPTANCE_MARGIN

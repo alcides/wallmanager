@@ -55,10 +55,8 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             An Exception is raised in case something goes wrong during
             process execution"""
             
-            
-        #hide scatter    
-        from ui import scatter
-        scatter.hide()
+        from mtmenu.ui import main_window, cover_window
+        main_window.add_widget(cover_window)
         
         app_boot_file = self.get_boot_file()
         success = False
@@ -85,10 +83,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
 
 
                 removeAppRunning()
-                try:
-                    scatter.resume(self)
-                except:
-                    pass
+
                 
                         
                 self.end_run()                
