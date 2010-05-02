@@ -88,14 +88,24 @@ def application_upload(request):
     
 def application_detail(request,object_id):
     cs = Application.objects.all()
+    try:
+        app = Application.objects.get(id=object_id)
+    except Application.DoesNotExist:
+        #TODO send message
+        return object_list(request, queryset=cs, template_object_name="application")
     return object_detail(request, extra_context={'form': ReportAbuseForm()}, object_id=object_id, queryset=cs, template_object_name="application")
 
 @staff_login_required
 def application_admin_remove(request,object_id):
     """This function requires that the user is part of the staff"""
 
+    try:
+        app = Application.objects.get(id=object_id)
+    except Application.DoesNotExist:
+        #TODO send message
+        cs = Application.objects.all()
+        return object_list(request, queryset=cs, template_object_name="application")
     app = get_object_or_404(Application, pk=object_id)
-
     email_from = settings.DEFAULT_FROM_EMAIL
     email_to = app.owner.email
     message = 'Your application, ' + app.name + ', has been removed from the wallmanager by the staff for not respecting the Terms of Service.'
@@ -123,6 +133,11 @@ def application_edit(request, object_id):
             
 @login_required
 def application_delete(request, object_id):
+    try:
+        app = Application.objects.get(id=object_id)
+    except Application.DoesNotExist:
+        #TODO send message
+        return object_list(request, queryset=cs, template_object_name="application")
     app = get_object_or_404(Application, id=object_id)
     app.delete()
     return HttpResponseRedirect(reverse('application-list'))
@@ -208,6 +223,13 @@ def category_edit(request, object_id):
 
 @staff_login_required
 def category_remove(request, object_id):
+    try:
+        cat = Category.objects.get(id=object_id)
+    except Category.DoesNotExist:
+        #TODO send message
+        cs = Category.objects.all()
+        return object_list(request, queryset=cs, template_object_name="category", 
+            extra_context={'DEFAULT_CATEGORY': settings.DEFAULT_CATEGORY})
     cat = get_object_or_404(Category, id=object_id)
     cat.delete()
     return HttpResponseRedirect(reverse('category-list'))
