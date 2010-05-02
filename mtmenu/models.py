@@ -6,7 +6,6 @@ from cStringIO import StringIO
 from threading import Thread
 from mtmenu.proxy import proxy
 from mtmenu.application_running import setAppRunning, removeAppRunning, getAppRunning
-from mtmenu.ui import apps_grid
 from copy import deepcopy
 
 
@@ -55,8 +54,10 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             An Exception is raised in case something goes wrong during
             process execution"""
             
-        from mtmenu.ui import main_window, cover_window
-        main_window.add_widget(cover_window)
+            
+        #hide scatter    
+        from mtmenu.ui import cover_window
+        cover_window.show()
         
         app_boot_file = self.get_boot_file()
         success = False
@@ -83,7 +84,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
 
 
                 removeAppRunning()
-
+                cover_window.resume(self)
                 
                         
                 self.end_run()                

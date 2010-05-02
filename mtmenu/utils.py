@@ -22,4 +22,3 @@ def getApplicationsOfCategory(cat):
 
 def existsCategory(category_name):
     return len(CategoryProxy.objects.filter(name = category_name)) > 0
-
