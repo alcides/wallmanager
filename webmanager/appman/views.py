@@ -144,6 +144,12 @@ def application_delete(request, object_id):
     
 @login_required    
 def report_abuse(request, object_id):
+    try:
+        app = Application.objects.get(id=object_id)
+    except Application.DoesNotExist:
+        #TODO send message
+        cs = Application.objects.all()
+        return object_list(request, queryset=cs, template_object_name="application")
     app = get_object_or_404(Application, id=object_id)
     if request.method == 'POST':
         abuse_description = request.POST['abuse_description']
