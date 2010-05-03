@@ -42,10 +42,12 @@ class UncompressThread(threading.Thread):
             un = unzip()
             un.extract( str(self.instance.zipfile.path) , self.path)
             log_file.log_app_event(self.instance, 'deployed')
-            # Save in Database
+        except IOError:
+            pass
+        try:
             self.model.objects.filter(id=self.instance.id).update(extraction_path=self.path)
         except:
-            # Todo email user.
+            # TODO: Remove: SQLite3 related
             pass
         
     
@@ -53,13 +55,21 @@ class UncompressThread(threading.Thread):
 
 def uncompress(sender, instance, signal, *args, **kwargs):
     """ Deletes the previous version and starts the uncompressing of the file """
+    application_was_added = kwargs['created']
+    if (application_was_added):
+        log_file.log_app_event(instance, 'added')
+    else:
+        log_file.log_app_event(instance, 'edited')
+    
     path = get_app_dir(instance)
     remove_dir(path)
     if instance.zipfile:
         UncompressThread(sender,instance, path).start()
     
 def remove_app(sender, instance, signal, *args, **kwargs):
-    """ Deletes the uncompressed folder """    
+    """ Deletes the uncompressed folder """
+    log_file.log_app_event(instance, 'deleted')
+    
     if str(instance.extraction_path) != "":
         remove_dir(instance.extraction_path)
         remove_file(instance.zipfile)

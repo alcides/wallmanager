@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from appman.utils import log_file
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -45,11 +44,7 @@ class Application(models.Model):
     
     def __unicode__(self):
         return u"%s" % self.name
-    
-    def delete(self):
-        super(Application, self).delete()
-        log_file.log_app_event(self, 'deleted')
-        
+            
     def save(self, force_insert=False, force_update=False):
         application_was_edited = False
         try:
@@ -68,11 +63,7 @@ class Application(models.Model):
             pass
         
         super(Application, self).save(force_insert, force_update)
-        if (application_was_edited):
-            log_file.log_app_event(self, 'edited')
-        else:
-            log_file.log_app_event(self, 'added')
-    
+
     @models.permalink
     def get_absolute_url(self):
         return ("application-detail", [str(self.id)])

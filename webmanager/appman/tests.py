@@ -1,9 +1,11 @@
 from datetime import datetime, time
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.files import File
 
 from appman.models import *
 from appman.utils.log_file import LOG_FILENAME
+from appman.signals import UncompressThread
 
 import os
 def relative(*x):
@@ -136,7 +138,11 @@ class ApplicationManagementTest(TestCase):
         self.assertEqual(c-1, Application.objects.count())
         
     def test_logging(self):
-        temp_app = Application.objects.create(name="Temporary Application", owner=self.zacarias, category=self.educational)
+        extract_folder = relative("../tests/temp")
+        
+        temp_app = Application.objects.create(name="Temporary Application", owner=self.zacarias, category=self.educational, zipfile = File(open(relative("../tests/python_test_app.zip"))))
+        thread = UncompressThread(Application, temp_app, extract_folder)
+        thread.run()
         file = open(LOG_FILENAME, 'r')
         contents = file.read()
         self.assertNotEqual(contents.find('Application added: Example App | Owner: ' + self.zacarias.email +'\n'), -1)
