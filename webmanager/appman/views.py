@@ -41,7 +41,10 @@ def contact(request):
 @login_required
 def application_list(request):
     cs = Application.objects.all()
-    return object_list(request, queryset=cs, template_object_name="application")
+    return render(request,'appman/application_list.html', {'application_list': cs,
+    "category_list": Category.objects.all()
+    })
+#    return object_list(request, queryset=cs, template_object_name="application", {"category_list": Category.objects.all()})
 
 @login_required
 def application_search(request):
@@ -216,7 +219,9 @@ def category_add(request):
     else:
         form = form_class()
 
-    return render_to_response('appman/category_form.html', {'form': form,})
+    return render(request,'appman/application_form.html', {
+        'form': form,
+    })
 
 @staff_login_required
 def category_edit(request, object_id):
@@ -238,7 +243,7 @@ def account_register(request):
             new_user = form.save()
             return HttpResponseRedirect("/accounts/login/")
 
-    return render_to_response("registration/register.html", {'form' : form })
+    return render("registration/register.html", {'form' : form })
     
 @staff_login_required
 def documentation_edit(request, documentation_id):

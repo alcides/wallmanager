@@ -30,7 +30,28 @@ function setDefaultText(e){
         inp_field.value ="Search for....";
         }
 }
+function changeState(){
+    var menu = document.getElementById('ddmenu');
+    if(menu.style.visibility=="visible"){
+        menu.style.visibility="hidden";
+    }
+    else if(menu.style.visibility=="hidden"){
+        menu.style.visibility="visible";
+    }
+}
 </script>
+<div id="appfilter" align="center">
+    <a href="#" onclick="changeState()">Show filters</a>
+    <form action="/applications/filter/" method="POST" id="ddmenu" style="visibility:hidden">
+        <select>
+            <option>Choose..</option>
+            {% for cat in category_list %}
+            <option>{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
 <div id="searchapp" align="left">
     <form action="/applications/search/" method="POST" >
         <input type="text" value="Search for...." name="q" id="input_search_field" onblur="setDefaultText()" onfocus="clearDefaultText()" value="">
