@@ -15,6 +15,7 @@ class Popup( MTPopup ):
         kwargs.setdefault('label_cancel', 'Cancel')
         kwargs.setdefault('show_cancel', True)
         kwargs.setdefault('exit_on_submit', True)
+        #kwargs.setdefault('do_translation', False)
         
         self.timer = Timer(5.0, self.on_cancel)
         self.timer.start()
