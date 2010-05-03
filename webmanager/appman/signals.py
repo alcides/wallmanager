@@ -39,8 +39,8 @@ class UncompressThread(threading.Thread):
 
     def run(self):
         try:
-            un = unzip()
-            un.extract( str(self.instance.zipfile.path) , self.path)
+            #un = unzip()
+            #un.extract( str(self.instance.zipfile.path) , self.path)
             log_file.log_app_event(self.instance, 'deployed')
         except IOError:
             pass

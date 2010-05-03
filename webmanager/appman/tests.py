@@ -6,6 +6,7 @@ from django.core.files import File
 from appman.models import *
 from appman.utils.log_file import LOG_FILENAME
 from appman.signals import UncompressThread
+from appman.utils import log_file
 
 import os
 def relative(*x):
@@ -138,14 +139,14 @@ class ApplicationManagementTest(TestCase):
         self.assertEqual(c-1, Application.objects.count())
         
     def test_logging(self):
-        extract_folder = relative("../tests/temp")
-        
+        extract_folder = relative("../tests/temp")        
         temp_app = Application.objects.create(name="Temporary Application", owner=self.zacarias, category=self.educational, zipfile = File(open(relative("../tests/python_test_app.zip"))))
+        contents = log_file.retrieve_contents()
+        self.assertNotEqual(contents.find('Application added: Temporary Application | Owner: ' + self.zacarias.email +'\n'), -1)
+        
         thread = UncompressThread(Application, temp_app, extract_folder)
         thread.run()
-        file = open(LOG_FILENAME, 'r')
-        contents = file.read()
-        self.assertNotEqual(contents.find('Application added: Example App | Owner: ' + self.zacarias.email +'\n'), -1)
+        self.assertNotEqual(contents.find('Application deployed: Temporary Application | Owner: ' + self.zacarias.email +'\n'), -1)
 
     def tearDown(self):
         pass

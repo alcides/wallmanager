@@ -15,3 +15,11 @@ def log(message):
 def log_app_event(application, event_type):
     message = '[' + str(datetime.today()) + '] Application ' + event_type + ': ' + application.name + ' | Owner: ' + application.owner.email +'\n'
     log(message)
+    
+def retrieve_contents():
+    file_lock.acquire()
+    file = open(LOG_FILENAME, 'r')
+    contents = file.read()
+    file.close()
+    file_lock.release()
+    return contents
