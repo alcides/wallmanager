@@ -145,7 +145,10 @@ def manage_admins(request):
 @superuser_required()
 def contact_admin(request):
     admin_list = User.objects.filter(is_staff = True).exclude(is_superuser = True)
-    current_contact_admin = WallManager.objects.all()[0].contact
+    try:
+        current_contact_admin = WallManager.objects.all()[0].contact
+    except IndexError:
+        current_contact_admin = None
     if request.method == 'POST':
         contact_admin = request.POST['contact_admin']
         WallManager.objects.create(contact = contact_admin)

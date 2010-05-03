@@ -7,6 +7,14 @@
 {% endblock %}
 
 {% block content %}
+    {% if messages %}
+    <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+
     <p>You can choose the admin that will be notified in case of report abuse</p>
     <p>Current contact admin: {% if current_contact_admin %} {{ current_contact_admin }} {% else %} None. {% endif %}</p>
     {% if admin_list %}
