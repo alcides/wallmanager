@@ -16,6 +16,26 @@
 <br/>
 </ul>
 {% endif %}
+<script type="text/javascript">
+function clearDefaultText(e) {
+    var inp_field = document.getElementById('input_search_field');    
+    if(inp_field.value == "Search for...."){
+    inp_field.value ="";
+    }
+    
+}
+function setDefaultText(e){
+    var inp_field = document.getElementById('input_search_field');    
+    if(inp_field.value==""){
+        inp_field.value ="Search for....";
+        }
+}
+</script>
+<div id="searchapp" align="left">
+    <form action="/applications/search/" method="POST" >
+        <input type="text" value="Search for...." name="q" id="input_search_field" onblur="setDefaultText()" onfocus="clearDefaultText()" value="">
+    </form>
+</div>
 
 <div id="addapp" align="right">
 	<ul class="object-tools">

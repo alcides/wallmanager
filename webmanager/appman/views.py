@@ -44,6 +44,11 @@ def application_list(request):
     return object_list(request, queryset=cs, template_object_name="application")
 
 @login_required
+def application_search(request):
+    cs = Application.objects.filter(name__contains = request.POST.get('q',''))|Application.objects.filter(description__contains = request.POST.get('q',''))
+    return object_list(request, queryset=cs, template_object_name="application")
+
+@login_required
 def application_add(request):
     form_class = ApplicationAddForm
     if request.method == 'POST':
