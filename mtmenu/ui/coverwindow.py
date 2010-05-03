@@ -12,8 +12,8 @@ class CoverWindow( MTModalWindow ):
         
         
     def show(self):
-        from mtmenu.ui import main_window
-        main_window.add_widget( self )
+        from mtmenu.ui import apps_grid
+        apps_grid.get_root_window().add_widget( self )
         
     
     def resume(self, app):    
