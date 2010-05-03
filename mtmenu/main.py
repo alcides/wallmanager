@@ -5,9 +5,10 @@ from pymt.ui.window.win_glut import MTWindowGlut
 from mtmenu.models import ApplicationProxy, CategoryProxy
 from mtmenu.utils import *
 from mtmenu.ui import *
+from mtmenu.ui.ordermenu import OrderMenu
 from mtmenu.ui.imagebutton import ImageButton
 from mtmenu.settings import SCATTER_SIZE
-from mtmenu.ui.popup import Popup
+
 
 
 if __name__ == '__main__':
@@ -25,10 +26,13 @@ if __name__ == '__main__':
     scatter.add_widget( logo )
 
     # Top right help icon
-    help = MTScatterWidget(size=(60,60), pos= (SCATTER_SIZE[0]-65, SCATTER_SIZE[1]-65))
+    help = MTScatterWidget(size=(62,62), pos= (SCATTER_SIZE[0]-68, SCATTER_SIZE[1]-68))
     help.add_widget( ImageButton(filename= 'images/help.png', scale= 0.9) )
     scatter.add_widget( help )
     
+    
+    order = OrderMenu()
+    scatter.add_widget( order )
 
 
     # Add widgets to Scatter

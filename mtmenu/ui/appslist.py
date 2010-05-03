@@ -16,6 +16,8 @@ class AppsList (MTKineticList):
         kwargs.setdefault('h_limit', 2)
         kwargs.setdefault('w_limit',0)
         kwargs.setdefault('font_size', 12)
+        kwargs.setdefault('padding_x', 10)
+        kwargs.setdefault('padding_y', 10)        
         self.apps = None
         self.current_category = None
         self.criteria = 'name'
@@ -30,7 +32,7 @@ class AppsList (MTKineticList):
         for chunk in chunks(self.apps, 2):
             chunk.reverse()
             for app in chunk:
-                item = AppButton(app, style = {'bg-color': (0, 0, 0, 1), 'draw-background': 0, 'draw-border': True, 'border-radius': 10})
+                item = AppButton(app, style = {'draw-border': True, 'border-radius': 10})
                 self.add_widget(item)
 
                    
@@ -45,7 +47,8 @@ class AppsList (MTKineticList):
         self.add( getApplications(self.current_category) )
             
             
-    def reorder(self, order):
+    def reorder(self, **kwargs):
+        order= kwargs['order_by']
         if order != self.criteria:
             self.clear() 
             self.criteria = order
