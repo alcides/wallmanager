@@ -5,3 +5,19 @@
 {% block breadcrumb%}
 	<li>Define Contact Admin</li>
 {% endblock %}
+
+{% block content %}
+    <p>You can choose the admin that will be notified in case of report abuse</p>
+    {% if admin_list %}
+        <form action="" method="post">
+        <select name="contact_admin">
+        
+        {% for admin in admin_list %}
+        <option value="{{ admin.email }}">{{ admin.email }}</option>
+        <input type="submit" value="Submit" />
+        {% endfor %}
+        
+        </select>
+        </form>
+    {% endif %}
+{% endblock %}

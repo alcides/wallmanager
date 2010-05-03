@@ -144,7 +144,8 @@ def manage_admins(request):
 
 @superuser_required()
 def contact_admin(request):
-    return render(request,'appman/contact_admin.html')
+    admin_list = User.objects.filter(is_staff = True).exclude(is_superuser = True)
+    return render(request,'appman/contact_admin.html',{'admin_list': admin_list})
 
 @staff_login_required
 def category_list(request):
