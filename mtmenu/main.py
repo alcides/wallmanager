@@ -5,16 +5,14 @@ from pymt.ui.window.win_glut import MTWindowGlut
 from mtmenu.models import ApplicationProxy, CategoryProxy
 from mtmenu.utils import *
 from mtmenu.ui import *
-from mtmenu.settings import SCATTER_SIZE
 from mtmenu.ui.imagebutton import ImageButton
+from mtmenu.settings import SCATTER_SIZE
 
 
 if __name__ == '__main__':
     # Start TUIO proxy
     proxy.start()
     
-    from ui.mainwindow import MainWindow
-    main_window = MainWindow(width=800, height=600)
 
     apps_grid.add( getAllApplications() )
     category_grid.add( getAllCategories() )
@@ -24,8 +22,7 @@ if __name__ == '__main__':
     main_label =  MTLabel(label='SenseWall', pos= (100, SCATTER_SIZE[1]-60), font_size= 40)
     secondary_label = MTLabel(label='http://sensewall.dei.uc.pt', pos= (100, SCATTER_SIZE[1]-72), font_size= 16)
 
-    # Help button
-    help = ImageButton(scale= 0.9, pos= (SCATTER_SIZE[0]-70, SCATTER_SIZE[1]-70))
+    help = ImageButton(filename= 'images/help.png', scale= 0.9, pos= (SCATTER_SIZE[0]-100, SCATTER_SIZE[1]-70))
 
     # Add widgets to Scatter
     scatter.add_widget(apps_grid)

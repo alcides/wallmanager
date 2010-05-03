@@ -5,7 +5,6 @@ class CategoryButton( MTKineticItem ):
 
     def __init__( self, cat, **kwargs ):
         self.category = cat
-        print self.category
         if cat:
             kwargs.setdefault('label', cat.name)
         else:
@@ -21,7 +20,7 @@ class CategoryButton( MTKineticItem ):
         from mtmenu.ui import apps_grid
         print self.category
         apps_grid.refresh( self.category ) #update applications
-        self.parent.refresh() #update categories
+        #self.parent.refresh() #update categories
         
 
     def on_release( self, touch ):

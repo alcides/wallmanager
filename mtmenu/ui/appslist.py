@@ -16,8 +16,6 @@ class AppsList (MTKineticList):
         kwargs.setdefault('h_limit', 2)
         kwargs.setdefault('w_limit',0)
         kwargs.setdefault('font_size', 12)
-        kwargs.setdefault('padding_x', 10)
-        kwargs.setdefault('padding_y', 10)
         self.apps = None
         self.current_category = None
         self.criteria = 'name'
