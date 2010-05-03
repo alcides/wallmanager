@@ -428,6 +428,55 @@ class ApplicationManagementTest(TestCase):
         self.assertTrue( sample_abuse_description in mail.outbox[0].body)
         self.assertTrue( self.gps.name in mail.outbox[0].body)
 
+    def test_search_application(self):
+        login = self.do_admin_login()
+        #add some apps
+        pf = open(relative('../../tests/wmlogo.png'),'rb')
+        post_data = {
+            'name': 'My App',
+            'zipfile': '',
+            'icon': pf,
+            'category': self.educational.id, 
+            'description': "Example app",
+            'tos':True
+        }
+        response = self.client.post('/applications/add/', post_data)
+
+        post_data = {
+            'name': 'Another App',
+            'zipfile': '',
+            'icon': pf,
+            'category': self.educational.id, 
+            'description': "Just an app",
+            'tos':True
+        }
+        response = self.client.post('/applications/add/', post_data)
+        
+        print response
+        #test none app
+        post_data = {
+            'q':"Nothing else matters"
+        }
+        response = self.client.post('/applications/search/', post_data)
+        self.assertContains(response, self.educational.name, 0) 
+
+        #test search by title
+        post_data = {
+            'q':"My"
+        }
+        response = self.client.post('/applications/search/', post_data)
+        self.assertContains(response,self.educational.name, 1) 
+        
+        #test search by description
+        post_data = {
+            'q':"Just"
+        }
+        response = self.client.post('/applications/search/', post_data)
+        self.assertContains(response, self.educational.name, 1) 
+        
+        
+        
+
     def test_documentation_edit(self):
         login = self.do_admin_login()
         #test the menu
