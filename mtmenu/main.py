@@ -7,7 +7,7 @@ from mtmenu.utils import *
 from mtmenu.ui import *
 from mtmenu.ui.ordermenu import OrderMenu
 from mtmenu.ui.imagebutton import ImageButton
-from mtmenu.settings import SCATTER_SIZE
+from mtmenu.settings import TOP_BAR_Y, SCATTER_SIZE
 
 
 
@@ -19,19 +19,19 @@ if __name__ == '__main__':
     category_grid.add( getAllCategories() )
     
     # Top left logo
-    logo = MTScatterWidget(size=(350,68), pos= (40,SCATTER_SIZE[1]- 68))
-    logo.add_widget( MTScatterImage(filename= 'images/logo.png', pos=(0,0), scale= 0.5) ) #icon
+    logo = MTScatterWidget(size=(350,68), pos= (40, TOP_BAR_Y))
+    logo.add_widget( MTScatterImage(filename= 'images/logo.png', scale= 0.5) ) #icon
     logo.add_widget( MTLabel(label='SenseWall', pos= (60, 14), font_size= 40) ) #main_label
     logo.add_widget( MTLabel(label='http://sensewall.dei.uc.pt', pos= (60, 0), font_size= 16) ) #other label
     scatter.add_widget( logo )
 
     # Top right help icon
-    help = MTScatterWidget(size=(62,62), pos= (SCATTER_SIZE[0]-68, SCATTER_SIZE[1]-68))
+    help = MTScatterWidget(size=(62,62), pos= (SCATTER_SIZE[0]-68, TOP_BAR_Y))
     help.add_widget( ImageButton(filename= 'images/help.png', scale= 0.9) )
     scatter.add_widget( help )
     
-    
-    order = OrderMenu()
+    # Order by menu
+    order = OrderMenu(pos= (SCATTER_SIZE[0]-250, TOP_BAR_Y)  )
     scatter.add_widget( order )
 
 
