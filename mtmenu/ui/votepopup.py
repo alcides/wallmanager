@@ -1,8 +1,8 @@
-from pymt import *
+from mtmenu.ui.popup import Popup
 from threading import Timer
 
 
-class VotePopup( MTPopup ):
+class VotePopup( Popup ):
 
     def __init__(self, **kwargs):
         self.app = None

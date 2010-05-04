@@ -7,7 +7,7 @@ class CoverWindow( MTModalWindow ):
 
     def __init__(self, **kwargs):
         self.vote = VotePopup()
-        self.timer = Timer(10.0, self.hide)
+        self.TIME = 10.0
         super(CoverWindow, self).__init__(**kwargs)
         
         
@@ -15,10 +15,15 @@ class CoverWindow( MTModalWindow ):
         from mtmenu.ui import main_window
         main_window.add_widget( self )
         
+        
+    def on_press(self, touch):
+        self.hide()
+        
     
     def resume(self, app):    
         self.vote.app = app
         self.add_widget( self.vote )
+        self.timer = Timer(self.TIME, self.hide)
         self.timer.start()
     
         
