@@ -1,5 +1,6 @@
 from pymt import *
 from appbutton import AppButton
+from mtmenu.settings import LINES_IN_APPS_GRID
 
 
 class AppsList (MTKineticList):
@@ -13,7 +14,7 @@ class AppsList (MTKineticList):
         kwargs.setdefault('searchable', False)
         kwargs.setdefault('do_x', True)
         kwargs.setdefault('do_y', False)
-        kwargs.setdefault('h_limit', 2)
+        kwargs.setdefault('h_limit', LINES_IN_APPS_GRID)
         kwargs.setdefault('w_limit',0)
         kwargs.setdefault('font_size', 12)
         kwargs.setdefault('padding_x', 10)
@@ -29,7 +30,7 @@ class AppsList (MTKineticList):
         self.apps = self.order(apps)
         chunks = lambda lis, step:  map(lambda i: lis[i:i+step],  xrange(0, len(lis), step))
 
-        for chunk in chunks(self.apps, 2):
+        for chunk in chunks(self.apps, LINES_IN_APPS_GRID):
             chunk.reverse()
             for app in chunk:
                 item = AppButton(app, style = {'draw-border': True, 'border-radius': 10})

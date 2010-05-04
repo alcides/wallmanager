@@ -18,7 +18,7 @@ class AppButton(MTKineticItem):
         kwargs.setdefault('anchor_y', 'middle')
         kwargs.setdefault('halign', 'center')
         kwargs.setdefault('valign', 'middle')
-        kwargs.setdefault('size', (200,200))        
+        kwargs.setdefault('size', (170,170))        
         
         self.double_tap_detected = False
         self.app = app
