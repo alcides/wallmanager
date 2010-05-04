@@ -111,7 +111,7 @@ def application_detail(request,object_id):
         app = Application.objects.get(id=object_id)
     except Application.DoesNotExist:
         #TODO send message
-        return object_list(request, queryset=cs, template_object_name="application")
+        return HttpResponseRedirect(reverse('application-list'))
     return object_detail(request, extra_context={'form': ReportAbuseForm()}, object_id=object_id, queryset=cs, template_object_name="application")
 
 @staff_login_required
@@ -122,8 +122,7 @@ def application_admin_remove(request,object_id):
         app = Application.objects.get(id=object_id)
     except Application.DoesNotExist:
         #TODO send message
-        cs = Application.objects.all()
-        return object_list(request, queryset=cs, template_object_name="application")
+        return HttpResponseRedirect(reverse('application-list'))
     app = get_object_or_404(Application, pk=object_id)
     email_from = settings.DEFAULT_FROM_EMAIL
     email_to = app.owner.email
@@ -141,8 +140,7 @@ def application_edit(request, object_id):
             app = Application.objects.get(id=object_id)
         except Application.DoesNotExist:
             #TODO send message
-            cs = Application.objects.all()
-            return object_list(request, queryset=cs, template_object_name="application")
+            return HttpResponseRedirect(reverse('application-list'))
 
         if filepath and os.path.isfile(filepath):
             app.zipfile = File(open(filepath))
@@ -156,7 +154,7 @@ def application_delete(request, object_id):
         app = Application.objects.get(id=object_id)
     except Application.DoesNotExist:
         #TODO send message
-        return object_list(request, queryset=cs, template_object_name="application")
+        return HttpResponseRedirect(reverse('application-list'))
     app = get_object_or_404(Application, id=object_id)
     app.delete()
     return HttpResponseRedirect(reverse('application-list'))
@@ -240,9 +238,7 @@ def category_edit(request, object_id):
         cat = Category.objects.get(id=object_id)
     except Category.DoesNotExist:
         #TODO send message
-        cs = Category.objects.all()
-        return object_list(request, queryset=cs, template_object_name="category", 
-            extra_context={'DEFAULT_CATEGORY': settings.DEFAULT_CATEGORY})
+        return HttpResponseRedirect(reverse('category-list'))
     return update_object(request, form_class=CategoryForm, 
             object_id=object_id, post_save_redirect=reverse('category-list'))
 
@@ -252,9 +248,7 @@ def category_remove(request, object_id):
         cat = Category.objects.get(id=object_id)
     except Category.DoesNotExist:
         #TODO send message
-        cs = Category.objects.all()
-        return object_list(request, queryset=cs, template_object_name="category", 
-            extra_context={'DEFAULT_CATEGORY': settings.DEFAULT_CATEGORY})
+        return HttpResponseRedirect(reverse('category-list'))
     cat = get_object_or_404(Category, id=object_id)
     cat.delete()
     return HttpResponseRedirect(reverse('category-list'))
