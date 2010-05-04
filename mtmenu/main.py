@@ -7,6 +7,7 @@ from mtmenu.utils import *
 from mtmenu.ui import *
 from mtmenu.ui.ordermenu import OrderMenu
 from mtmenu.ui.imagebutton import ImageButton
+from mtmenu.ui.scatterimage import ScatterImage
 from mtmenu.settings import TOP_BAR_Y, SCATTER_SIZE
 
 
@@ -17,6 +18,7 @@ if __name__ == '__main__':
 
     apps_grid.add( getAllApplications() )
     category_grid.add( getAllCategories() )
+    
     
     # Top left logo
     logo = MTScatterWidget(size=(350,68), pos= (40, TOP_BAR_Y))
@@ -33,18 +35,21 @@ if __name__ == '__main__':
     # Order by menu
     order = OrderMenu(pos= (SCATTER_SIZE[0]-250, TOP_BAR_Y)  )
     scatter.add_widget( order )
-
-
+    
     # Add widgets to Scatter
     scatter.add_widget(apps_grid)
     scatter.add_widget(category_grid)
+
+
+    # Add background image to MainWindow
+    main_window.add_widget( ScatterImage(filename= 'images/wallpaper.jpg') )
     
     # Add Scatter to MainWindow
     main_window.add_widget(scatter)
     
     #Add gesture recognition
     main_window.add_widget(GestureScan())
-    
+
     
     # Execute main loop
     runTouchApp()

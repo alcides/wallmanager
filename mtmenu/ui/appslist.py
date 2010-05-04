@@ -33,7 +33,7 @@ class AppsList (MTKineticList):
         for chunk in chunks(self.apps, LINES_IN_APPS_GRID):
             chunk.reverse()
             for app in chunk:
-                item = AppButton(app, style = {'draw-border': True, 'border-radius': 10})
+                item = AppButton(app, style = {'bg-color': (0, 1, 0, 1), 'draw-background': 0, 'draw-border': True, 'border-radius': 10})
                 self.add_widget(item)
 
                    

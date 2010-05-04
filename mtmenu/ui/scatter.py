@@ -7,7 +7,6 @@ from threading import Timer
 class Scatter( MTScatterWidget ):
     
     def __init__(self, **kwargs):
-        #kwargs.setdefault('filename', '../images/wallpaper.png')
         kwargs.setdefault('pos', SCATTER_POSITION)
         kwargs.setdefault('size', SCATTER_SIZE)
         kwargs.setdefault('do_rotation', False)
