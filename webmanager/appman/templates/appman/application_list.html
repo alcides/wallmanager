@@ -42,19 +42,15 @@ function changeState(){
 </script>
 <div id="appfilter" align="center">
     <a href="#" onclick="changeState()">Show filters</a>
-    <form action="/applications/filter/" method="POST" id="ddmenu" style="visibility:hidden">
-        <select>
-            <option>Choose..</option>
-            {% for cat in category_list %}
-            <option>{{ cat.name }}</option>
-            {% endfor %}
-        </select>
+    <form action="/applications/filter/" method="POST"  id="ddmenu" style="visibility:hidden" >
+        {{form.as_p}}
+        <input type="submit" value="Go!" />
     </form>
 </div>
 
 <div id="searchapp" align="left">
     <form action="/applications/search/" method="POST" >
-        <input type="text" value="Search for...." name="q" id="input_search_field" onblur="setDefaultText()" onfocus="clearDefaultText()" value="">
+        <input type="text" value="Search for...." name="q" id="input_search_field" onblur="setDefaultText()" onfocus="clearDefaultText()" value=""/>
     </form>
 </div>
 

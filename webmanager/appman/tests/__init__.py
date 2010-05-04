@@ -38,7 +38,7 @@ class ApplicationManagementTest(TestCase):
         self.educational = Category.objects.create(name="Educational")
         self.games = Category.objects.create(name="Games")
         
-        self.gps = Application.objects.create(name="Gps Application", owner=self.zacarias, category=self.educational)
+        self.gps = Application.objects.create(name="Gps Application",description ="Some application", owner=self.zacarias, category=self.educational)
         
     def do_login(self):
         """ Fakes login as standard user. """
@@ -430,29 +430,8 @@ class ApplicationManagementTest(TestCase):
 
     def test_search_application(self):
         login = self.do_admin_login()
-        #add some apps
-        pf = open(relative('../../tests/wmlogo.png'),'rb')
-        post_data = {
-            'name': 'My App',
-            'zipfile': '',
-            'icon': pf,
-            'category': self.educational.id, 
-            'description': "Example app",
-            'tos':True
-        }
-        response = self.client.post('/applications/add/', post_data)
+        self.gps = Application.objects.create(name="Myapp", description="An application", owner=self.zacarias, category=self.educational)
 
-        post_data = {
-            'name': 'Another App',
-            'zipfile': '',
-            'icon': pf,
-            'category': self.educational.id, 
-            'description': "Just an app",
-            'tos':True
-        }
-        response = self.client.post('/applications/add/', post_data)
-        
-        print response
         #test none app
         post_data = {
             'q':"Nothing else matters"
@@ -465,15 +444,15 @@ class ApplicationManagementTest(TestCase):
             'q':"My"
         }
         response = self.client.post('/applications/search/', post_data)
+        print response
         self.assertContains(response,self.educational.name, 1) 
         
         #test search by description
         post_data = {
-            'q':"Just"
+            'q':"Some"
         }
         response = self.client.post('/applications/search/', post_data)
         self.assertContains(response, self.educational.name, 1) 
-        
         
         
 
@@ -510,6 +489,23 @@ class ApplicationManagementTest(TestCase):
         f = FlatPage.objects.get(title='TDocuments')
         self.assertEqual(f.content, "New tech content.")
         
-    
+    def test_category_filter(self):
+        login = self.do_login()
+
+        #confirm that the dropdown menu is correct
+        c = Category.objects.count()
+        response = self.client.get('/applications/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<option>", c+1) 
+        
+        #filter other applications (none)
+        #update documentation 
+        post_data = {
+            'content': 'New content.',
+            'title': 'Documents'
+        }
+        response = self.client.post('/documentation/1/edit/', post_data)
+        
+        
     def tearDown(self):
         pass

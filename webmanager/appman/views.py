@@ -41,14 +41,33 @@ def contact(request):
 @login_required
 def application_list(request):
     cs = Application.objects.all()
+    form_class = ApplicationFilterForm
+    form = form_class()
+    return render(request,'appman/application_list.html', {'application_list': cs, "form": form})
+
+@login_required
+def application_filter(request):
+    print request.user
+    print request.POST.get('category','')
+    #TODO add some message 
+    if request.POST.get('category','') =='':
+        return HttpResponseRedirect(reverse('application-list'))
+
+    if request.POST.get('myApps','off') == 'on':
+        cs = Application.objects.filter(category = request.POST.get('category',''))& Application.objects.filter(owner = request.user)
+    else:
+        cs = Application.objects.filter(category = request.POST.get('category','')) 
+#    cs = Application.objects.all()
+    form_class = ApplicationFilterForm
+    form = form_class()
     return render(request,'appman/application_list.html', {'application_list': cs,
-    "category_list": Category.objects.all()
-    })
-#    return object_list(request, queryset=cs, template_object_name="application", {"category_list": Category.objects.all()})
+        'form': form  })
 
 @login_required
 def application_search(request):
     cs = Application.objects.filter(name__contains = request.POST.get('q',''))|Application.objects.filter(description__contains = request.POST.get('q',''))
+    form_class = ApplicationFilterForm
+    form = form_class()
     return object_list(request, queryset=cs, template_object_name="application")
 
 @login_required
@@ -243,7 +262,7 @@ def account_register(request):
             new_user = form.save()
             return HttpResponseRedirect("/accounts/login/")
 
-    return render("registration/register.html", {'form' : form })
+    return render_to_response("registration/register.html", {'form' : form })
     
 @staff_login_required
 def documentation_edit(request, documentation_id):
