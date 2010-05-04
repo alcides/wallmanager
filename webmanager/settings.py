@@ -18,12 +18,12 @@ DATABASE_HOST = ''             # empty -> localhost
 DATABASE_PORT = ''             # empty -> default
 DATABASE_SUPPORTS_TRANSACTIONS = True
 
-EMAIL_HOST = 'localhost'
+EMAIL_HOST = 'smtp.dei.uc.pt'
 EMAIL_PORT = 1025
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
-DEFAULT_FROM_EMAIL = 'testing@example.com'
+DEFAULT_FROM_EMAIL = 'no-reply@sensewall.dei.uc.pt'
 
 SECRET_KEY = '%4)e8snda5-cewqsjx#%t$sg-j0txw)mb%leue1_^paa=(ft)e' # <------ Change this!
 

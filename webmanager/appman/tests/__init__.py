@@ -11,7 +11,7 @@ from django.db.models.signals import pre_save, post_save, post_delete
 from appman.models import *
 from appman.signals import get_app_dir, remove_extra_logs
 from appman.utils.fileutils import *
-from appman.utils.other import *
+from appman.utils import get_contact_admin_email
 #from appman.tests.uncompress import UncompressTest
 
 APPS_MAX_LOG_ENTRIES = 5

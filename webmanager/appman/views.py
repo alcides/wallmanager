@@ -16,7 +16,7 @@ from appman.forms import *
 from appman.models import *
 from appman.decorators import *
 from appman.utils.fileutils import *
-from appman.utils.other import *
+from appman.utils import get_contact_admin_email
 
 # Helper
 
