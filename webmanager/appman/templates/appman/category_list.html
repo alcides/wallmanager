@@ -23,8 +23,13 @@
 {% for cat in category_list %}
 <tr>
 	<td>{{ cat.name }}</td>
+	{% ifnotequal cat.name DEFAULT_CATEGORY %}
 	<td><a href="{% url category-edit cat.id %}">edit</a></td>
 	<td><a href="{% url category-remove cat.id %}">remove</a></td>
+	{% else %}
+	<td></td>
+	<td></td>
+	{% endifnotequal %}
 </tr>
 {% endfor %}
 

@@ -4,13 +4,15 @@ from datetime import datetime, time
 from django.core import mail
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.contrib.flatpages.models import FlatPage
 from django.core.files import File
 from django.db.models.signals import pre_save, post_save, post_delete
 
 from appman.models import *
 from appman.signals import get_app_dir, remove_extra_logs
 from appman.utils.fileutils import *
-from appman.tests.uncompress import UncompressTest
+from appman.utils import get_contact_admin_email
+#from appman.tests.uncompress import UncompressTest
 
 APPS_MAX_LOG_ENTRIES = 5
 DEFAULT_CATEGORY = "Others"
@@ -146,7 +148,7 @@ class ApplicationManagementTest(TestCase):
         login = self.do_login()
 
         zf = open(relative('../../tests/python_test_app.zip'),'rb')
-        response = self.client.post('/applications/upload/', {
+        response = self.client.post('/applications/upload/?user_id=%s' % self.zacarias.id, {
             'test': zf 
         })
         self.assertEqual(response.status_code, 200)
@@ -398,8 +400,67 @@ class ApplicationManagementTest(TestCase):
             ApplicationLog.objects.create(application = self.gps, error_description="Debug %s" % i)
         
         self.assertEqual(ApplicationLog.objects.count(), APPS_MAX_LOG_ENTRIES)
-    
+                
+    def test_report_abuse(self):
+        """ Tests for a sample abuse report """
+        # Clean email inbox
+        mail.outbox = []
+        
+        login = self.do_login()
+        response = self.client.get('/applications/%s/' % self.gps.id )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Report abuse")
+        self.assertContains(response, "<form", 1)
+        self.assertContains(response, "abuse_description")
+        self.assertContains(response, "submit")
+        
+        sample_abuse_description = 'This application contains some sort of innapropriate content.'
+        post_data = {
+            'abuse_description': sample_abuse_description,
+        }
+        response = self.client.post('/applications/%s/report_abuse/' % self.gps.id, post_data)
+        self.assertRedirects(response, '/applications/')
+        
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox[0].to), 1)
+        self.assertEqual(mail.outbox[0].to[0], get_contact_admin_email())
+        self.assertEqual(mail.outbox[0].subject, '[WallManager] Application ' + self.gps.name + ' received an abuse report.')
+        self.assertTrue( sample_abuse_description in mail.outbox[0].body)
+        self.assertTrue( self.gps.name in mail.outbox[0].body)
+
+    def test_documentation_edit(self):
+        login = self.do_admin_login()
+        #test the menu
+        c = FlatPage.objects.count()
+        response = self.client.post('/documentation/menu/')
+        self.assertContains(response, ">edit</a>", Category.objects.count()) 
+
+        #update documentation 
+        post_data = {
+            'content': 'New content.',
+            'title': 'Documents'
+        }
+        response = self.client.post('/documentation/1/edit/', post_data)
+        f = FlatPage.objects.get(title='Documents')
+        self.assertEqual(f.content, "New content.")
+       
+        #update faq 
+        post_data = {
+            'content': 'New faq content.',
+            'title': 'FaqDocuments'
+        }
+        response = self.client.post('/documentation/2/edit/', post_data)
+        f = FlatPage.objects.get(title='FaqDocuments')
+        self.assertEqual(f.content, "New faq content.")
+        #update tech documentation 
+        post_data = {
+            'content': 'New tech content.',
+            'title': 'TDocuments'
+        }
+        response = self.client.post('/documentation/3/edit/', post_data)
+        f = FlatPage.objects.get(title='TDocuments')
+        self.assertEqual(f.content, "New tech content.")
+        
     
     def tearDown(self):
         pass
-        

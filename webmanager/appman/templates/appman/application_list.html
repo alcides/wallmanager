@@ -7,6 +7,16 @@
 {% endblock %}
 
 {% block content %}
+
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+<br/>
+</ul>
+{% endif %}
+
 <div id="addapp" align="right">
 	<ul class="object-tools">
 		<li><a href='{% url application-add %}' class="add-button">Add Application</a></li>
@@ -26,9 +36,10 @@
 	
 		<tbody>
 	
+		{% load sizelimit %}
 		{% for app in application_list %}
 		<tr>
-			<td><a href="{{ app.get_absolute_url }}">{{ app.name }}</a></td>
+			<td><a href="{{ app.get_absolute_url }}">{{ app.name|limit:25 }}</a></td>
 			<td>{{ app.owner }}</td>
 			<td>{{ app.category }}</td>
 			<td>{{ app.stars }}</td>
