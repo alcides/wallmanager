@@ -1,5 +1,7 @@
 *.pyc
+*.url
 clean.bat
+runserver.bat
 webmanager/db/dev.db
 webmanager/media/applications
 webmanager/media/icons

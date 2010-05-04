@@ -98,7 +98,7 @@ class ApplicationLog(models.Model):
         return u"%s log at %s" % (self.application.name, self.datetime)
         
 class WallManager(models.Model):
-    contact = models.EmailField()
+    contact = models.EmailField(blank=True)
     
     def save(self, *args, **kwargs):
         """ There can be only one WallManager instance."""

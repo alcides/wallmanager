@@ -3,10 +3,12 @@ from shutil import rmtree
 
 from django.db.models import signals
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.dispatch import dispatcher, Signal
 from django.core.mail import send_mail
 
-from appman.models import Application
+from appman.models import Application, WallManager
+from appman.utils.other import get_contact_admin_email
 
 #Custom signal declarations
 extracted_email_signal = Signal(providing_args=["application"])
@@ -55,7 +57,19 @@ def send_mail_when_app_available(sender, **kwargs):
     email_to = application.owner.email
     message = 'Your application, ' + application.name + ', has been successfully deployed.'
     send_mail('[WallManager] Application successfully deployed', message, email_from, [email_to])
+    
+def check_if_contact_admin(sender, instance, signal, *args, **kwargs):
+    """ Checks if the removed user is the contact admin (and if so, sets the contact admin to null) """
+    contact_admin_email = get_contact_admin_email()
+    if (instance.email == contact_admin_email):
+        try:
+            wallmanager_instance = WallManager.objects.all()[0]
+            wallmanager_instance.contact = ""
+            wallmanager_instance.save()
+        except IndexError:
+            pass
             
 signals.post_save.connect(uncompress, sender=Application)
 signals.post_delete.connect(remove_app, sender=Application)
+signals.post_delete.connect(check_if_contact_admin, sender=User)
 extracted_email_signal.connect(send_mail_when_app_available)
