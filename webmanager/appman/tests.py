@@ -154,6 +154,7 @@ class ApplicationManagementTest(TestCase):
         self.assertNotEqual(contents.find(expected_message), -1)
         
         temp_app.name="Temporary Application 2"
+        temp_app.extraction_path = extract_folder #Manually set because of SQLite3
         temp_app.save()
         contents = log_file.retrieve_contents()
         event_type = 'edited'
@@ -165,7 +166,10 @@ class ApplicationManagementTest(TestCase):
         event_type = 'deleted'
         expected_message = 'Application %s: %s | Owner: %s\n' % (event_type, temp_app.name, temp_app.owner.email)
         self.assertNotEqual(contents.find(expected_message), -1)
+        event_type = 'removed from filesystem'
+        expected_message = 'Application %s: %s | Owner: %s\n' % (event_type, temp_app.name, temp_app.owner.email)
+        self.assertNotEqual(contents.find(expected_message), -1)
 
     def tearDown(self):
         pass
-        
+
