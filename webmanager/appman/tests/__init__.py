@@ -8,9 +8,9 @@ from django.core.files import File
 from django.db.models.signals import pre_save, post_save, post_delete
 
 from appman.models import *
-from appman.signals import get_app_dir
+from appman.signals import get_app_dir, check_if_contact_admin
 from appman.utils.fileutils import *
-from appman.tests.uncompress import UncompressTest
+#from appman.tests.uncompress import UncompressTest
 
 DEFAULT_CATEGORY = "Others"
 
@@ -24,8 +24,13 @@ class ApplicationManagementTest(TestCase):
         post_delete.receivers = []
     
     def setUp(self):
-        #Creates usernames for Zacarias and Prof. Plum
+        #Creates usernames for Zacarias, Mr. Green and Prof. Plum
         self.zacarias = User.objects.create_user(username="zacarias_stu", email="zacarias@student.dei.uc.pt", password="zacarias")
+        
+        self.green = User.objects.create_user(username="green_ede", email="green@dei.uc.pt", password="green")
+        self.green.is_staff = True
+        self.green.save()
+        
         self.plum = User.objects.create_user(username="plum_ede", email="plum@dei.uc.pt", password="plum")
         self.plum.is_staff = True
         self.plum.is_superuser = True
@@ -45,6 +50,12 @@ class ApplicationManagementTest(TestCase):
     def do_admin_login(self):
         """ Fakes login as administrator. """
         login = self.client.login(username='plum_ede', password='plum')
+        self.assertEqual(login, True)
+        return login
+        
+    def do_normal_admin_login(self):
+        """ Fakes login as a normal administrator (as opposed to a super administrator). """
+        login = self.client.login(username='green_ede', password='green')
         self.assertEqual(login, True)
         return login
    
@@ -375,8 +386,37 @@ class ApplicationManagementTest(TestCase):
 
     	#confirm that there exists a new user
     	self.assertEqual(User.objects.count(), u+1)
-  
+        
+    def test_requires_superuser_to_define_contact_admin(self):
+        """ Test superuser requirement in defining the contact administrator. """
+        #Regular user
+        login = self.do_login()
+        response = self.client.get('/admin_contact/')
+        self.assertRedirects(response, '/accounts/login/?next=/admin_contact/')
+        #Admin
+        login = self.do_normal_admin_login()
+        response = self.client.get('/admin_contact/')
+        self.assertRedirects(response, '/accounts/login/?next=/admin_contact/')
+        
+    def test_define_contact_admin(self):
+        login = self.do_admin_login()
+        response = self.client.get('/admin_contact/')
+        self.assertContains(response, 'Current contact admin: None.')
+        #Make sure Mr. Green is listed as an admin and make him the new contact admin
+        self.assertContains(response, '<option value="%s">%s</option>' % (self.green.email, self.green.email))
+        post_data = {
+            'contact_admin': 'green@dei.uc.pt',
+        }
+        response = self.client.post('/admin_contact/', post_data)
+        self.assertContains(response, 'The contact admin was defined successfully.')
+        self.assertContains(response, 'Current contact admin: %s' % self.green.email)
+        #Remove Mr. Green from the admins (requires signal for contact admin update)
+        post_delete.connect(check_if_contact_admin, sender=User)
+        self.green.delete()
+        response = self.client.get('/admin_contact/')
+        self.assertContains(response, 'Current contact admin: None.')
+        post_delete.receivers = []
     
     def tearDown(self):
         pass
-        
+
