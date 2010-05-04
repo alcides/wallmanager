@@ -19,7 +19,7 @@ DATABASE_PORT = ''             # empty -> default
 DATABASE_SUPPORTS_TRANSACTIONS = True
 
 EMAIL_HOST = 'smtp.dei.uc.pt'
-EMAIL_PORT = 1025
+EMAIL_PORT = 25
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
@@ -74,7 +74,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 LOGIN_REDIRECT_URL = '/applications/'
-DEFAULT_FROM_EMAIL = 'wallmanager@dei.uc.pt'
 
 WALL_APP_DIR = relative('../mtmenu/apps/')
 ZIP_FOLDER = "applications"
