@@ -46,12 +46,10 @@ class Application(models.Model):
         return u"%s" % self.name
             
     def save(self, force_insert=False, force_update=False):
-        application_was_edited = False
         try:
             old_obj = Application.objects.get(pk=self.pk)
             if old_obj.icon.path != self.icon.path:
                     old_obj.icon.delete()
-            application_was_edited = True
         except:
             pass
         

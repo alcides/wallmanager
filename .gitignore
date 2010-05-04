@@ -1,4 +1,5 @@
 *.pyc
+*.url
 clean.bat
 webmanager/db/dev.db
 webmanager/media/applications

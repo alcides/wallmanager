@@ -13,7 +13,7 @@ def log(message):
     file_lock.release()
 
 def log_app_event(application, event_type):
-    message = '[' + str(datetime.today()) + '] Application ' + event_type + ': ' + application.name + ' | Owner: ' + application.owner.email +'\n'
+    message = '[%s] Application %s: %s | Owner: %s\n' % (datetime.today(), event_type, application.name, application.owner.email)
     log(message)
     
 def retrieve_contents():

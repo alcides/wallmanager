@@ -142,11 +142,29 @@ class ApplicationManagementTest(TestCase):
         extract_folder = relative("../tests/temp")        
         temp_app = Application.objects.create(name="Temporary Application", owner=self.zacarias, category=self.educational, zipfile = File(open(relative("../tests/python_test_app.zip"))))
         contents = log_file.retrieve_contents()
-        self.assertNotEqual(contents.find('Application added: Temporary Application | Owner: ' + self.zacarias.email +'\n'), -1)
+        event_type = 'added'
+        expected_message = 'Application %s: %s | Owner: %s\n' % (event_type, temp_app.name, temp_app.owner.email)
+        self.assertNotEqual(contents.find(expected_message), -1)
         
         thread = UncompressThread(Application, temp_app, extract_folder)
         thread.run()
-        self.assertNotEqual(contents.find('Application deployed: Temporary Application | Owner: ' + self.zacarias.email +'\n'), -1)
+        contents = log_file.retrieve_contents()
+        event_type = 'deployed'
+        expected_message = 'Application %s: %s | Owner: %s\n' % (event_type, temp_app.name, temp_app.owner.email)
+        self.assertNotEqual(contents.find(expected_message), -1)
+        
+        temp_app.name="Temporary Application 2"
+        temp_app.save()
+        contents = log_file.retrieve_contents()
+        event_type = 'edited'
+        expected_message = 'Application %s: %s | Owner: %s\n' % (event_type, temp_app.name, temp_app.owner.email)
+        self.assertNotEqual(contents.find(expected_message), -1)
+        
+        temp_app.delete()
+        contents = log_file.retrieve_contents()
+        event_type = 'deleted'
+        expected_message = 'Application %s: %s | Owner: %s\n' % (event_type, temp_app.name, temp_app.owner.email)
+        self.assertNotEqual(contents.find(expected_message), -1)
 
     def tearDown(self):
         pass
