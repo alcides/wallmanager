@@ -47,19 +47,20 @@ def application_list(request):
 
 @login_required
 def application_filter(request):
-    print request.user
-    print request.POST.get('category','')
-    #TODO add some message 
-    if request.POST.get('category','') =='':
-        return HttpResponseRedirect(reverse('application-list'))
-
-    if request.POST.get('myApps','off') == 'on':
-        cs = Application.objects.filter(category = request.POST.get('category',''))& Application.objects.filter(owner = request.user)
-    else:
-        cs = Application.objects.filter(category = request.POST.get('category','')) 
-#    cs = Application.objects.all()
     form_class = ApplicationFilterForm
     form = form_class()
+    #TODO add some message 
+    if request.POST.get('category','') =='' and request.POST.get('myApps','off')=='on':
+        #show only this user applications
+        cs = Application.objects.filter(owner = request.user)
+    elif request.POST.get('myApps','off') == 'on':
+        cs = Application.objects.filter(category = request.POST.get('category',''))& Application.objects.filter(owner = request.user)
+    elif request.POST.get('myApps','off') == 'off' and request.POST.get('category','') !='':
+        cs = Application.objects.filter(category = request.POST.get('category','')) 
+    else:
+        return HttpResponseRedirect(reverse('application-list'))
+
+#    cs = Application.objects.all()
     return render(request,'appman/application_list.html', {'application_list': cs,
         'form': form  })
 

@@ -430,7 +430,7 @@ class ApplicationManagementTest(TestCase):
 
     def test_search_application(self):
         login = self.do_admin_login()
-        self.gps = Application.objects.create(name="Myapp", description="An application", owner=self.zacarias, category=self.educational)
+        self.app = Application.objects.create(name="Myapp", description="An application", owner=self.zacarias, category=self.educational)
 
         #test none app
         post_data = {
@@ -444,7 +444,6 @@ class ApplicationManagementTest(TestCase):
             'q':"My"
         }
         response = self.client.post('/applications/search/', post_data)
-        print response
         self.assertContains(response,self.educational.name, 1) 
         
         #test search by description
@@ -491,20 +490,38 @@ class ApplicationManagementTest(TestCase):
         
     def test_category_filter(self):
         login = self.do_login()
+        self.app = Application.objects.create(name="Myapp", description="An application", owner=self.zacarias, category=self.educational)
+        self.app = Application.objects.create(name="Myapplication", description="An application", owner=self.zacarias, category=self.games)
+        self.app = Application.objects.create(name="Otherapp", description="Another application", owner=self.plum, category=self.games)
 
         #confirm that the dropdown menu is correct
         c = Category.objects.count()
         response = self.client.get('/applications/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "<option>", c+1) 
+        self.assertContains(response, "<option", c+1) 
         
-        #filter other applications (none)
-        #update documentation 
+        #filter my applications , this should return two applications
         post_data = {
-            'content': 'New content.',
-            'title': 'Documents'
+            'category': '',
+            'myApps': 'on'
         }
-        response = self.client.post('/documentation/1/edit/', post_data)
+        response = self.client.post('/applications/filter/', post_data)  
+        self.assertContains(response, '<td>%s'%(self.zacarias.username), 3) 
+        #filter application by category
+        post_data = {
+            'category': self.educational.id,
+            'myApps': 'off'
+        }
+        response = self.client.post('/applications/filter/', post_data)  
+        self.assertContains(response, '<td>%s'%(self.educational.name), 2) 
+
+        #filter application by category and owner
+        post_data = {
+            'category': self.games.id,
+            'myApps': 'on'
+        }
+        response = self.client.post('/applications/filter/', post_data)  
+        self.assertContains(response, '<td>%s'%(self.zacarias.username), 1) 
         
         
     def tearDown(self):
