@@ -65,10 +65,17 @@ class AppButton(MTKineticItem):
     def draw(self):
         self.draw_background()
         self.draw_label()
-        self.image = Image("images/icon.png")
-        x,y = list(self.center)
-        self.image.pos = x - self.image.width /2, y - self.image.height /2      
-        self.image.draw()
+        self.draw_icon()
+        
+        
+    def draw_icon(self):
+        try:
+            self.image = Image( "../webmanager/media/"+str(self.app.icon) )
+            x,y = list(self.center)
+            self.image.pos = x - self.image.width /2, y - self.image.height /2      
+            self.image.draw()
+        except:
+            print "Icon Exception: Unrecognized type of format"
         
         
     def draw_background(self):
@@ -79,9 +86,6 @@ class AppButton(MTKineticItem):
 
     def draw_label(self, dx=0, dy=0):
         pos = list(self.center)
-        pos[0] -= len(self.label) /2
         pos[1] -= 50
-
-        label= self.label
-        drawLabel(label=label, pos=pos, size=(100,None), halign= 'center', anchor_y='top', font_size= 10)
+        drawLabel(label= self.label, pos=pos, size=(100,None), halign= 'center', anchor_y='top', font_size= 10)
 

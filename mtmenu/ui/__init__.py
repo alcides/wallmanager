@@ -9,8 +9,8 @@ cover_window = CoverWindow()
 
 
 # Scatter to make AppsList movable
-from mtmenu.ui.scatter import Scatter
-scatter = Scatter()
+from mtmenu.ui.mainscatter import MainScatter
+scatter = MainScatter()
 
 
 # Construct AppsList looping through all apps
