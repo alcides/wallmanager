@@ -5,5 +5,5 @@ def get_contact_admin_email():
     try:
         email_to = User.objects.filter(is_superuser=True)[0].email
     except IndexError:
-        email_to = settingsDEFAULT_FROM_EMAIL
+        email_to = settings.DEFAULT_FROM_EMAIL
     return email_to
