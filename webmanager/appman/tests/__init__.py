@@ -1,4 +1,5 @@
 import os
+import re
 
 from datetime import datetime, time
 from django.core import mail
@@ -36,7 +37,7 @@ class ApplicationManagementTest(TestCase):
         self.plum.save()
         		
         self.educational = Category.objects.create(name="Educational")
-        self.games = Category.objects.create(name="Games")
+        self.TestCat = Category.objects.create(name="TestCat")
         
         self.gps = Application.objects.create(name="Gps Application", owner=self.zacarias, category=self.educational)
         
@@ -259,7 +260,7 @@ class ApplicationManagementTest(TestCase):
         login = self.do_admin_login()
         response = self.client.get('/categories/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Games</td>")
+        self.assertContains(response, "TestCat</td>")
         self.assertContains(response, "<tr>", Category.objects.count()+1) # 2 cat, plus header
     
     def test_authorized_add_category(self):
@@ -306,7 +307,7 @@ class ApplicationManagementTest(TestCase):
         """ Test removal of empty category. """
         login = self.do_admin_login()
         c = Category.objects.count()
-        response = self.client.post('/categories/%s/remove/'%self.games.id)
+        response = self.client.post('/categories/%s/remove/'%self.TestCat.id)
         self.assertRedirects(response, '/categories/')
         self.assertEqual(c-1, Category.objects.count())
 
@@ -433,33 +434,15 @@ class ApplicationManagementTest(TestCase):
         #test the menu
         c = FlatPage.objects.count()
         response = self.client.post('/documentation/menu/')
-        self.assertContains(response, ">edit</a>", Category.objects.count()) 
-
-        #update documentation 
-        post_data = {
-            'content': 'New content.',
-            'title': 'Documents'
-        }
-        response = self.client.post('/documentation/1/edit/', post_data)
-        f = FlatPage.objects.get(title='Documents')
-        self.assertEqual(f.content, "New content.")
-       
-        #update faq 
-        post_data = {
-            'content': 'New faq content.',
-            'title': 'FaqDocuments'
-        }
-        response = self.client.post('/documentation/2/edit/', post_data)
-        f = FlatPage.objects.get(title='FaqDocuments')
-        self.assertEqual(f.content, "New faq content.")
-        #update tech documentation 
-        post_data = {
-            'content': 'New tech content.',
-            'title': 'TDocuments'
-        }
-        response = self.client.post('/documentation/3/edit/', post_data)
-        f = FlatPage.objects.get(title='TDocuments')
-        self.assertEqual(f.content, "New tech content.")
+        exp = re.compile(r"\/documentation\/\d\/edit")
+        self.assertEqual( len(exp.findall(response.content)), FlatPage.objects.count() )
+        
+        for page in FlatPage.objects.all():
+            title = page.title
+            post_data = { 'title': title, 'content': 'This is a new content.' }
+            response = self.client.post('/documentation/%d/edit/' % page.id, post_data)
+            f = FlatPage.objects.get(title=title)
+            self.assertEqual(f.content, 'This is a new content.')
         
     
     def tearDown(self):
