@@ -4,8 +4,14 @@ from models import ApplicationLogProxy, ApplicationProxy, CategoryProxy, UserPro
 from django.test import TestCase
 from unittest import TestLoader, TextTestRunner
 
-from settings import APPS_MAX_LOG_ENTRIES, relative
-from mtmenu import application_running
+from webmanager.settings import APPS_MAX_LOG_ENTRIES
+from mtmenu.settings import relative
+from mtmenu.ui.scatter import Scatter
+from mtmenu.application_running import get_app_running, kill_app_running, is_app_running
+
+# TODO Disabled for SQLite3
+ApplicationProxy.start_run = lambda x: True
+Scatter.resume = lambda x,y: True
 
 class TestMultiTouch(TestCase):
     """ Tests defined to the Wall Application 
@@ -48,33 +54,32 @@ class TestMultiTouch(TestCase):
     
     def test_run_application(self):
         """ Tests running an application """
+        import time
+        
         self.tetris.execute()
         
-        import time
+        
         time.sleep(5)
         
-        import application_running
-        app = application_running.getAppRunning()
-        
+        app = get_app_running()
+
         self.assertNotEqual(app, None)
         self.assertEqual(app.poll(), None)
     
     
     def test_terminate_application(self):
         """ Kills the running application (if none runnig, it starts it) """
-        import application_running
         import time
-        
-        if not application_running.isAppRunning():
+        if not is_app_running():
             self.tetris.execute()
             time.sleep(5)
-            
-        app = application_running.getAppRunning()
+
+        app = get_app_running()
         
         # guarantee the application is running
         self.assertNotEqual(app, None)
 
-        application_running.killAppRunning()
+        kill_app_running()
          
         time.sleep(5)
         

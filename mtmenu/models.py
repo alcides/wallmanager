@@ -4,15 +4,14 @@ from subprocess import Popen, PIPE
 from settings import *
 from cStringIO import StringIO
 from threading import Thread
-from proxy import proxy
-from application_running import *
-from ui import scatter
+from mtmenu.proxy import proxy
+from mtmenu.application_running import set_app_running, remove_app_running, get_app_running
+from copy import deepcopy
 
 
 # Go back one directory and adds it to sys.path
-add_dir = lambda x: sys.path.append(join(abspath(dirname(__file__)), *x))
-add_dir(['..'])
-add_dir(['..', 'webmanager'])
+sys.path.append('..')
+sys.path.append('../webmanager')
 
 # Set needed environment variable
 environ['DJANGO_SETTINGS_MODULE'] = 'webmanager.settings'
@@ -55,37 +54,50 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             An Exception is raised in case something goes wrong during
             process execution"""
             
+            
+        #hide scatter    
+        from mtmenu.ui import cover_window
+        cover_window.show()
+        
         app_boot_file = self.get_boot_file()
         success = False
         
         if app_boot_file:
             
             try:
+                
+                self.start_run()
+                
                 command = self.build_command(app_boot_file)
                 
                 # Starts application process and waits for it to terminate
                 process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath())
                 
-                # hides the main menu and defines the application that is running
-                scatter.hide()
-                setAppRunning(process)
+                # defines the application that is running
+                set_app_running(process)
 
+                get_app_running()
                 # Concatenate output
                 output = StringIO()
                 for line in process.communicate():
                     output.write(line)
 
-                scatter.show()
-                removeAppRunning()
+
+                remove_app_running()
+                cover_window.resume(self)
+                
+                        
+                self.end_run()                
                 
                 # Save output to database
                 self.add_log_entry(output.getvalue())    
                     
                 success = True
             except:
-                pass
+                raise
             
         return success
+        
         
     def get_extraction_fullpath(self):
         """Full path to application repository.
@@ -137,6 +149,26 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             
         # Get all entries associated with this application
         entries = ApplicationLogProxy.objects.filter(application = self).order_by('-datetime')
+        
+        
+    def vote(self, like):
+        if like:
+            self.likes = self.likes + 1
+        else:
+            self.dislikes = self.dislikes + 1
+        self.save()
+            
+    def start_run(self):
+        self.is_running = True
+        self.save(False, True)
+        
+    def end_run(self):
+        self.is_running = False
+        self.add_run()
+        self.save(False, True)
+        
+    def add_run(self):
+        self.runs = self.runs + 1
 
             
 class CategoryProxy(models.Category, WallModelsProxy):
