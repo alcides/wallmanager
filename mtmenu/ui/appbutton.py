@@ -1,6 +1,5 @@
 from pymt import *
 from mtmenu.ui.apppopup import AppPopup
-from mtmenu.ui.mykinetic import *
 from threading import Timer
 
 
