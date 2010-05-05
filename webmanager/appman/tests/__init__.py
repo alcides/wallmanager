@@ -437,21 +437,21 @@ class ApplicationManagementTest(TestCase):
             'q':"Nothing else matters"
         }
         response = self.client.post('/applications/search/', post_data)
-        self.assertContains(response, self.educational.name, 0) 
+        self.assertContains(response, '<td>%s'%self.educational.name, 0) 
 
         #test search by title
         post_data = {
             'q':"My"
         }
         response = self.client.post('/applications/search/', post_data)
-        self.assertContains(response,self.educational.name, 1) 
+        self.assertContains(response, '<td>%s'%self.educational.name, 1) 
         
         #test search by description
         post_data = {
             'q':"Some"
         }
         response = self.client.post('/applications/search/', post_data)
-        self.assertContains(response, self.educational.name, 1) 
+        self.assertContains(response,  '<td>%s'%self.educational.name, 1) 
         
         
 

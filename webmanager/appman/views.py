@@ -41,14 +41,12 @@ def contact(request):
 @login_required
 def application_list(request):
     cs = Application.objects.all()
-    form_class = ApplicationFilterForm
-    form = form_class()
+    form = ApplicationFilterForm()
     return render(request,'appman/application_list.html', {'application_list': cs, "form": form})
 
 @login_required
 def application_filter(request):
-    form_class = ApplicationFilterForm
-    form = form_class()
+    form = ApplicationFilterForm()
     #TODO add some message 
     if request.POST.get('category','') =='' and request.POST.get('myApps','off')=='on':
         #show only this user applications
@@ -60,16 +58,15 @@ def application_filter(request):
     else:
         return HttpResponseRedirect(reverse('application-list'))
 
-#    cs = Application.objects.all()
     return render(request,'appman/application_list.html', {'application_list': cs,
         'form': form  })
 
 @login_required
 def application_search(request):
     cs = Application.objects.filter(name__contains = request.POST.get('q',''))|Application.objects.filter(description__contains = request.POST.get('q',''))
-    form_class = ApplicationFilterForm
-    form = form_class()
-    return object_list(request, queryset=cs, template_object_name="application")
+    form = ApplicationFilterForm()
+    return render(request,'appman/application_list.html', {'application_list': cs,
+        'form': form  })
 
 @login_required
 def application_add(request):
