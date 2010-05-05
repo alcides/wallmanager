@@ -24,6 +24,7 @@ EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'no-reply@sensewall.dei.uc.pt'
+DEFAULT_TO_EMAIL = 'wallmanager@dei.uc.pt'
 
 SECRET_KEY = '%4)e8snda5-cewqsjx#%t$sg-j0txw)mb%leue1_^paa=(ft)e' # <------ Change this!
 

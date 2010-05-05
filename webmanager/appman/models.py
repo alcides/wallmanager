@@ -95,3 +95,11 @@ class ApplicationLog(models.Model):
     
     def __unicode__(self):
         return u"%s log at %s" % (self.application.name, self.datetime)
+        
+class WallManager(models.Model):
+    contact = models.EmailField(blank=True)
+    
+    def save(self, *args, **kwargs):
+        """ There can be only one WallManager instance."""
+        WallManager.objects.all().delete()
+        super(WallManager,self).save(*args, **kwargs)
