@@ -29,8 +29,13 @@ class ApplicationManagementTest(TestCase):
         post_save.connect(remove_extra_logs, sender=ApplicationLog)
     
     def setUp(self):
-        #Creates usernames for Zacarias and Prof. Plum
+        # Zacarias is a user who uploads apps
         self.zacarias = User.objects.create_user(username="zacarias_stu", email="zacarias@student.dei.uc.pt", password="zacarias")
+        
+        # Alfredo is a visitor
+        self.alfredo = User.objects.create_user(username="alfredo_stu", email="alfredo@student.dei.uc.pt", password="alfredo")
+        
+        # Prof. Plum is an admin for the app.
         self.plum = User.objects.create_user(username="plum_ede", email="plum@dei.uc.pt", password="plum")
         self.plum.is_staff = True
         self.plum.is_superuser = True
@@ -41,9 +46,12 @@ class ApplicationManagementTest(TestCase):
         
         self.gps = Application.objects.create(name="Gps Application", owner=self.zacarias, category=self.educational)
         
-    def do_login(self):
+    def do_login(self, user="zacarias"):
         """ Fakes login as standard user. """
-        login = self.client.login(username='zacarias_stu', password='zacarias')
+        if user == "zacarias":
+            login = self.client.login(username='zacarias_stu', password='zacarias')
+        else:
+            login = self.client.login(username='alfredo_stu', password='alfredo')
         self.assertEqual(login, True)
         return login
 
@@ -407,10 +415,10 @@ class ApplicationManagementTest(TestCase):
         # Clean email inbox
         mail.outbox = []
         
-        login = self.do_login()
+        login = self.do_login(user="alfredo")
         response = self.client.get('/applications/%s/' % self.gps.id )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Report abuse")
+        self.assertContains(response, "Report Abuse")
         self.assertContains(response, "<form", 1)
         self.assertContains(response, "abuse_description")
         self.assertContains(response, "submit")
