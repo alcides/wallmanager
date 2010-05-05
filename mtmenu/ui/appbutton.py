@@ -24,7 +24,6 @@ class AppButton(MTKineticItem):
         self.app = app
         self.pop = None
       
-        
         super(AppButton, self).__init__(**kwargs)
         
 
@@ -60,9 +59,11 @@ class AppButton(MTKineticItem):
         print '\tBoot file: %s\n' % self.app.get_boot_file()
         self.app.execute()
         
+        print 'Updating category and application lists'
         #refresh category in main thread
         from mtmenu.ui import category_grid
         category_grid.refresh()
+        self.parent.refresh( self.app.category )
         
         
     def draw(self):
