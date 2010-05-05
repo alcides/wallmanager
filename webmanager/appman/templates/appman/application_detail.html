@@ -17,7 +17,25 @@
 <p><b>Date Updated:</b> {{ application.date_updated }}</p>
 <p><b>Number of times run:</b> {{ application.runs }}</p>
 <p><b>Rating:</b> {{ application.stars }}</p>
+<p><a href="#" onClick="show_report_abuse_form();">Report abuse</a></p>
 
+<div id="report_abuse_form">
+<form action="report_abuse/" method="post" enctype="multipart/form-data">
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+</form>
+</div>
+
+<script type="text/javascript">
+    document.getElementById('report_abuse_form').style.visibility = 'hidden';
+    
+    function show_report_abuse_form() {
+        var form = document.getElementById('report_abuse_form');
+        form.style.visibility = 'visible';
+    }
+</script>
+
+      
 {% ifequal user application.owner %}
 
 <a href="{% url application-edit application.id %}">Edit Application</a>

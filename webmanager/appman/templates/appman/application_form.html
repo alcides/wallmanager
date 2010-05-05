@@ -66,7 +66,7 @@
 			swfupload = new SWFUpload({
 				debug: false,
 
-				upload_url: "{% url application-upload %}",
+				upload_url: "{% url application-upload %}?user_id={{ user.id }}",
 				flash_url: "{{ MEDIA_URL }}js/swfupload/swfupload.swf",
 
 				button_placeholder_id: "upload_btn",
