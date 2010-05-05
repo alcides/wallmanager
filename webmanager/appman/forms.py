@@ -9,16 +9,14 @@ class CategoryForm(ModelForm):
     class Meta:
         model = Category
         fields = ('name',)
-	
+
+
 class ApplicationForm(ModelForm):
+    zipfile = FileField(label="Zip file")
+    
     class Meta:
         model = Application
         fields = ('name', 'zipfile','icon','category','description')
-
-class DocumentationForm(ModelForm):
-    class Meta:
-        model = FlatPage
-        fields = ('title','content')
         
 
 class ApplicationAddForm(ApplicationForm):
@@ -31,15 +29,22 @@ class ApplicationAddForm(ApplicationForm):
             raise ValidationError("You have to agree to the Terms of Service.")
 	
 class ApplicationEditForm(ApplicationForm):
-    zipfile = FileField(required=False)
+    zipfile = FileField(label="Zip file", required=False)
     icon = FileField(required=False)
+    
+    
+class DocumentationForm(ModelForm):
+    class Meta:
+        model = FlatPage
+        fields = ('title','content')
+    
 
 class UserCreationForm(ModelForm):
     """
     A form that creates a user, with no privileges, from the given username and password.
     """
     username = RegexField(label=("Username"), max_length=30, regex=r'^\w+$', required=True)
-    email = EmailField(label=("Email"), required=True, help_text="Must be a uc.pt account.")
+    email = EmailField(label=("Email"), required=True, help_text="(Must be a uc.pt account.)")
     password1 = CharField(label=("Password"), widget=PasswordInput, required=True)
     password2 = CharField(label=("Password confirmation"), widget=PasswordInput, required=True)
 

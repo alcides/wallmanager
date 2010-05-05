@@ -27,15 +27,11 @@ html {
 body {
 	background: #EEE url(/media/img/bg.gif);
 	color: #444;
-	font: normal 62.5% "Lucida Sans Unicode",sans-serif;
+	font: normal 72.5% "Lucida Sans Unicode",sans-serif;
 	margin: 0;
 	height: 100%;
 }
 
-p,ul {
-	font-size: 1.2em;
-	padding-bottom: 1.2em;
-}
 h1 {
 	font-size: 1.7em;
 	margin-bottom: 15px;
@@ -64,7 +60,6 @@ h1,h2,h3 {
 }
 
 blockquote {
-    font-size: 0.8em;
     background-color: #ECF0C5;
     text-align: justify;
     padding: 3px;
