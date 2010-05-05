@@ -21,6 +21,7 @@
 	<h3>Actions</h3>
 	<ul>
 	{% ifequal user application.owner %}
+		<li><a href="/media/{{ application.zipfile }}">Download</a></li>
 		<li><a href="{% url application-edit application.id %}">Edit Application</a></li>
 		<li><a href="{% url application-delete application.id %}" 
 			onclick="return confirm('Delete application', 'Are you sure you want to delete this app?');">
@@ -35,6 +36,8 @@
 		{% endif %}
 	{% endifequal %}
 </div>
+
+<img class="icon" src="/media/{{ application.icon }}" alt="{{ application.name }}" />
 
 <p class="description">{{ application.description }}</p>
 

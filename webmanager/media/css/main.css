@@ -347,6 +347,13 @@ blockquote {
     margin-bottom: 5px;
 }
 
+.content img.icon {
+    float: left;
+    margin: 5px;
+    width: 80px;
+    height: 80px;
+}
+
 p.description {
     font-family: Georgia;
     font-style: italic;
