@@ -29,7 +29,8 @@ class CoverWindow( MTModalWindow ):
     
         
     def hide(self):
-        self.timer.cancel()
+        self.timer.cancel()        
         self.remove_widget( self.vote )
-        self.parent.remove_widget( self )
+        if self.parent:
+            self.parent.remove_widget( self )
 

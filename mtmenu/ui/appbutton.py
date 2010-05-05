@@ -53,13 +53,16 @@ class AppButton(MTKineticItem):
         self.pop = None
 
 
-
     def open_app(self):
         print '\nLoading %s...\n' % unicode(self.app)
         print 'ID: %i' % self.app.id
         print '\tPath: %s\n' % self.app.get_extraction_fullpath
         print '\tBoot file: %s\n' % self.app.get_boot_file()
         self.app.execute()
+        
+        #refresh category in main thread
+        from mtmenu.ui import category_grid
+        category_grid.refresh()
         
         
     def draw(self):

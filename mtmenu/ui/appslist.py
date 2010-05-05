@@ -34,7 +34,6 @@ class AppsList (MTKineticList):
             chunk.reverse()
             for app in chunk:
                 item = AppButton(app)
-               
                 self.add_widget(item)
 
                    
@@ -50,11 +49,9 @@ class AppsList (MTKineticList):
             
             
     def reorder(self, **kwargs):
-        order= kwargs['order_by']
-        if order != self.criteria:
-            self.clear() 
-            self.criteria = order
-            self.add( self.apps )
+        self.clear() 
+        self.criteria = kwargs['order_by']
+        self.add( self.apps )
           
                     
     def order(self, apps):

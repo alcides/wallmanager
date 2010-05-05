@@ -26,8 +26,11 @@ class CategoryList (MTKineticList):
         
        
     def refresh(self):
+        print 'la'
         self.clear()
+        print 'ca'
         self.add( getAllCategories() )
+        print 'ka'
 
 
     def order(self, categories):
