@@ -1,6 +1,6 @@
 import os
 
-from mtmenu.models import ApplicationLogProxy, ApplicationProxy, CategoryProxy, UserProxy
+from models import ApplicationLogProxy, ApplicationProxy, CategoryProxy, UserProxy
 from django.test import TestCase
 from unittest import TestLoader, TextTestRunner
 

@@ -7,7 +7,7 @@ class AppPopup( Popup ):
 
     def __init__(self, app, **kwargs):
         self.app = app
-        self.text = "Name: %s\nCategory: %s\nOwner: %s\nRuns: %s\nLikes: %s\nDislikes: %s\nValue: %s" % (app.name, app.category, app.owner, app.runs, app.likes, app.dislikes, app.value())
+        self.text = "Name: %s\nCategory: %s\nOwner: %s\nRuns: %s\nLikes: %s\nDislikes: %s" % (app.name, app.category, app.owner, app.runs, app.likes, app.dislikes)
         kwargs.setdefault('title', self.text)
         kwargs.setdefault('pos', (0,0))
         kwargs.setdefault('label_submit', 'Play')

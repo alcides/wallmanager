@@ -1,7 +1,7 @@
 import sys
 from os import environ, path
 from subprocess import Popen, PIPE
-from mtmenu.settings import *
+from settings import *
 from cStringIO import StringIO
 from threading import Thread
 from mtmenu.proxy import proxy
