@@ -17,8 +17,8 @@ if __name__ == '__main__':
     # Start TUIO proxy
     proxy.start()
 
-    apps_grid.add( getAllApplications() )
-    category_grid.add( getAllCategories() )
+    apps_grid.add( get_all_applications() )
+    category_grid.add( get_all_categories() )
     
     
     # Top left logo

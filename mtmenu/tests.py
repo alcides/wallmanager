@@ -7,7 +7,7 @@ from unittest import TestLoader, TextTestRunner
 from webmanager.settings import APPS_MAX_LOG_ENTRIES
 from mtmenu.settings import relative
 from mtmenu.ui.scatter import Scatter
-from mtmenu.application_running import getAppRunning, killAppRunning, isAppRunning
+from mtmenu.application_running import get_app_running, kill_app_running, is_app_running
 
 # TODO Disabled for SQLite3
 ApplicationProxy.start_run = lambda x: True
@@ -61,7 +61,7 @@ class TestMultiTouch(TestCase):
         
         time.sleep(5)
         
-        app = getAppRunning()
+        app = get_app_running()
 
         self.assertNotEqual(app, None)
         self.assertEqual(app.poll(), None)
@@ -70,16 +70,16 @@ class TestMultiTouch(TestCase):
     def test_terminate_application(self):
         """ Kills the running application (if none runnig, it starts it) """
         import time
-        if not isAppRunning():
+        if not is_app_running():
             self.tetris.execute()
             time.sleep(5)
 
-        app = getAppRunning()
+        app = get_app_running()
         
         # guarantee the application is running
         self.assertNotEqual(app, None)
 
-        killAppRunning()
+        kill_app_running()
          
         time.sleep(5)
         

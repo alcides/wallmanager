@@ -4,31 +4,31 @@ This module keeps the running application object and provides an interface to ki
 
 from subprocess import Popen
 
-__all__ = ['getAppRunning', 'setAppRunning', 'removeAppRunning', 'isAppRunning', 'killAppRunning']
+__all__ = ['get_app_running', 'set_app_running', 'remove_app_running', 'is_app_running', 'kill_app_running']
 
 app_running = None
 
-def getAppRunning():
+def get_app_running():
     ''' Returns the running application object '''
     global app_running
     return app_running
 
-def setAppRunning(app):
+def set_app_running(app):
     ''' Sets the running application object '''
     global app_running
     app_running = app
     
-def removeAppRunning():
+def remove_app_running():
     ''' Sets the running application to None'''
     global app_running
     app_running = None
     
-def isAppRunning():
+def is_app_running():
     ''' Verifies if is there an application running '''
     global app_running
     return app_running != None
 
-def killAppRunning():
+def kill_app_running():
     ''' Kills the running application process '''
     if app_running:
         pid = app_running.pid

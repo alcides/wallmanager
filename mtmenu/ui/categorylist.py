@@ -22,23 +22,19 @@ class CategoryList (MTKineticList):
         
     def add(self, categories):
         self.categories = categories
-        print categories
         style = {'bg-color': (0, 1, 0, 1), 'draw-background': 1, 'draw-border': True, 'border-radius': 5}
-        for category in self.order( categories ):
-            print category
-            CENA = CategoryButton(category, style = style)
-            print CENA
+        for category in categories:
             self.add_widget( CategoryButton(category, style = style) )        
         self.add_widget( CategoryButton(None, style=style) )
-        print 'finish add'
         
        
     def refresh(self): 
         self.clear()
-        self.add( getAllCategories() )
+        self.add( get_all_categories() )
         if not self.is_current_valid():
             from mtmenu.ui import apps_grid
             apps_grid.refresh(None)
+
 
     def is_current_valid(self):
         return self.current == None or any( map(lambda x: x.name==self.current.name, self.categories) )

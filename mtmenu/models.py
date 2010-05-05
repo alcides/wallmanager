@@ -5,7 +5,7 @@ from mtmenu.settings import *
 from cStringIO import StringIO
 from threading import Thread
 from mtmenu.proxy import proxy
-from mtmenu.application_running import setAppRunning, removeAppRunning, getAppRunning
+from mtmenu.application_running import set_app_running, remove_app_running, get_app_running
 from copy import deepcopy
 
 
@@ -74,16 +74,16 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath())
                 
                 # defines the application that is running
-                setAppRunning(process)
+                set_app_running(process)
 
-                getAppRunning()
+                get_app_running()
                 # Concatenate output
                 output = StringIO()
                 for line in process.communicate():
                     output.write(line)
 
 
-                removeAppRunning()
+                remove_app_running()
                 cover_window.resume(self)
                 
                         

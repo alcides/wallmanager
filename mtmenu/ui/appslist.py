@@ -1,5 +1,6 @@
 from pymt import *
 from appbutton import AppButton
+from utils import get_applications
 from mtmenu.settings import LINES_IN_APPS_GRID
 
 
@@ -27,7 +28,7 @@ class AppsList (MTKineticList):
         
     def add(self, apps):
         ''' add widgets to the applications list '''
-        self.apps = self.order(apps)
+        self.apps = apps
         chunks = lambda lis, step:  map(lambda i: lis[i:i+step],  xrange(0, len(lis), step))
 
         for chunk in chunks(self.apps, LINES_IN_APPS_GRID):
@@ -40,23 +41,19 @@ class AppsList (MTKineticList):
     def refresh(self, category):
         ''' replace the current list of the applications with the apps provided '''  
         if category == self.current_category:
-            return          
-        self.clear()  
+            return            
         self.current_category = category
-        
-        from utils import getApplications
-        self.add( getApplications(self.current_category) )
+        self.reorder()
             
             
-    def reorder(self, **kwargs):
-        self.clear() 
-        self.criteria = kwargs['order_by']
+    def reorder(self, sort_criteria=None):
+        if sort_criteria:
+            self.criteria = sort_criteria
+        self.clear()
+        self.apps = get_applications( self.current_category, self.criteria == 'value')
         self.add( self.apps )
+        
           
-                    
-    def order(self, apps):
-        return sorted(apps, key = lambda app: eval('app.'+self.criteria), reverse= True)
-                
             
     def __call__(self):
         return self

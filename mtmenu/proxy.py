@@ -1,7 +1,7 @@
 import socket
 from mtmenu.settings import *
 import threading
-from mtmenu.application_running import isAppRunning
+from mtmenu.application_running import is_app_running
 
 
 class Proxy( threading.Thread ):
@@ -34,7 +34,7 @@ class Proxy( threading.Thread ):
         while self.flag:
             data= self.receive_sock.recv( 1024 ) # buffer size is 1024 bytes
             self.send_sock.sendto( data, (UDP_IP, SENDING_PORT_ONE) )
-            if isAppRunning():
+            if is_app_running():
                 self.send_sock.sendto( data, (UDP_IP, SENDING_PORT_TWO) )
 
 proxy = Proxy()
