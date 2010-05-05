@@ -31,6 +31,6 @@ class CategoryList (MTKineticList):
 
 
     def order(self, categories):
-        return sorted(categories, key = lambda cat: cat.name, reverse= True)
+        return sorted(categories, key = lambda cat: cat.name.lower(), reverse= True)
         
 
