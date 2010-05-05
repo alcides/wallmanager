@@ -3,6 +3,7 @@ from django.forms import *
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.mail import send_mail
+from django.contrib.flatpages.models import FlatPage
 
 class CategoryForm(ModelForm):
     class Meta:
@@ -14,6 +15,11 @@ class ApplicationForm(ModelForm):
         model = Application
         fields = ('name', 'zipfile','icon','category','description')
 
+class DocumentationForm(ModelForm):
+    class Meta:
+        model = FlatPage
+        fields = ('title','content')
+        
 
 class ApplicationAddForm(ApplicationForm):
     tos = BooleanField(label='I agree to the terms of service.',
@@ -81,3 +87,6 @@ class UserCreationForm(ModelForm):
         if commit:
     	    user.save()    	
         return user
+
+class ReportAbuseForm(Form):
+    abuse_description = CharField(widget=widgets.Textarea())

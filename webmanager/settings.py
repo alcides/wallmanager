@@ -18,12 +18,12 @@ DATABASE_HOST = ''             # empty -> localhost
 DATABASE_PORT = ''             # empty -> default
 DATABASE_SUPPORTS_TRANSACTIONS = True
 
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
+EMAIL_HOST = 'smtp.dei.uc.pt'
+EMAIL_PORT = 25
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
-DEFAULT_FROM_EMAIL = 'testing@example.com'
+DEFAULT_FROM_EMAIL = 'no-reply@sensewall.dei.uc.pt'
 
 SECRET_KEY = '%4)e8snda5-cewqsjx#%t$sg-j0txw)mb%leue1_^paa=(ft)e' # <------ Change this!
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
+    'django.contrib.flatpages',
     'appman',
 )
 
@@ -69,13 +70,14 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'appman.middleware.swfupload.SWFUploadMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
 LOGIN_REDIRECT_URL = '/applications/'
-DEFAULT_FROM_EMAIL = 'wallmanager@dei.uc.pt'
 
 WALL_APP_DIR = relative('../mtmenu/apps/')
 ZIP_FOLDER = "applications"
+ZIP_TEMP_FOLDER = "app_temp"
 
 DEFAULT_CATEGORY = "Others"
 APPS_MAX_LOG_ENTRIES = 5

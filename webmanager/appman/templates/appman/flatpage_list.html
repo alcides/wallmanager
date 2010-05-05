@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %} Documentation List {% endblock %}
+
+{% block breadcrumb%}
+	<li>Documentation</li>
+{% endblock %}
+
+{% block content %}
+
+<div id="applist">
+	<table class="gradient-style">
+		<tbody>
+	
+		{% for app in application_list %}
+		<tr>
+			<td><a href="{{ app.get_absolute_url }}">{{ app.name }}</a></td>
+			<td>{{ app.owner }}</td>
+			<td>{{ app.category }}</td>
+			<td>{{ app.stars }}</td>
+		</tr>
+		{% endfor %}
+	
+		</tbody>
+	</table>
+</div>
+{% endblock %}
