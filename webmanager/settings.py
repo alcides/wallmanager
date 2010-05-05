@@ -81,3 +81,5 @@ ZIP_TEMP_FOLDER = "app_temp"
 
 DEFAULT_CATEGORY = "Others"
 APPS_MAX_LOG_ENTRIES = 5
+
+LOG_FILENAME = relative('log.txt')

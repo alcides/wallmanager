@@ -5,7 +5,7 @@ from django.views.generic.create_update import *
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404
 from django.core.urlresolvers import reverse
 from django.core.files import File 
 from django.contrib.sites.models import Site
@@ -104,7 +104,6 @@ def application_upload(request):
     else:
         return HttpResponseRedirect(reverse('application-add'))
 
-    
 def application_detail(request,object_id):
     cs = Application.objects.all()
     try:

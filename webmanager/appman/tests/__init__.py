@@ -10,9 +10,11 @@ from django.core.files import File
 from django.db.models.signals import pre_save, post_save, post_delete
 
 from appman.models import *
-from appman.signals import get_app_dir, remove_extra_logs
+from appman.signals import *
 from appman.utils.fileutils import *
 from appman.utils import get_contact_admin_email
+from appman.utils.log_file import logger
+from appman.utils.uncompress import UncompressThread
 #from appman.tests.uncompress import UncompressTest
 
 APPS_MAX_LOG_ENTRIES = 5
@@ -45,6 +47,9 @@ class ApplicationManagementTest(TestCase):
         self.TestCat = Category.objects.create(name="TestCat")
         
         self.gps = Application.objects.create(name="Gps Application", owner=self.zacarias, category=self.educational)
+        
+        self.logger = logger
+        open(self.logger.fname, "w").write("\n")
         
     def do_login(self, user="zacarias"):
         """ Fakes login as standard user. """
@@ -438,6 +443,7 @@ class ApplicationManagementTest(TestCase):
         self.assertTrue( self.gps.name in mail.outbox[0].body)
 
     def test_documentation_edit(self):
+        """ Tests edition of documentation """
         login = self.do_admin_login()
         #test the menu
         c = FlatPage.objects.count()
@@ -451,7 +457,35 @@ class ApplicationManagementTest(TestCase):
             response = self.client.post('/documentation/%d/edit/' % page.id, post_data)
             f = FlatPage.objects.get(title=title)
             self.assertEqual(f.content, 'This is a new content.')
+
+    def test_logging(self):
+        """ Tests logging capabilities """
+        def check_contents(type_):
+            contents = self.logger.retrieve_contents()
+            self.assertTrue(type_ in contents)
+         
         
+        extract_folder = relative("../tests/temp")        
+        temp_app = Application.objects.create(name="Temporary Application", owner=self.zacarias, category=self.educational, zipfile = File(open(relative("../../tests/python_test_app.zip"))))
+        
+        uncompress(Application, temp_app, post_save, **{'created':True})
+        check_contents('added')
+        
+        thread = UncompressThread(Application, temp_app, extract_folder, extracted_email_signal)
+        thread.run()
+        check_contents('deployed')
+                
+        temp_app.name="Temporary Application 2"
+        temp_app.extraction_path = extract_folder
+        temp_app.save()
+        uncompress(Application, temp_app, post_save, **{'created':False})        
+        check_contents('edited')
+        
+        remove_app(Application, temp_app, post_delete)
+        temp_app.delete()
+        check_contents('deleted')
+        
+        check_contents('removed from filesystem')
     
     def tearDown(self):
-        pass
+        open(self.logger.fname, "w").write("\n")

@@ -56,7 +56,7 @@ class Application(models.Model):
     
     def __unicode__(self):
         return u"%s" % self.name
-    
+            
     def save(self, force_insert=False, force_update=False):
         try:
             old_obj = Application.objects.get(pk=self.pk)
@@ -73,7 +73,7 @@ class Application(models.Model):
             pass
         
         super(Application, self).save(force_insert, force_update)
-    
+
     @models.permalink
     def get_absolute_url(self):
         return ("application-detail", [str(self.id)])

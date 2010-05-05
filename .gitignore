@@ -1,4 +1,6 @@
 *.pyc
+*.url
+**/log.txt
 clean.bat
 webmanager/db/dev.db
 webmanager/media/applications/*.zip
