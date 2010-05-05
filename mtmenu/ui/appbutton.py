@@ -1,5 +1,6 @@
 from pymt import *
 from mtmenu.ui.apppopup import AppPopup
+from mtmenu.ui.mykinetic import *
 from threading import Timer
 
 
@@ -18,11 +19,13 @@ class AppButton(MTKineticItem):
         kwargs.setdefault('anchor_y', 'middle')
         kwargs.setdefault('halign', 'center')
         kwargs.setdefault('valign', 'middle')
-        kwargs.setdefault('size', (170,170))        
+        kwargs.setdefault('size', (100,100))        
         
         self.double_tap_detected = False
         self.app = app
         self.pop = None
+      
+        
         super(AppButton, self).__init__(**kwargs)
         
 
@@ -36,7 +39,8 @@ class AppButton(MTKineticItem):
             self.open_app()
                         
         #if single tap and popup not already open
-        elif not self.pop:   
+        elif not self.pop:  
+            print self.pos 
             self.pop = AppPopup(self.app, pos= self.pos)
             Timer(0.5, self.open_popup).start() #make sure is not a double tap
 
@@ -45,6 +49,7 @@ class AppButton(MTKineticItem):
     def open_popup(self):
         if self.double_tap_detected:
             return  
+            
         self.get_root_window().add_widget(self.pop)
         self.pop = None
 
@@ -56,4 +61,28 @@ class AppButton(MTKineticItem):
         print '\tPath: %s\n' % self.app.get_extraction_fullpath
         print '\tBoot file: %s\n' % self.app.get_boot_file()
         self.app.execute()
+        
+        
+    def draw(self):
+        self.draw_background()
+        self.draw_label()
+        self.image = Image("images/icon.png")
+        x,y = list(self.center)
+        self.image.pos = x - self.image.width /2, y - self.image.height /2      
+        self.image.draw()
+        
+        
+    def draw_background(self):
+        self.style = {'bg-color': (0, 1, 0, 1), 'draw-background': 0, 'draw-border': True, 'border-radius': 10}
+        set_color(*self.style.get('bg-color'))
+        drawCSSRectangle(pos=self.pos, size=self.size,  style = self.style)
+
+
+    def draw_label(self, dx=0, dy=0):
+        pos = list(self.center)
+        pos[0] -= len(self.label) /2
+        pos[1] -= 50
+
+        label= self.label
+        drawLabel(label=label, pos=pos, size=(100,None), halign= 'center', anchor_y='top', font_size= 10)
 

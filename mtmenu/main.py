@@ -21,14 +21,14 @@ if __name__ == '__main__':
     
     
     # Top left logo
-    logo = MTScatterWidget(size=(350,68), pos= (40, TOP_BAR_Y))
-    logo.add_widget( MTScatterImage(filename= 'images/logo.png', scale= 0.5) ) #icon
+    logo = MTScatterWidget(size=(350,68), pos= (40, TOP_BAR_Y), do_rotation= False, do_translation= False, do_scale= False)
+    logo.add_widget( MTScatterImage(filename= 'images/logo.png', scale= 0.5, do_rotation= False, do_translation= False, do_scale= False) ) #icon
     logo.add_widget( MTLabel(label='SenseWall', pos= (60, 14), font_size= 40) ) #main_label
     logo.add_widget( MTLabel(label='http://sensewall.dei.uc.pt', pos= (60, 0), font_size= 16) ) #other label
     scatter.add_widget( logo )
 
     # Top right help icon
-    help = MTScatterWidget(size=(62,62), pos= (SCATTER_SIZE[0]-68, TOP_BAR_Y))
+    help = MTScatterWidget(size=(62,62), pos= (SCATTER_SIZE[0]-68, TOP_BAR_Y), do_rotation= False, do_translation= False, do_scale= False)
     help.add_widget( ImageButton(filename= 'images/help.png', scale= 0.9) )
     scatter.add_widget( help )
     

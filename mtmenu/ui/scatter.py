@@ -10,7 +10,7 @@ class Scatter( MTScatterWidget ):
         kwargs.setdefault('pos', SCATTER_POSITION)
         kwargs.setdefault('size', SCATTER_SIZE)
         kwargs.setdefault('do_rotation', False)
-        #kwargs.setdefault('do_translation', False)
+        kwargs.setdefault('do_translation', False)
         kwargs.setdefault('do_scale', False)
         self.vote = VotePopup()
         self.timer = Timer(10.0, self.display)

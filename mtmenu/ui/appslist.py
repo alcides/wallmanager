@@ -17,8 +17,8 @@ class AppsList (MTKineticList):
         kwargs.setdefault('h_limit', LINES_IN_APPS_GRID)
         kwargs.setdefault('w_limit',0)
         kwargs.setdefault('font_size', 12)
-        kwargs.setdefault('padding_x', 10)
-        kwargs.setdefault('padding_y', 10)        
+        kwargs.setdefault('padding_x', 20)
+        kwargs.setdefault('padding_y', 45)        
         self.apps = None
         self.current_category = None
         self.criteria = 'name'
@@ -33,7 +33,8 @@ class AppsList (MTKineticList):
         for chunk in chunks(self.apps, LINES_IN_APPS_GRID):
             chunk.reverse()
             for app in chunk:
-                item = AppButton(app, style = {'bg-color': (0, 1, 0, 1), 'draw-background': 0, 'draw-border': True, 'border-radius': 10})
+                item = AppButton(app)
+               
                 self.add_widget(item)
 
                    
