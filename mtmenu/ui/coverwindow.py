@@ -17,7 +17,8 @@ class CoverWindow( MTModalWindow ):
         
         
     def on_touch_up(self, touch):
-        self.hide()
+        Timer(0.5, self.hide).start()
+
         
     
     def resume(self, app):    
