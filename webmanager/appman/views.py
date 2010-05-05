@@ -52,7 +52,7 @@ def application_filter(request):
         #show only this user applications
         cs = Application.objects.filter(owner = request.user)
     elif request.POST.get('myApps','off') == 'on':
-        cs = Application.objects.filter(category = request.POST.get('category',''))& Application.objects.filter(owner = request.user)
+        cs = Application.objects.filter(category = request.POST.get('category',''),owner = request.user)
     elif request.POST.get('myApps','off') == 'off' and request.POST.get('category','') !='':
         cs = Application.objects.filter(category = request.POST.get('category','')) 
     else:
