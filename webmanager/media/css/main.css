@@ -42,7 +42,20 @@ h1 {
 }
 
 .content h1 {
-	margin-bottom: 50px;
+	margin-bottom: 20px;
+}
+
+a.button {
+    padding: 3px;
+    margin-top: 15px;
+    float: right;
+    display: block inline;
+    background-color: #DDD;
+    border: solid #333 1px;
+    color: #333;
+    text-decoration: none;
+    width: 100px;
+    text-align: center;
 }
 
 h1,h2,h3 {
@@ -50,8 +63,17 @@ h1,h2,h3 {
 	padding-top: 6px;
 }
 
+blockquote {
+    font-size: 0.8em;
+    background-color: #ECF0C5;
+    text-align: justify;
+    padding: 3px;
+    margin: 10px;
+}
+
+
 /* misc */
-.clearer {
+.clear {
 	clear: both;
 }
 
@@ -280,3 +302,53 @@ h1,h2,h3 {
 	cursor: auto;
 }
 
+/* Form */
+
+.content form {
+	border:0;
+	margin-top: 10px;
+}
+
+.content form ul, form li {
+	border:0;
+	margin:0;
+	padding:0;
+    list-style: none;
+}
+
+.content form li {
+	clear:both;
+	list-style:none;
+	padding-bottom:10px;
+}
+
+.content form label {
+	width:140px;
+	float:left;
+}
+
+.content form input[type=submit] {
+    margin-left: 160px;
+    clear: both;
+}
+
+.content div.app {
+   float: right;
+   width: 200px;
+}
+
+.content div.app p {
+    padding: 0;
+    margin-bottom: 5px;
+}
+
+.content div.app h3 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+p.description {
+    font-family: Georgia;
+    font-style: italic;
+    font-size: 14px;
+}

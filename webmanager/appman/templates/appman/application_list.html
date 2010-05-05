@@ -23,6 +23,8 @@
 	</ul>	
 </div>
 
+
+{% load show_stars %}
 <div id="applist">
 	<table class="gradient-style">
 		<thead>
@@ -42,7 +44,7 @@
 			<td><a href="{{ app.get_absolute_url }}">{{ app.name|limit:25 }}</a></td>
 			<td>{{ app.owner }}</td>
 			<td>{{ app.category }}</td>
-			<td>{{ app.stars }}</td>
+			<td>{% show_stars app.stars of 5 round to half %}</td>
 		</tr>
 		{% endfor %}
 	
