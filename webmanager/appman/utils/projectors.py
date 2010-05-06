@@ -3,11 +3,12 @@ import urllib2
 
 class ProjectorsManager():
 
-	def __init__(self):
+	def __init__(self,projector):
 		self.days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"]
-	
-	def get_url(self,day):
-		return 'http://192.168.1.254/admin/%s.html' % (day)
+		if projector == 1:
+			self.url = lambda day : 'http://192.168.1.254/admin/%s.html' % (day)
+		else: #projector == 2
+			self.url = lambda day : 'http://192.168.1.253/admin/%s.html' % (day)
 	
 	#returns true if successfully authenticated
 	def login(self):
@@ -23,7 +24,7 @@ class ProjectorsManager():
 		values = {'V1' : '1',
 			  'SetScheduleFlag' : '1' }
 		data = urllib.urlencode(values)
-		req = urllib2.Request(self.get_url(day), data)
+		req = urllib2.Request(self.url(day), data)
 		urllib2.urlopen(req)
 	
 	#power is 1 when ON and 0 when OFF
@@ -36,7 +37,7 @@ class ProjectorsManager():
 				'SetScheduleParam1' : str(power),
 				'ScheduleInfo' : '' }
 		data = urllib.urlencode(values)
-		req = urllib2.Request(self.get_url(day), data)
+		req = urllib2.Request(self.url(day), data)
 		urllib2.urlopen(req)
 
 	def reset(self,day):
@@ -48,5 +49,5 @@ class ProjectorsManager():
 			'V12' : '1',
 			'D12' : '2' }
 		data = urllib.urlencode(values)
-		req = urllib2.Request(self.get_url(day), data)
+		req = urllib2.Request(self.url(day), data)
 		urllib2.urlopen(req)
