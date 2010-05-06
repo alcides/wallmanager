@@ -1,4 +1,4 @@
-from application_running import get_app_running, kill_app_running
+from mtmenu.application_running import is_app_running, kill_app_running
 from gesture.gesture_db import *
 from pymt import *
 import subprocess
@@ -14,9 +14,10 @@ class GestureWidget( MTGestureWidget ):
         #print self.gestures.gesture_to_str(gesture)
         
         # gesture recognition
-        if self.gestures.find(gesture, ACCEPTANCE_MARGIN) and is_app_running():
-            print "gesture recognized"
-            kill_app_running()
+        if self.gestures.find(gesture, ACCEPTANCE_MARGIN):
+			print "gesture recognized"
+			if is_app_running():
+				kill_app_running()
             
 
 
