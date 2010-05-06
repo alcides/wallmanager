@@ -92,7 +92,7 @@ class ProjectorControl(models.Model):
 class ApplicationLog(models.Model):
     application = models.ForeignKey(Application)
     datetime = models.DateTimeField(auto_now_add=True)
-    error_description = models.CharField(max_length=255)
+    error_description = models.TextField(blank=True)
     
     def __unicode__(self):
         return u"%s log at %s" % (self.application.name, self.datetime)
