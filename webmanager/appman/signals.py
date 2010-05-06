@@ -54,11 +54,11 @@ def remove_app(sender, instance, signal, *args, **kwargs):
     """ Deletes the uncompressed folder """
     logger.log_app_event(instance, 'deleted')
     
-    if str(instance.extraction_path) != "":
-        remove_dir(instance.extraction_path)
-        remove_file(instance.zipfile)
-        remove_file(instance.icon)
-        logger.log_app_event(instance, 'removed from filesystem')
+    if instance.is_extracted and not instance.is_running:
+        remove_dir(get_app_dir(instance))
+    remove_file(instance.zipfile)
+    remove_file(instance.icon)
+    logger.log_app_event(instance, 'removed from filesystem')
 
 def send_mail_when_app_available(sender, **kwargs):
     """ Sends an e-mail message informing the user that the application is ready to be used """
