@@ -2,6 +2,8 @@ from pymt import *
 from mtmenu.ui.apppopup import AppPopup
 from threading import Timer
 
+from mtmenu.models import ApplicationProxy
+
 
 class AppButton(MTKineticItem):
     """Widget representing an application on main window. 
@@ -38,7 +40,8 @@ class AppButton(MTKineticItem):
                         
         #if single tap and popup not already open
         elif not self.pop:  
-            print self.pos 
+            print self.pos
+            self.app = ApplicationProxy.objects.filter(id = self.app.id)[0]
             self.pop = AppPopup(self.app, pos= self.pos, style={'bg-color':(0,0,0,0.9)})
             Timer(0.5, self.open_popup).start() #make sure is not a double tap
 

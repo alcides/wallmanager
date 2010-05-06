@@ -3,9 +3,9 @@ import re
 
 class WindowMgr:
     """Encapsulates some calls to the winapi for window management"""
-    def __init__ (self):
+    def __init__ (self, handle = None):
         """Constructor"""
-        self._handle = None
+        self._handle = handle
 
     def find_window(self, class_name, window_name = None):
         """find a window by its class_name"""
