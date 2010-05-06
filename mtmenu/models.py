@@ -14,7 +14,10 @@ sys.path.append('..')
 sys.path.append('../webmanager')
 
 # Set needed environment variable
-environ['DJANGO_SETTINGS_MODULE'] = 'webmanager.settings'
+if PRODUCTION:
+    environ['DJANGO_SETTINGS_MODULE'] = 'webmanager.settings-prod'
+else:
+    environ['DJANGO_SETTINGS_MODULE'] = 'webmanager.settings'
 
 # webmanager models can now be imported
 from webmanager.appman import models
