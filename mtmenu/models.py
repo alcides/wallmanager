@@ -5,6 +5,7 @@ from cStringIO import StringIO
 from threading import Thread
 from copy import deepcopy
 
+
 from mtmenu.settings import *
 from mtmenu.proxy import proxy
 from mtmenu.application_running import set_app_running, remove_app_running, get_app_running
@@ -88,9 +89,8 @@ class ApplicationProxy(models.Application, WallModelsProxy):
 
 
                 remove_app_running()
-                cover_window.resume(self)
+                cover_window.resume(self)            
                 
-                        
                 self.end_run()                
                 
                 # Save output to database

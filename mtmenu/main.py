@@ -19,7 +19,7 @@ from mtmenu.settings import TOP_BAR_Y, SCATTER_SIZE
 if __name__ == '__main__':
     # Start TUIO proxy
     proxy.start()
-
+    
     apps_grid.add( get_all_applications() )
     category_grid.add( get_all_categories() )
     
@@ -54,3 +54,4 @@ if __name__ == '__main__':
     
     # Execute main loop
     runTouchApp()
+ 

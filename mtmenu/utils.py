@@ -5,6 +5,7 @@ Created on 2010/04/27
 '''
 
 from models import *
+from window_manager import *
 
 
 def get_applications(cat=None, sort_by_value=False):
@@ -35,3 +36,11 @@ def sort_apps(apps, sort_by_value):
         return sorted(list(apps), key = lambda app: app.value(), reverse= True)
     else:
         return apps.order_by('name')
+
+
+
+def bring_window_to_front():
+    ''' Bring the WallManager window to the front'''
+    w = WindowMgr()
+    w.find_window_wildcard("pymt")
+    w.set_foreground()
