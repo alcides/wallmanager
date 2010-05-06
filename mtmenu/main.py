@@ -1,6 +1,10 @@
+import sys
+sys.path.append("..")
+
 from pymt import *
-from mtmenu.proxy import *
 from pymt.ui.window.win_glut import MTWindowGlut
+
+from mtmenu.proxy import *
 from mtmenu.models import ApplicationProxy, CategoryProxy
 from mtmenu.utils import *
 from mtmenu.ui import *
