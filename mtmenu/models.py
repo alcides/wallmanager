@@ -1,12 +1,13 @@
 import sys
 from os import environ, path
 from subprocess import Popen, PIPE
-from settings import *
 from cStringIO import StringIO
 from threading import Thread
+from copy import deepcopy
+
+from mtmenu.settings import *
 from mtmenu.proxy import proxy
 from mtmenu.application_running import set_app_running, remove_app_running, get_app_running
-from copy import deepcopy
 
 
 # Go back one directory and adds it to sys.path

@@ -10,11 +10,11 @@ class GestureWidget( MTGestureWidget ):
         self.gestures = Gestures()
     
     def on_gesture(self, gesture, touch):
-        #print 'gesture:\n'
+        print 'gesture:'
         #print self.gestures.gesture_to_str(gesture)
         
         # gesture recognition
-        if self.gestures.find(gesture, ACCEPTANCE_MARGIN) and get_app_running():
+        if self.gestures.find(gesture, ACCEPTANCE_MARGIN) and is_app_running():
             print "gesture recognized"
             kill_app_running()
             

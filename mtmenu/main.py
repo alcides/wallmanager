@@ -1,5 +1,4 @@
 from pymt import *
-from gesture.gesture_scan import GestureScan
 from mtmenu.proxy import *
 from pymt.ui.window.win_glut import MTWindowGlut
 from mtmenu.models import ApplicationProxy, CategoryProxy
@@ -47,9 +46,6 @@ if __name__ == '__main__':
     
     # Add Scatter to MainWindow
     main_window.add_widget(scatter)
-    
-    #Add gesture recognition
-    main_window.add_widget(GestureScan())
 
     
     # Execute main loop
