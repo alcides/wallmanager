@@ -10,9 +10,11 @@ while True:
 				cwd=mtmenu_dir, shell=False, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     
     stdout, stderr = proc.communicate()
-    f.write(stdout)
+    if stdout:
+        f.write(stdout)
     f.write(20*"=")
-    f.write(stderr)
+    if stderr:
+        f.write(stderr)
 				
     #retval = proc.wait()
     #if retval == 0:
