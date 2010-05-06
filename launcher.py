@@ -9,10 +9,10 @@ while True:
     proc = subprocess.Popen([sys.executable, 'main.py', '-p', 'default:tuio,0.0.0.0:6001'],
 				cwd=mtmenu_dir, shell=False, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     
-    stout, sterr = proc.communicate()
+    stdout, stderr = proc.communicate()
     f.write(stdout)
     f.write(20*"=")
-    f.write(sterr)
+    f.write(stderr)
 				
     #retval = proc.wait()
     #if retval == 0:
