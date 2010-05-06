@@ -16,8 +16,8 @@ class CoverWindow( MTModalWindow ):
         main_window.add_widget( self )
         
         
-    def on_touch_up(self, touch):
-        Timer(0.5, self.hide).start()
+#    def on_touch_up(self, touch):
+#        Timer(0.5, self.hide).start()
 
         
     

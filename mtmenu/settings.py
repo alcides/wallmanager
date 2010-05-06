@@ -11,7 +11,9 @@ from webmanager.settings import APPS_MAX_LOG_ENTRIES
 def relative(*x):
     return join(abspath(dirname(__file__)), *x)
 
-
+#SET TRUE ON WALL
+PRODUCTION = False
+	
 APPS_REPOSITORY_PATH = relative('apps/')
 APPS_BOOT_FILENAME = 'boot.bat'
 
@@ -25,7 +27,10 @@ MESSAGE  = "Hello, World!"
 
 #UI
 SCATTER_POSITION = (50, 50)
-SCATTER_SIZE = (900,650)
+if PRODUCTION:
+	SCATTER_SIZE = (2000,650)
+else:
+	SCATTER_SIZE = (900,650)
 PADDING = 10
 CATEGORY_GRID_POSITION = (PADDING, PADDING)
 CATEGORY_GRID_SIZE = (130, SCATTER_SIZE[1] - CATEGORY_GRID_POSITION[0] - PADDING - 60)                                     
@@ -35,8 +40,6 @@ POPUP_SIZE = (215,160)
 POPUP_POSITION = (200, 200) 
 
 TOP_BAR_Y = SCATTER_SIZE[1]- 68
-
-PRODUCTION = False
 
 LINES_IN_APPS_GRID = 3
 
