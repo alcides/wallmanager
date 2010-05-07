@@ -15,7 +15,9 @@ from appman.utils.fileutils import *
 from appman.utils import get_contact_admin_email
 from appman.utils.log_file import logger
 from appman.utils.uncompress import UncompressThread
-#from appman.tests.uncompress import UncompressTest
+
+from appman.tests.uncompress import UncompressTest
+from appman.tests.projectors import ProjectorTest
 
 APPS_MAX_LOG_ENTRIES = 5
 DEFAULT_CATEGORY = "Others"
@@ -468,7 +470,7 @@ class ApplicationManagementTest(TestCase):
         extract_folder = relative("../tests/temp")        
         temp_app = Application.objects.create(name="Temporary Application", owner=self.zacarias, category=self.educational, zipfile = File(open(relative("../../tests/python_test_app.zip"))))
         
-        uncompress(Application, temp_app, post_save, **{'created':True})
+        uncompress_file(Application, temp_app, post_save, **{'created':True})
         check_contents('added')
         
         thread = UncompressThread(Application, temp_app, extract_folder, extracted_email_signal)
@@ -478,7 +480,7 @@ class ApplicationManagementTest(TestCase):
         temp_app.name="Temporary Application 2"
         temp_app.extraction_path = extract_folder
         temp_app.save()
-        uncompress(Application, temp_app, post_save, **{'created':False})        
+        uncompress_file(Application, temp_app, post_save, **{'created':False})        
         check_contents('edited')
         
         remove_app(Application, temp_app, post_delete)

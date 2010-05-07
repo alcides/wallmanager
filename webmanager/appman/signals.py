@@ -36,7 +36,7 @@ def remove_file(file):
     
 # Signals    
 
-def uncompress(sender, instance, signal, *args, **kwargs):
+def uncompress_file(sender, instance, signal, *args, **kwargs):
     """ Deletes the previous version and starts the uncompressing of the file """
     application_was_added = kwargs['created']
     if application_was_added:
@@ -88,7 +88,7 @@ def remove_extra_logs(sender, **kwargs):
         log.delete()
     
             
-signals.post_save.connect(uncompress, sender=Application)
+signals.post_save.connect(uncompress_file, sender=Application)
 signals.post_save.connect(remove_extra_logs, sender=ApplicationLog)
 signals.post_delete.connect(remove_app, sender=Application)
 extracted_email_signal.connect(send_mail_when_app_available)
