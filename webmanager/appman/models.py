@@ -81,8 +81,10 @@ class Application(models.Model):
         
 class ProjectorControl(models.Model):
     inactivity_time = models.IntegerField()
-    startup_time = models.TimeField()
-    shutdown_time = models.TimeField()
+    startup_week_time = models.TimeField()
+    shutdown_week_time = models.TimeField()
+    startup_weekend_time = models.TimeField()
+    shutdown_weekend_time = models.TimeField()
 
     def save(self, *args, **kwargs):
         """ There can be only one ProjectorControl instance."""
