@@ -16,8 +16,18 @@
     {% endif %}
 
     <p>Here, you can set how long the screensaver will take to appear.</p>
+    
     <form action="/screensaver/" method="post">
     {{ form.as_p }}
+    <table style="border:1px solid #e5e5e5">
+        <tr>
+            <td><input type="image" src="/media/img/arrow_up_icon.gif" onclick="javascript:increment(1)" value="up"></td>
+        </tr>
+        <tr>
+            <td><input type="image" src="/media/img/arrow_down_icon.gif" onclick="javascript:decrement(-1)" value="down"></td>
+        </tr>
+    </table>
     <input type="submit" value="Submit" />
     </form>
+    
 {% endblock %}
