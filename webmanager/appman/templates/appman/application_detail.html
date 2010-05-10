@@ -7,7 +7,16 @@
 	<li>{{ application.name }}</li>
 {% endblock %}
 
+
+
 {% block content%}
+{% if messages %}
+    <blockquote>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+    </blockquote>
+{% endif %}
 
 <div class="app">
 	{% load show_stars %}
@@ -40,6 +49,7 @@
 <img class="icon" src="/media/{{ application.icon }}" alt="{{ application.name }}" />
 
 <p class="description">{{ application.description }}</p>
+
 
 
 

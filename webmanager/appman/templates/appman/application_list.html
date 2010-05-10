@@ -9,12 +9,6 @@
 {% block content %}
 
 {% if messages %}
-<ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-<br/>
-</ul>
 {% endif %}
 <script type="text/javascript">
 function clearDefaultText(e) {
@@ -40,6 +34,17 @@ function changeState(){
     }
 }
 </script>
+<ul>
+<br/>
+</ul>
+
+{% if messages %}
+    <blockquote>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+    </blockquote>
+{% endif %}
 <div id="appfilter" align="center">
     <a href="#" onclick="changeState()">Show filters</a>
     <form action="/applications/filter/" method="POST"  id="ddmenu" style="visibility:hidden" >

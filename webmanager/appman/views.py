@@ -47,16 +47,27 @@ def application_list(request):
 @login_required
 def application_filter(request):
     form = ApplicationFilterForm()
-    #TODO add some message 
-    if request.POST.get('category','') =='' and request.POST.get('myApps','off')=='on':
+    ownership = request.POST.get('myApps','off')
+    cat = request.POST.get('category','')
+    if ownership=='on':
+        owner = 'mine'
+    else :
+        owner = 'everybody'
+    if  cat =='' and ownership=='on':
         #show only this user applications
         cs = Application.objects.filter(owner = request.user)
-    elif request.POST.get('myApps','off') == 'on':
-        cs = Application.objects.filter(category = request.POST.get('category',''),owner = request.user)
-    elif request.POST.get('myApps','off') == 'off' and request.POST.get('category','') !='':
-        cs = Application.objects.filter(category = request.POST.get('category','')) 
+    elif ownership == 'on':
+        cs = Application.objects.filter(category = cat,owner = request.user)
+    elif ownership == 'off' and cat !='':
+        cs = Application.objects.filter(category = cat) 
     else:
         return HttpResponseRedirect(reverse('application-list'))
+
+    try:
+        cat_name = Category.objects.get(id = cat )
+    except ValueError:
+        cat_name ='All'
+    request.user.message_set.create(message="Filtering %s of %s applications."%(cat_name,owner))
 
     return render(request,'appman/application_list.html', {'application_list': cs,
         'form': form  })
@@ -65,6 +76,7 @@ def application_filter(request):
 def application_search(request):
     cs = Application.objects.filter(name__contains = request.POST.get('q',''))|Application.objects.filter(description__contains = request.POST.get('q',''))
     form = ApplicationFilterForm()
+    request.user.message_set.create(message="Searching for %s."%request.POST.get('q','') )
     return render(request,'appman/application_list.html', {'application_list': cs,
         'form': form  })
 
@@ -96,9 +108,11 @@ def application_add(request):
                 app.save()
                 delete_path(temporary_named_path)
             else:
-                app.save()
+                app.save()            
+            request.user.message_set.create(message="Application sucessfully submitted." )
             return HttpResponseRedirect(reverse('application-detail', args=[str(app.id)]))
         else:
+            request.user.message_set.create(message="Invalid form, please correct the following errors.")
             if temporary_named_path:
                 delete_path(temporary_named_path)
     else:
@@ -144,8 +158,9 @@ def application_admin_remove(request,object_id):
 
     try:
         app = Application.objects.get(id=object_id)
+        request.user.message_set.create(message="Application %d removed sucessfully."%(app.name))
     except Application.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid application id.")
         return HttpResponseRedirect(reverse('application-list'))
     app = get_object_or_404(Application, pk=object_id)
     email_from = settings.DEFAULT_FROM_EMAIL
