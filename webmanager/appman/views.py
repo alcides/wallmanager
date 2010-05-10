@@ -158,7 +158,7 @@ def application_admin_remove(request,object_id):
 
     try:
         app = Application.objects.get(id=object_id)
-        request.user.message_set.create(message="Application %d removed sucessfully."%(app.name))
+        request.user.message_set.create(message="Application %s removed sucessfully."%(app.name))
     except Application.DoesNotExist:
         request.user.message_set.create(message="Invalid application id.")
         return HttpResponseRedirect(reverse('application-list'))
