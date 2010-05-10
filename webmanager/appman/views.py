@@ -17,6 +17,7 @@ from appman.models import *
 from appman.decorators import *
 from appman.utils.fileutils import *
 from appman.utils import get_contact_admin_email
+from appman.utils.proj_connection import ProjectorsThread
 
 # Helper
 
@@ -199,6 +200,8 @@ def projectors(request):
         if form.is_valid():
             proj = form.save(commit=False)
             proj.save()
+            thread = ProjectorsThread(proj)	
+            thread.run()
             return HttpResponseRedirect(reverse('projectors'))
     else:
         proj = ProjectorControl.objects.all()[0]
