@@ -193,7 +193,22 @@ def superuser_required(login_url=None):
 #Admin Views
 @staff_required()
 def projectors(request):
-    return render(request,'appman/projectors.html')
+    form_class = ProjectorControlForm
+    if request.method == 'POST':
+        form = form_class(request.POST)
+        if form.is_valid():
+            proj = form.save(commit=False)
+            proj.save()
+            return HttpResponseRedirect(reverse('projectors'))
+    else:
+        proj = ProjectorControl.objects.all()[0]
+        form = form_class(initial={'inactivity_time': '%s' % (proj.inactivity_time),
+                                   'startup_week_time': '%s' % (proj.startup_week_time),
+                                   'shutdown_week_time': '%s' % (proj.shutdown_week_time),
+                                   'startup_weekend_time': '%s' % (proj.startup_weekend_time),
+                                   'shutdown_weekend_time': '%s' % (proj.shutdown_weekend_time),
+                                   })
+    return render(request,'appman/projectors.html', {'form': form})
 
 @staff_required()
 def screensaver(request):
