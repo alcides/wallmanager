@@ -12,8 +12,5 @@ class ProjectorsThread(threading.Thread):
 		self.weekend_off = proj.shutdown_weekend_time
 
 	def run(self):
-		if self.week_on == self.weekend_on and self.week_off == self.weekend_off: 
-			set_projectors_time(self.week_on, self.week_off)
-		else:
-			set_projectors_time(self.week_on, self.week_off, self.weekend_on, self.weekend_off)
+		set_projectors_time(self.week_on, self.week_off, self.weekend_on, self.weekend_off)
 
