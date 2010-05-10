@@ -94,4 +94,4 @@ class UserCreationForm(ModelForm):
         return user
 
 class ReportAbuseForm(Form):
-    abuse_description = CharField(widget=widgets.Textarea())
+    abuse_description = CharField(required=True, widget=widgets.Textarea())
