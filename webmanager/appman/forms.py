@@ -95,3 +95,6 @@ class UserCreationForm(ModelForm):
 
 class ReportAbuseForm(Form):
     abuse_description = CharField(widget=widgets.Textarea())
+    
+class ScreenSaverTimeForm(Form):
+    screensaver_time = TimeField(initial='00:30:00', input_formats=['%H:%M:%S'])

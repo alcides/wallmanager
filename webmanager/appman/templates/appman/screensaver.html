@@ -5,3 +5,19 @@
 {% block breadcrumb%}
 	<li>ScreenSaver</li>
 {% endblock %}
+
+{% block content %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p>Here, you can set how long the screensaver will take to appear.</p>
+    <form action="/screensaver/" method="post">
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+    </form>
+{% endblock %}

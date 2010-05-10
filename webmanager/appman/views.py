@@ -197,7 +197,13 @@ def projectors(request):
 
 @staff_required()
 def screensaver(request):
-    return render(request,'appman/screensaver.html')
+    if request.method == 'POST':
+        form = ScreenSaverTimeForm(request.POST)
+        if form.is_valid():
+            request.user.message_set.create(message="Screensaver inactivity time was set successfully.")
+    else:
+        form = ScreenSaverTimeForm()
+    return render(request,'appman/screensaver.html', {'form': form})
 
 @staff_required()
 def suspension(request):
