@@ -41,7 +41,32 @@ def contact(request):
 @login_required
 def application_list(request):
     cs = Application.objects.all()
-    return object_list(request, queryset=cs, template_object_name="application")
+    form = ApplicationFilterForm()
+    return render(request,'appman/application_list.html', {'application_list': cs, "form": form})
+
+@login_required
+def application_filter(request):
+    form = ApplicationFilterForm()
+    #TODO add some message 
+    if request.POST.get('category','') =='' and request.POST.get('myApps','off')=='on':
+        #show only this user applications
+        cs = Application.objects.filter(owner = request.user)
+    elif request.POST.get('myApps','off') == 'on':
+        cs = Application.objects.filter(category = request.POST.get('category',''),owner = request.user)
+    elif request.POST.get('myApps','off') == 'off' and request.POST.get('category','') !='':
+        cs = Application.objects.filter(category = request.POST.get('category','')) 
+    else:
+        return HttpResponseRedirect(reverse('application-list'))
+
+    return render(request,'appman/application_list.html', {'application_list': cs,
+        'form': form  })
+
+@login_required
+def application_search(request):
+    cs = Application.objects.filter(name__contains = request.POST.get('q',''))|Application.objects.filter(description__contains = request.POST.get('q',''))
+    form = ApplicationFilterForm()
+    return render(request,'appman/application_list.html', {'application_list': cs,
+        'form': form  })
 
 @login_required
 def application_add(request):
@@ -229,7 +254,9 @@ def category_add(request):
     else:
         form = form_class()
 
-    return render_to_response('appman/category_form.html', {'form': form,})
+    return render(request,'appman/application_form.html', {
+        'form': form,
+    })
 
 @staff_login_required
 def category_edit(request, object_id):

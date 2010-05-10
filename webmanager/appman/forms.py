@@ -18,6 +18,12 @@ class ApplicationForm(ModelForm):
         model = Application
         fields = ('name', 'zipfile','icon','category','description')
         
+class ApplicationFilterForm(ModelForm):
+    class Meta:
+        model = Application
+        fields = ('category',)
+    myApps = BooleanField(label='Show only my applications',required=False) # it is required, but handled below for a custom error message.
+
 
 class ApplicationAddForm(ApplicationForm):
     tos = BooleanField(label='I agree to the terms of service.',
@@ -39,6 +45,7 @@ class DocumentationForm(ModelForm):
         fields = ('title','content')
     
 
+    
 class UserCreationForm(ModelForm):
     """
     A form that creates a user, with no privileges, from the given username and password.

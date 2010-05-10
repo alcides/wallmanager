@@ -46,7 +46,7 @@ class ApplicationManagementTest(TestCase):
         self.educational = Category.objects.create(name="Educational")
         self.TestCat = Category.objects.create(name="TestCat")
         
-        self.gps = Application.objects.create(name="Gps Application", owner=self.zacarias, category=self.educational)
+        self.gps = Application.objects.create(name="Gps Application",description ="Some application", owner=self.zacarias, category=self.educational)
         
         self.logger = logger
         open(self.logger.fname, "w").write("\n")
@@ -442,6 +442,33 @@ class ApplicationManagementTest(TestCase):
         self.assertTrue( sample_abuse_description in mail.outbox[0].body)
         self.assertTrue( self.gps.name in mail.outbox[0].body)
 
+    def test_search_application(self):
+        login = self.do_admin_login()
+        self.app = Application.objects.create(name="Myapp", description="An application", owner=self.zacarias, category=self.educational)
+
+        #test none app
+        post_data = {
+            'q':"Nothing else matters"
+        }
+        response = self.client.post('/applications/search/', post_data)
+        self.assertContains(response, '<td>%s'%self.educational.name, 0) 
+
+        #test search by title
+        post_data = {
+            'q':"My"
+        }
+        response = self.client.post('/applications/search/', post_data)
+        self.assertContains(response, '<td>%s'%self.educational.name, 1) 
+        
+        #test search by description
+        post_data = {
+            'q':"Some"
+        }
+        response = self.client.post('/applications/search/', post_data)
+        self.assertContains(response,  '<td>%s'%self.educational.name, 1) 
+        
+        
+
     def test_documentation_edit(self):
         """ Tests edition of documentation """
         login = self.do_admin_login()
@@ -484,8 +511,44 @@ class ApplicationManagementTest(TestCase):
         remove_app(Application, temp_app, post_delete)
         temp_app.delete()
         check_contents('deleted')
-        
         check_contents('removed from filesystem')
     
+    def test_category_filter(self):
+        login = self.do_login()
+        self.games = Category.objects.get(name='Games')
+        self.app = Application.objects.create(name="Myapp", description="An application", owner=self.zacarias, category=self.educational)
+        self.app = Application.objects.create(name="Myapplication", description="An application", owner=self.zacarias, category=self.games)
+        self.app = Application.objects.create(name="Otherapp", description="Another application", owner=self.plum, category=self.games)
+
+        #confirm that the dropdown menu is correct
+        c = Category.objects.count()
+        response = self.client.get('/applications/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<option", c+1) 
+        
+        #filter my applications , this should return two applications
+        post_data = {
+            'category': '',
+            'myApps': 'on'
+        }
+        response = self.client.post('/applications/filter/', post_data)  
+        self.assertContains(response, '<td>%s'%(self.zacarias.username), 3) 
+        #filter application by category
+        post_data = {
+            'category': self.educational.id,
+            'myApps': 'off'
+        }
+        response = self.client.post('/applications/filter/', post_data)  
+        self.assertContains(response, '<td>%s'%(self.educational.name), 2) 
+
+        #filter application by category and owner
+        post_data = {
+            'category': self.games.id,
+            'myApps': 'on'
+        }
+        response = self.client.post('/applications/filter/', post_data)  
+        self.assertContains(response, '<td>%s'%(self.zacarias.username), 1) 
+        
+        
     def tearDown(self):
         open(self.logger.fname, "w").write("\n")
