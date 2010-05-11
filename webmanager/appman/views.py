@@ -69,6 +69,14 @@ def application_search(request):
         'form': form  })
 
 @login_required
+def application_log(request, object_id):
+    pass
+#    cs = Application.objects.filter(name__contains = request.POST.get('q',''))|Application.objects.filter(description__contains = request.POST.get('q',''))
+#    form = ApplicationFilterForm()
+#    return render(request,'appman/application_list.html', {'application_list': cs,
+#        'form': form  })
+
+@login_required
 def application_add(request):
     form_class = ApplicationAddForm
     if request.method == 'POST':
