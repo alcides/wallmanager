@@ -9,13 +9,13 @@ from django.contrib.flatpages.models import FlatPage
 from django.core.files import File
 from django.db.models.signals import pre_save, post_save, post_delete
 
-from appman.models import *
-from appman.signals import *
 from appman.utils.fileutils import *
 from appman.utils import get_contact_admin_email
 from appman.utils.log_file import logger
 from appman.utils.uncompress import UncompressThread
-#from appman.tests.uncompress import UncompressTest
+from appman.tests.uncompress import UncompressTest
+from appman.models import *
+from appman.signals import *
 
 APPS_MAX_LOG_ENTRIES = 5
 DEFAULT_CATEGORY = "Others"
@@ -448,28 +448,31 @@ class ApplicationManagementTest(TestCase):
         check_contents('removed from filesystem')
     
     def test_application_logging(self):
+        """ Tests the pages that show application logs. """
         login = self.do_login()
-        ##add some dummy logs
+
+        # Create some dummy data
         app2 = Application.objects.create(name="Another Application",description ="Some application", owner=self.zacarias, category=self.educational)
-        ApplicationLog.objects.create(application=self.gps,error_description="Some error.")
-        ApplicationLog.objects.create(application=self.gps,error_description="Some error.")
-        ApplicationLog.objects.create(application=app2,error_description="Some error.")
-        ApplicationLog.objects.create(application=app2,error_description="Some error.")
-        ApplicationLog.objects.create(application=app2,error_description="Some error.")
         
-        ##test at application 1
-        response = self.client.post('/applications/1/log/')  
+        for i in range(5):
+            app = i % 2 == 0 and self.gps or app2
+            ApplicationLog.objects.create(application=app,
+                error_description="Some error.")
+        
+        # test at application 1
+        response = self.client.post('/applications/%s/log/' % app2.id)
         self.assertContains(response, '<p>Error Description:</p>', 2) 
 
-        ##test at application 2
-        response = self.client.post('/applications/2/log/')  
+        # test at application 2
+        response = self.client.post('/applications/%s/log/' % self.gps.id)  
         self.assertContains(response, '<p>Error Description:</p>', 3) 
         
-        ##test invalid application
+        # test invalid application
         response = self.client.post('/applications/23/log/')  
         self.assertRedirects(response, '/applications/')
         
     def test_category_filter(self):
+        """ Tests if category filter works """
         login = self.do_login()
         self.games = Category.objects.get(name='Games')
         self.app = Application.objects.create(name="Myapp", description="An application", owner=self.zacarias, category=self.educational)

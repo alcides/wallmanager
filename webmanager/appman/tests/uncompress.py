@@ -2,9 +2,10 @@ from django.test import TestCase
 from django.core import mail
 from django.core.files import File
 
-from appman.models import *
 from appman.utils.uncompress import UncompressThread
 from appman.utils.fileutils import relative
+from appman.models import *
+from appman.signals import extracted_email_signal
 
 class UncompressTest(TestCase):
     def setUp(self):
@@ -22,7 +23,7 @@ class UncompressTest(TestCase):
         app.zipfile = File(open(relative("../../tests/python_test_app.zip")))
         app.save()
     
-        thread = UncompressThread(Application, app, extract_folder)
+        thread = UncompressThread(Application, app, extract_folder, extracted_email_signal)
         thread.run()
     
         self.assertEquals(len(mail.outbox), 1)
