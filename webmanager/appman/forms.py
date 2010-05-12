@@ -36,7 +36,7 @@ class ApplicationAddForm(ApplicationForm):
 	
 class ApplicationEditForm(ApplicationForm):
     zipfile = FileField(label="Zip file", required=False)
-    icon = FileField(required=False)
+    icon = ImageField(required=False)
     
     
 class DocumentationForm(ModelForm):
