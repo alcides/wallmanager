@@ -418,7 +418,7 @@ class ApplicationManagementTest(TestCase):
             response = self.client.post('/documentation/%d/edit/' % page.id, post_data)
             f = FlatPage.objects.get(title=title)
             self.assertEqual(f.content, 'This is a new content.')
-
+    
     def test_logging(self):
         """ Tests logging capabilities """
         def check_contents(type_):
@@ -508,6 +508,37 @@ class ApplicationManagementTest(TestCase):
         response = self.client.post('/applications/filter/', post_data)  
         self.assertContains(response, '<td>%s'%(self.zacarias.username), 1) 
         
+    def test_requires_login_to_contact(self):
+        """ Tests login requirements for contacting the designated contact administrator. """
+        response = self.client.get('/contact/')
+        self.assertEqual(response.status_code, 302) # redirect to login
+        self.assertRedirects(response, '/accounts/login/?next=/contact/')
+        
+    def test_contact(self):
+        """ Sample test for a message to the designated contact administrator """
+        # Clean email inbox
+        mail.outbox = []
+        
+        login = self.do_login(user="zacarias")
+        response = self.client.get('/contact/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Contact Admin")
+        self.assertContains(response, "<form", 1)
+        self.assertContains(response, "message")
+        self.assertContains(response, "submit")
+        
+        sample_message = 'I have an application that needs the library xyz. Could you please install it on the system?'
+        post_data = {
+            'message': sample_message,
+        }
+        response = self.client.post('/contact/', post_data)
+        self.assertEqual(response.status_code, 200)
+        
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox[0].to), 1)
+        self.assertEqual(mail.outbox[0].to[0], get_contact_admin_email())
+        self.assertEqual(mail.outbox[0].subject, '[WallManager] Message from user %s' % self.zacarias.email)
+        self.assertTrue( sample_message in mail.outbox[0].body)
         
     def tearDown(self):
         open(self.logger.fname, "w").write("\n")

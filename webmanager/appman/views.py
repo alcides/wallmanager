@@ -36,7 +36,23 @@ def faq(request):
 #Authenticated User Views
 @login_required
 def contact(request):
-    return render(request,'appman/contact.html')
+    if request.method == 'POST':
+        form = MessageToAdminForm(request.POST)
+        if form.is_valid():
+            subject = '[WallManager] Message from user %s' % request.user.email
+            message = 'Dear WallManager administrator,\n\n\
+                The user %s has sent you a message using the website\'s administrator contact form. The message is as follows:\n\n\
+                %s' % (request.user.email, form.cleaned_data['message'])
+            email_from = settings.DEFAULT_FROM_EMAIL
+            email_to = get_contact_admin_email()
+            try:
+                send_mail(subject, message, email_from, [email_to])
+                request.user.message_set.create(message="Your message was sent successfully to the designated contact administrator.")
+            except:
+                request.user.message_set.create(message="Unable to send your message. Please try again later.")
+    else:
+        form = MessageToAdminForm()
+    return render(request,'appman/contact.html',{'form': form})
     
 @login_required
 def application_list(request):
