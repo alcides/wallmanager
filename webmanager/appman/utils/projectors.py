@@ -8,7 +8,7 @@ PROJECTOR_IPS = settings.PROJECTOR_IPS or ('192.168.1.254', '192.168.1.253')
 
 class ProjectorManager():
 
-    WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thrusday', 'friday']
+    WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
     WEEKEND = ['saturday', 'sunday']
     DAYS = WEEKDAYS + WEEKEND
     ON = 1
@@ -92,7 +92,7 @@ def set_projectors_time(week_on, week_off,
                     set_hour(weekend_on, weekend_off)
                 else:
                     set_hour(week_on, week_off)
-                        
+                
                 projector.enable(day)
 
 #power is 1 when ON and 0 when OFF

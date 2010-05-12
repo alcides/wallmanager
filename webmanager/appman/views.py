@@ -195,22 +195,30 @@ def superuser_required(login_url=None):
 @staff_required()
 def projectors(request):
     form_class = ProjectorControlForm
+    old_proj = ProjectorControl.objects.all()
     if request.method == 'POST':
         form = form_class(request.POST)
         if form.is_valid():
-            proj = form.save(commit=False)
-            proj.save()
-            thread = ProjectorsThread(proj)	
+            new_proj = form.save(commit=False)
+            if old_proj:
+                new_proj.inactivity_time = old_proj[0].inactivity_time
+            else:
+                new_proj.inactivity_time = 2
+            new_proj.save()
+            thread = ProjectorsThread(new_proj)	
             thread.run()
             return HttpResponseRedirect(reverse('projectors'))
     else:
-        proj = ProjectorControl.objects.all()[0]
-        form = form_class(initial={'inactivity_time': '%s' % (proj.inactivity_time),
-                                   'startup_week_time': '%s' % (proj.startup_week_time),
-                                   'shutdown_week_time': '%s' % (proj.shutdown_week_time),
-                                   'startup_weekend_time': '%s' % (proj.startup_weekend_time),
-                                   'shutdown_weekend_time': '%s' % (proj.shutdown_weekend_time),
-                                   })
+        if old_proj:
+            proj = old_proj[0]
+            form = form_class(initial={'startup_week_time': '%s' % (proj.startup_week_time),
+                                       'shutdown_week_time': '%s' % (proj.shutdown_week_time),
+                                       'startup_weekend_time': '%s' % (proj.startup_weekend_time),
+                                       'shutdown_weekend_time': '%s' % (proj.shutdown_weekend_time),
+                                       })
+        else:
+            form = form_class()
+            
     return render(request,'appman/projectors.html', {'form': form})
 
 @staff_required()
