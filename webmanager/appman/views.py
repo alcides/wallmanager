@@ -1,4 +1,5 @@
 import os
+from smtplib import SMTPException
 
 from django.views.generic.list_detail import *
 from django.views.generic.create_update import *
@@ -48,7 +49,7 @@ def contact(request):
             try:
                 send_mail(subject, message, email_from, [email_to])
                 request.user.message_set.create(message="Your message was sent successfully to the designated contact administrator.")
-            except:
+            except SMTPException, e:
                 request.user.message_set.create(message="Unable to send your message. Please try again later.")
     else:
         form = MessageToAdminForm()
