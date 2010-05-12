@@ -28,15 +28,17 @@
 		<li><a href="{% url application-delete application.id %}" 
 			onclick="return confirm('Delete application', 'Are you sure you want to delete this app?');">
 				Delete Application</a></li>
+		<li><a href="{% url application-log application.id %}">Application Log ({{ application.applicationlog_set.count }})</a></li>		
 	{% else %}
 		{% if user.is_staff %}
 			<li><a href="{% url application-admin-remove application.id %}" 
 				onclick="return confirm('Remove application', 'Are you sure you want to remove this app?');">
-				Remove Application</a></li>
+				Remove Application</a></li>	
 		{% else %}
 			<li><a href="#" onClick="toggle_report_abuse_form();">Report Abuse</a></li>
 		{% endif %}
 	{% endifequal %}
+</ul>
 </div>
 
 <img class="icon" src="/media/{{ application.icon }}" alt="{{ application.name }}" />
@@ -44,10 +46,10 @@
 <p class="description">{{ application.description }}</p>
 
 {% if form.errors %}
-<div id="report_abuse_form" style="visibility:visible">
-<p>{{ form.errors|pluralize }}:</p>
+	<div id="report_abuse_form" style="visibility:visible">
+		<p>{{ form.errors|pluralize }}:</p>
 {% else %}
-<div id="report_abuse_form" style="visibility:hidden">
+	<div id="report_abuse_form" style="visibility:hidden">
 {% endif %}
 <form action="{% url report-abuse application.id %}" method="post" enctype="multipart/form-data">
     {{ form.as_ul }}

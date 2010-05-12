@@ -42,6 +42,12 @@ class ApplicationManagementTest(TestCase):
         self.plum.is_staff = True
         self.plum.is_superuser = True
         self.plum.save()
+        
+        # Prof. Green is a regular admin.
+        self.green = User.objects.create_user(username="green_ede", email="green@dei.uc.pt", password="green")
+        self.green.is_staff = True
+        self.green.is_superuser = False
+        self.green.save()
         		
         self.educational = Category.objects.create(name="Educational")
         self.TestCat = Category.objects.create(name="TestCat")
@@ -423,8 +429,9 @@ class ApplicationManagementTest(TestCase):
             post_data = { 'title': title, 'content': 'This is a new content.' }
             response = self.client.post('/documentation/%d/edit/' % page.id, post_data)
             f = FlatPage.objects.get(title=title)
-            self.assertEqual(f.content, 'This is a new content.')
-
+            self.assertEqual(f.content, 'This is a new content.')    
+            
+    
     def test_logging(self):
         """ Tests logging capabilities """
         def check_contents(type_):
@@ -452,12 +459,34 @@ class ApplicationManagementTest(TestCase):
         temp_app.delete()
         check_contents('deleted')
         check_contents('removed from filesystem')
-        
-        response = self.client.post('/applications/filter/', post_data)  
-        self.assertContains(response, '<td>%s'%(self.zacarias.username), 1) 
-        
+                
     
+    def test_application_logging(self):
+        """ Tests the pages that show application logs. """
+        login = self.do_login()
+
+        # Create some dummy data
+        app2 = Application.objects.create(name="Another Application",description ="Some application", owner=self.zacarias, category=self.educational)
+        
+        for i in range(5):
+            app = i % 2 == 0 and self.gps or app2
+            ApplicationLog.objects.create(application=app,
+                error_description="Some error.")
+        
+        # test at application 1
+        response = self.client.post('/applications/%s/log/' % app2.id)
+        self.assertContains(response, '<p>Error Description:</p>', 2) 
+
+        # test at application 2
+        response = self.client.post('/applications/%s/log/' % self.gps.id)  
+        self.assertContains(response, '<p>Error Description:</p>', 3) 
+        
+        # test invalid application
+        response = self.client.post('/applications/23/log/')  
+        self.assertRedirects(response, '/applications/')
+        
     def test_category_filter(self):
+        """ Tests if category filter works """
         login = self.do_login()
         self.games = Category.objects.get(name='Games')
         self.app = Application.objects.create(name="Myapp", description="An application", owner=self.zacarias, category=self.educational)
@@ -490,10 +519,10 @@ class ApplicationManagementTest(TestCase):
             'category': self.games.id,
             'myApps': 'on'
         }
+
+        response = self.client.post('/applications/filter/', post_data)  
+        self.assertContains(response, '<td>%s'%(self.zacarias.username), 1) 
         
-        response = self.client.post('/documentation/3/edit/', post_data)
-        f = FlatPage.objects.get(title='TDocuments')
-        self.assertEqual(f.content, "New tech content.")
 
     def test_requires_superuser_to_define_contact_admin(self):
         """ Test superuser requirement in defining the contact administrator. """
@@ -524,6 +553,41 @@ class ApplicationManagementTest(TestCase):
         response = self.client.get('/admin_contact/')
         self.assertContains(response, 'Current contact admin: None.')
         post_delete.receivers = []
+
+
+    def test_requires_login_to_contact(self):
+        """ Tests login requirements for contacting the designated contact administrator. """
+        response = self.client.get('/contact/')
+        self.assertEqual(response.status_code, 302) # redirect to login
+        self.assertRedirects(response, '/accounts/login/?next=/contact/')
+        
+    def test_contact(self):
+        """ Sample test for a message to the designated contact administrator """
+        # Clean email inbox
+        mail.outbox = []
+        
+        login = self.do_login(user="zacarias")
+        response = self.client.get('/contact/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Contact Admin")
+        self.assertContains(response, "<form", 1)
+        self.assertContains(response, "message")
+        self.assertContains(response, "submit")
+        
+        sample_message = 'I have an application that needs the library xyz. Could you please install it on the system?'
+        post_data = {
+            'message': sample_message,
+        }
+        response = self.client.post('/contact/', post_data)
+        self.assertEqual(response.status_code, 200)
+        
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox[0].to), 1)
+        self.assertEqual(mail.outbox[0].to[0], get_contact_admin_email())
+        self.assertEqual(mail.outbox[0].subject, '[WallManager] Message from user %s' % self.zacarias.email)
+        self.assertTrue( sample_message in mail.outbox[0].body)
         
     def tearDown(self):
         open(self.logger.fname, "w").write("\n")
+
+        

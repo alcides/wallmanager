@@ -1,4 +1,5 @@
 import os
+from smtplib import SMTPException
 
 from django.views.generic.list_detail import *
 from django.views.generic.create_update import *
@@ -26,17 +27,27 @@ def render(request, template, opts = {}):
 #Non-Authenticated User Views
 def home(request):
 	return render(request,'appman/home.html')
-	
-def documentation(request):
-	return render(request,'appman/doc.html')
-
-def faq(request):
-	return render(request,'appman/faq.html')
 
 #Authenticated User Views
 @login_required
 def contact(request):
-    return render(request,'appman/contact.html')
+    if request.method == 'POST':
+        form = MessageToAdminForm(request.POST)
+        if form.is_valid():
+            subject = '[WallManager] Message from user %s' % request.user.email
+            message = 'Dear WallManager administrator,\n\n\
+                The user %s has sent you a message using the website\'s administrator contact form. The message is as follows:\n\n\
+                %s' % (request.user.email, form.cleaned_data['message'])
+            email_from = settings.DEFAULT_FROM_EMAIL
+            email_to = get_contact_admin_email()
+            try:
+                send_mail(subject, message, email_from, [email_to])
+                request.user.message_set.create(message="Your message was sent successfully to the designated contact administrator.")
+            except SMTPException, e:
+                request.user.message_set.create(message="Unable to send your message. Please try again later.")
+    else:
+        form = MessageToAdminForm()
+    return render(request,'appman/contact.html',{'form': form})
     
 @login_required
 def application_list(request):
@@ -77,6 +88,17 @@ def application_search(request):
     form = ApplicationFilterForm()
     return render(request,'appman/application_list.html', {'application_list': cs,
         'form': form , 'subtitle': "Searching for %s."%request.POST.get('q','')  })
+
+@login_required
+def application_log(request, object_id):
+    cs = ApplicationLog.objects.filter(application = object_id)
+    try:
+        app = Application.objects.get(id=object_id)
+    except Application.DoesNotExist:
+        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
+        return HttpResponseRedirect(reverse('application-list'))
+        
+    return render(request,'appman/application_log.html', {'logs': cs,'identifier':object_id, 'appname':app.name})
 
 @login_required
 def application_add(request):

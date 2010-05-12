@@ -354,3 +354,17 @@ p.description {
     font-style: italic;
     font-size: 14px;
 }
+
+
+div.log {
+    margin-bottom: 30px;
+}
+
+div.log code.description {
+    width: 100%;
+    display: block;
+    border: dashed 1px #CCC;
+    font-style: none;
+    font-size: 14px;
+    font-family: Consolas, "Courier New", sans-serif;
+}
