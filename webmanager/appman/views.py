@@ -70,11 +70,14 @@ def application_search(request):
 
 @login_required
 def application_log(request, object_id):
-    pass
-#    cs = Application.objects.filter(name__contains = request.POST.get('q',''))|Application.objects.filter(description__contains = request.POST.get('q',''))
-#    form = ApplicationFilterForm()
-#    return render(request,'appman/application_list.html', {'application_list': cs,
-#        'form': form  })
+    cs = ApplicationLog.objects.filter(application = object_id)
+    try:
+        app = Application.objects.get(id=object_id)
+    except Application.DoesNotExist:
+        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
+        return HttpResponseRedirect(reverse('application-list'))
+        
+    return render(request,'appman/application_log.html', {'logs': cs,'identifier':object_id, 'appname':app.name})
 
 @login_required
 def application_add(request):
