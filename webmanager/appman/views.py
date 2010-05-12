@@ -79,6 +79,17 @@ def application_search(request):
         'form': form , 'subtitle': "Searching for %s."%request.POST.get('q','')  })
 
 @login_required
+def application_log(request, object_id):
+    cs = ApplicationLog.objects.filter(application = object_id)
+    try:
+        app = Application.objects.get(id=object_id)
+    except Application.DoesNotExist:
+        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
+        return HttpResponseRedirect(reverse('application-list'))
+        
+    return render(request,'appman/application_log.html', {'logs': cs,'identifier':object_id, 'appname':app.name})
+
+@login_required
 def application_add(request):
     form_class = ApplicationAddForm
     if request.method == 'POST':

@@ -37,6 +37,8 @@
 			<li><a href="#" onClick="toggle_report_abuse_form();">Report Abuse</a></li>
 		{% endif %}
 	{% endifequal %}
+    <li><a href="{% url application-log application.id %}">Application Log</a></li>
+</ul>
 </div>
 
 <img class="icon" src="/media/{{ application.icon }}" alt="{{ application.name }}" />
