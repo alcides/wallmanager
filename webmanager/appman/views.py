@@ -200,10 +200,21 @@ def screensaver(request):
     if request.method == 'POST':
         form = ScreenSaverTimeForm(request.POST)
         if form.is_valid():
+            #Convert the value to an integer
+            value = form.cleaned_data['screensaver_time']
+            hours = int(value[0:2])
+            minutes = int(value[3:5])
+            seconds = int(value[6:8])
+            converted_value = hours * 3600 + minutes * 60 + seconds
+            ScreensaverControl.objects.create(screensaver_inactivity_time = converted_value)
             request.user.message_set.create(message="Screensaver inactivity time was set successfully.")
     else:
         form = ScreenSaverTimeForm()
-    return render(request,'appman/screensaver.html', {'form': form})
+    try:
+        current_screensaver_time = ScreensaverControl.objects.all()[0].screensaver_inactivity_time
+    except IndexError:
+        current_screensaver_time = None
+    return render(request,'appman/screensaver.html', {'current_screensaver_time': current_screensaver_time, 'form': form})
 
 @staff_required()
 def suspension(request):

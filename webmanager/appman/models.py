@@ -89,6 +89,14 @@ class ProjectorControl(models.Model):
         ProjectorControl.objects.all().delete()
         super(ProjectorControl,self).save(*args, **kwargs)
         
+class ScreensaverControl(models.Model):
+    screensaver_inactivity_time = models.IntegerField() #In seconds
+    
+    def save(self, *args, **kwargs):
+        """ There can be only one ScreensaverControl instance."""
+        ScreensaverControl.objects.all().delete()
+        super(ScreensaverControl,self).save(*args, **kwargs)
+        
 class ApplicationLog(models.Model):
     application = models.ForeignKey(Application)
     datetime = models.DateTimeField(auto_now_add=True)
