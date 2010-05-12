@@ -34,10 +34,8 @@ function changeState(){
     }
 }
 </script>
-<ul>
-<br/>
-</ul>
 
+<ul>
 {% if messages %}
     <blockquote>
     {% for message in messages %}
@@ -45,6 +43,8 @@ function changeState(){
     {% endfor %}
     </blockquote>
 {% endif %}
+</ul>
+
 <div id="appfilter" align="center">
     <a href="#" onclick="changeState()">Show filters</a>
     <form action="/applications/filter/" method="POST"  id="ddmenu" style="visibility:hidden" >

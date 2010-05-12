@@ -109,7 +109,7 @@ def application_add(request):
                 delete_path(temporary_named_path)
             else:
                 app.save()            
-            request.user.message_set.create(message="Application sucessfully submitted." )
+            request.user.message_set.create(message="Application successfully submitted." )
             return HttpResponseRedirect(reverse('application-detail', args=[str(app.id)]))
         else:
             request.user.message_set.create(message="Invalid form, please correct the following errors.")
@@ -148,7 +148,7 @@ def application_detail(request,object_id):
     try:
         app = Application.objects.get(id=object_id)
     except Application.DoesNotExist:
-        request.user.message_set.create(message="Invalid application id %s."%object_id)
+        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('application-list'))
     return object_detail(request, extra_context={'form': ReportAbuseForm()}, object_id=object_id, queryset=cs, template_object_name="application")
 
@@ -158,9 +158,9 @@ def application_admin_remove(request,object_id):
 
     try:
         app = Application.objects.get(id=object_id)
-        request.user.message_set.create(message="Application %s removed sucessfully."%(app.name))
+        request.user.message_set.create(message="Application %s removed successfully."%(app.name))
     except Application.DoesNotExist:
-        request.user.message_set.create(message="Invalid application id %s."%object_id)
+        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('application-list'))
     app = get_object_or_404(Application, pk=object_id)
     email_from = settings.DEFAULT_FROM_EMAIL
@@ -179,7 +179,7 @@ def application_edit(request, object_id):
             app = Application.objects.get(id=object_id)
 
         except Application.DoesNotExist:
-            request.user.message_set.create(message="Invalid application id %d."%object_id)
+            request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
             return HttpResponseRedirect(reverse('application-list'))
 
         if filepath and os.path.isfile(filepath):
@@ -193,9 +193,9 @@ def application_edit(request, object_id):
 def application_delete(request, object_id):
     try:
         app = Application.objects.get(id=object_id)
-        request.user.message_set.create(message="Application %s deleted sucessfully."%app.name)
+        request.user.message_set.create(message="Application %s deleted successfully."%app.name)
     except Application.DoesNotExist:
-        request.user.message_set.create(message="Invalid application id %d."%object_id)
+        request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
         return HttpResponseRedirect(reverse('application-list'))
     app = get_object_or_404(Application, id=object_id)
     app.delete()
@@ -207,7 +207,7 @@ def report_abuse(request, object_id):
         app = Application.objects.get(id=object_id)
         request.user.message_set.create(message="Application %s reported successfully."%app.name)
     except Application.DoesNotExist:
-        request.user.message_set.create(message="Invalid application id %d."%object_id)
+        request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
         cs = Application.objects.all()
         return object_list(request, queryset=cs, template_object_name="application")
     app = get_object_or_404(Application, id=object_id)
@@ -269,7 +269,7 @@ def category_add(request):
         if form.is_valid():
             cat = form.save(commit=False)
             cat.save()
-            request.user.message_set.create(message="Category %s added sucessfully."%cat.name)
+            request.user.message_set.create(message="Category %s added successfully."%cat.name)
             return HttpResponseRedirect(reverse('category-list'))
     else:
         form = form_class()
@@ -283,7 +283,7 @@ def category_edit(request, object_id):
     try:
         cat = Category.objects.get(id=object_id)
     except Category.DoesNotExist:
-        request.user.message_set.create(message="Invalid category %s."%object_id)
+        request.user.message_set.create(message="Invalid category's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('category-list'))
     return update_object(request, form_class=CategoryForm, 
             object_id=object_id, post_save_redirect=reverse('category-list'))
@@ -292,9 +292,9 @@ def category_edit(request, object_id):
 def category_remove(request, object_id):
     try:
         cat = Category.objects.get(id=object_id)
-        request.user.message_set.create(message="Category %s removed sucessfully."%cat.name)
+        request.user.message_set.create(message="Category %s removed successfully."%cat.name)
     except Category.DoesNotExist:
-        request.user.message_set.create(message="Invalid category %s."%object_id)
+        request.user.message_set.create(message="Invalid category's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('category-list'))
     cat = get_object_or_404(Category, id=object_id)
     cat.delete()
