@@ -486,6 +486,24 @@ class ApplicationManagementTest(TestCase):
         check_contents('deleted')
         
         check_contents('removed from filesystem')
+        
+    def test_screensaver_time(self):
+        """ Tests the screensaver time setting. """
+        login = self.do_admin_login()
+        response = self.client.get('/screensaver/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "ScreenSaver")
+        self.assertContains(response, "<form", 1)
+        self.assertContains(response, "screensaver_time")
+        self.assertContains(response, "submit")
+        
+        screensaver_time = "00:05:00"
+        post_data = {
+            'screensaver_time': screensaver_time,
+        }
+        response = self.client.post('/screensaver/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Screensaver inactivity time was set successfully.")
     
     def tearDown(self):
         open(self.logger.fname, "w").write("\n")
