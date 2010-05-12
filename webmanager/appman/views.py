@@ -141,14 +141,14 @@ def application_upload(request):
     else:
         return HttpResponseRedirect(reverse('application-add'))
 
-def application_detail(request,object_id):
+def application_detail(request,object_id,form=ReportAbuseForm()):
     cs = Application.objects.all()
     try:
         app = Application.objects.get(id=object_id)
     except Application.DoesNotExist:
         request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('application-list'))
-    return object_detail(request, extra_context={'form': ReportAbuseForm()}, object_id=object_id, queryset=cs, template_object_name="application")
+    return object_detail(request, extra_context={'form': form}, object_id=object_id, queryset=cs, template_object_name="application")
 
 @staff_login_required
 def application_admin_remove(request,object_id):
@@ -210,19 +210,23 @@ def report_abuse(request, object_id):
         return object_list(request, queryset=cs, template_object_name="application")
     app = get_object_or_404(Application, id=object_id)
     if request.method == 'POST':
-        abuse_description = request.POST['abuse_description']
-        email_from = settings.DEFAULT_FROM_EMAIL
-        email_to = get_contact_admin_email()
-        current_site = Site.objects.get_current()
-        message = """ User %s reported an abuse in application %s (http://%s%s) described as: 
+        form = ReportAbuseForm(request.POST)
+        if (form.is_valid()):
+            abuse_description = form.cleaned_data['abuse_description']
+            email_from = settings.DEFAULT_FROM_EMAIL
+            email_to = get_contact_admin_email()
+            current_site = Site.objects.get_current()
+            message = """ User %s reported an abuse in application %s (http://%s%s) described as: 
         
-        %s """ % (request.user.email.strip(), app.name, current_site.domain, app.get_absolute_url(), abuse_description) 
+            %s """ % (request.user.email.strip(), app.name, current_site.domain, app.get_absolute_url(), abuse_description) 
 
-        try:
-            send_mail('[WallManager] Application ' + app.name + ' received an abuse report.', message, email_from, [email_to])
-            request.user.message_set.create(message="Your report was sent successfully.")
-        except:
-            request.user.message_set.create(message="Failure while sending e-mail message containing the report. Please try again later.")
+            try:
+                send_mail('[WallManager] Application ' + app.name + ' received an abuse report.', message, email_from, [email_to])
+                request.user.message_set.create(message="Your report was sent successfully.")
+            except:
+                request.user.message_set.create(message="Failure while sending e-mail message containing the report. Please try again later.")
+        else:
+            return application_detail(request, object_id, form)
         return HttpResponseRedirect(reverse('application-list'))
         
 #Decorators

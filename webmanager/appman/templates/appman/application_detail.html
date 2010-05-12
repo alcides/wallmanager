@@ -34,7 +34,7 @@
 				onclick="return confirm('Remove application', 'Are you sure you want to remove this app?');">
 				Remove Application</a></li>
 		{% else %}
-			<li><a href="#" onClick="show_report_abuse_form();">Report Abuse</a></li>
+			<li><a href="#" onClick="toggle_report_abuse_form();">Report Abuse</a></li>
 		{% endif %}
 	{% endifequal %}
 </div>
@@ -43,26 +43,28 @@
 
 <p class="description">{{ application.description }}</p>
 
-
-
-
-<div id="report_abuse_form">
-<form action="report_abuse/" method="post" enctype="multipart/form-data">
+{% if form.errors %}
+<div id="report_abuse_form" style="visibility:visible">
+<p>{{ form.errors|pluralize }}:</p>
+{% else %}
+<div id="report_abuse_form" style="visibility:hidden">
+{% endif %}
+<form action="{% url report-abuse application.id %}" method="post" enctype="multipart/form-data">
     {{ form.as_ul }}
     <input type="submit" value="Report" />
 </form>
 </div>
 
 <script type="text/javascript">
-    document.getElementById('report_abuse_form').style.visibility = 'hidden';
-    
-    function show_report_abuse_form() {
+    function toggle_report_abuse_form() {
         var form = document.getElementById('report_abuse_form');
-        form.style.visibility = 'visible';
+        if (form.style.visibility == 'visible') {
+            form.style.visibility = 'hidden';
+        }
+        else {
+            form.style.visibility = 'visible';
+        }
     }
 </script>
-
-      
-
 
 {% endblock %}
