@@ -513,6 +513,28 @@ class ApplicationManagementTest(TestCase):
         check_contents('deleted')
         check_contents('removed from filesystem')
     
+    def test_application_logging(self):
+        login = self.do_login()
+        ##add some dummy logs
+        app2 = Application.objects.create(name="Another Application",description ="Some application", owner=self.zacarias, category=self.educational)
+        ApplicationLog.objects.create(application=self.gps,error_description="Some error.")
+        ApplicationLog.objects.create(application=self.gps,error_description="Some error.")
+        ApplicationLog.objects.create(application=app2,error_description="Some error.")
+        ApplicationLog.objects.create(application=app2,error_description="Some error.")
+        ApplicationLog.objects.create(application=app2,error_description="Some error.")
+        
+        ##test at application 1
+        response = self.client.post('/applications/1/log/')  
+        self.assertContains(response, '<p>Error Description:</p>', 2) 
+
+        ##test at application 2
+        response = self.client.post('/applications/2/log/')  
+        self.assertContains(response, '<p>Error Description:</p>', 3) 
+        
+        ##test invalid application
+        response = self.client.post('/applications/23/log/')  
+        self.assertRedirects(response, '/applications/')
+        
     def test_category_filter(self):
         login = self.do_login()
         self.games = Category.objects.get(name='Games')
@@ -552,3 +574,5 @@ class ApplicationManagementTest(TestCase):
         
     def tearDown(self):
         open(self.logger.fname, "w").write("\n")
+
+        
