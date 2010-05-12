@@ -1,43 +1,43 @@
 import string
-import poplib
-import socket
+import ldap
+from django.conf import settings
 from django.forms.fields import email_re
 from django.contrib.auth.models import User
 
-AUTHORIZED_SERVERS = {'student.dei.uc.pt':'stu','eden.dei.uc.pt':'ede'}
-
 class StudentPopBackend:
-    def auth_pop3_server(self, email=None, password=None):
+    def auth_ldap_server(self, email=None, password=None):
         domain = ''
         username = ''
         if email_re.search(email):
-            username = email[:email.find('@')]
-            domain = email[email.find('@')+1:]
+            dn = settings.AUTH_LDAP_USER_BASE(email)
             
-        if username and domain in AUTHORIZED_SERVERS.keys():
             try:
-                m = poplib.POP3_SSL(domain)
-                m.user(username)
-                m.pass_(password)
-                return bool(m.stat())
-            except:
+                l = ldap.initialize(settings.AUTH_LDAP_SERVER)
+                l.simple_bind_s(dn, password)
+                
+                # Builds real name to fill in register, and force auth check.
+                me = l.search_s(l.whoami_s()[3:],ldap.SCOPE_SUBTREE)
+                ln = me[0][1]['sn'][0]
+                fn = me[0][1]['givenName'][0].split()[0]
+                return "%s %s" % (fn, ln)
+
+            except ldap.INVALID_CREDENTIALS:
+                # Name or password were bad. Fail.
                 return False
+            except ldap.LDAPError, e:
+                return False
+        else:
+            return False
     
     def authenticate(self, username=None, password=None):
-        if not self.auth_pop3_server(username, password):
+        ldap_res = self.auth_ldap_server(username, password)
+        if not ldap_res:
             return None
         try:
             user = User.objects.get(email=username)
         except User.DoesNotExist:
-            new_user = ''
-            domain = ''
-            if email_re.search(username):
-                domain = username[username.find('@')+1:]
-                new_user = username[:username.find('@')]
-                new_user = new_user + '_' + AUTHORIZED_SERVERS[domain]
-                new_user = string.lower(new_user)
             temp_pass = User.objects.make_random_password()
-            user = User.objects.create_user(new_user,username,temp_pass)
+            user = User.objects.create_user(ldap_res,username,temp_pass)
             user.is_staff = False
             user.save()
         return user
