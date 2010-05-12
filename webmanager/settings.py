@@ -73,6 +73,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'appman.backends.StudentPopBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 LOGIN_REDIRECT_URL = '/applications/'
 
 WALL_APP_DIR = relative('../mtmenu/apps/')
@@ -83,3 +88,5 @@ DEFAULT_CATEGORY = "Others"
 APPS_MAX_LOG_ENTRIES = 5
 
 LOG_FILENAME = relative('log.txt')
+
+
