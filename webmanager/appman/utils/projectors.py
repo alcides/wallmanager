@@ -59,6 +59,18 @@ class ProjectorManager():
         data = urllib.urlencode(values)
         req = urllib2.Request(self.url(day), data)
         urllib2.urlopen(req)
+        
+    def power_off():
+        values = {'V2' : '1','D2' : '0'}
+        data = urllib.urlencode(values)
+        req = urllib2.Request(self.url(day), data)
+        urllib2.urlopen(req)
+
+    def power_on():
+        values = {'V1' : '1','D1' : '1'}
+        data = urllib.urlencode(values)
+        req = urllib2.Request(self.url(day), data)
+        urllib2.urlopen(req)
 
 def set_projectors_time(week_on, week_off, 
         weekend_on=False, weekend_off=False, 
@@ -82,4 +94,13 @@ def set_projectors_time(week_on, week_off,
                     set_hour(week_on, week_off)
                         
                 projector.enable(day)
-    
+
+#power is 1 when ON and 0 when OFF
+def projectors_power(power, klass=ProjectorManager, projector_ips=PROJECTOR_IPS):
+    controllers = map(klass, projector_ips)
+    for projector in controllers:
+        if projector.login():
+            if power:
+                projector.power_on()
+            else:
+                projector.power_on()
