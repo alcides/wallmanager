@@ -37,7 +37,7 @@
 			<li><a href="#" onClick="toggle_report_abuse_form();">Report Abuse</a></li>
 		{% endif %}
 	{% endifequal %}
-    <li><a href="{% url application-log application.id %}">Application Log</a></li>
+    <li><a href="{% url application-log application.id %}">Application Log ({{ application.applicationlog_set.count }})</a></li>
 </ul>
 </div>
 

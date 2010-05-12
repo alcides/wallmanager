@@ -354,3 +354,8 @@ p.description {
     font-style: italic;
     font-size: 14px;
 }
+
+
+div.log {
+    margin-bottom: 30px;
+}
