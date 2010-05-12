@@ -200,14 +200,12 @@ def screensaver(request):
     if request.method == 'POST':
         form = ScreenSaverTimeForm(request.POST)
         if form.is_valid():
-            #Convert the value to an integer
-            value = form.cleaned_data['screensaver_time']
-            hours = int(value[0:2])
-            minutes = int(value[3:5])
-            seconds = int(value[6:8])
-            converted_value = hours * 3600 + minutes * 60 + seconds
-            ScreensaverControl.objects.create(screensaver_inactivity_time = converted_value)
-            request.user.message_set.create(message="Screensaver inactivity time was set successfully.")
+            time = form.cleaned_data['screensaver_time']
+            if str(time) == "00:00:00":
+                request.user.message_set.create(message="Time must be at least 00:01 (one minute).")
+            else:
+                ScreensaverControl.objects.create(screensaver_inactivity_time = time)
+                request.user.message_set.create(message="Screensaver inactivity time was set successfully.")
     else:
         form = ScreenSaverTimeForm()
     try:

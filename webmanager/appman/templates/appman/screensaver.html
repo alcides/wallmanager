@@ -16,7 +16,10 @@
     {% endif %}
 
     <p>Here, you can set how long the screensaver will take to appear.</p>
-    <p>Current inactivity time for the screensaver to appear (in seconds): {% if current_screensaver_time %}{{ current_screensaver_time }}{% else %}Not set{% endif %} </p>
+    <p>Current inactivity time for the screensaver to appear: {% if current_screensaver_time %}{{ current_screensaver_time }}{% else %}Not set{% endif %}</p>
+    <br/>
+    <p><em>Important: time must be in the format &lt;minutes&gt;:&lt;seconds&gt;.</em></p>
+    <p><em>Example: 15:00 (15 minutes)</em></p>
     
     <form action="/screensaver/" method="post">
     {{ form.as_p }}

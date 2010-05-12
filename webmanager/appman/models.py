@@ -90,7 +90,7 @@ class ProjectorControl(models.Model):
         super(ProjectorControl,self).save(*args, **kwargs)
         
 class ScreensaverControl(models.Model):
-    screensaver_inactivity_time = models.IntegerField() #In seconds
+    screensaver_inactivity_time = models.TimeField()
     
     def save(self, *args, **kwargs):
         """ There can be only one ScreensaverControl instance."""

@@ -96,33 +96,5 @@ class UserCreationForm(ModelForm):
 class ReportAbuseForm(Form):
     abuse_description = CharField(widget=widgets.Textarea())
 
-class ScreenSaverTimeField(Field):
-    def __init__(self, *args, **kwargs):
-        super(ScreenSaverTimeField, self).__init__(*args, **kwargs)
-        
-    def clean(self, value):
-        "Validates format HH:MM:SS. Returns a Unicode object."
-        super(ScreenSaverTimeField, self).clean(value)
-        from django.utils.encoding import smart_unicode
-        value = smart_unicode(value)
-        value_length = len(value)
-        if value_length != len('HH:MM:SS'):
-            raise ValidationError(u'Ensure this value is in the format HH:MM:SS')
-        if not (value[0].isdigit() and value[1].isdigit() and value[2] == ":" \
-            and value[3].isdigit() and value[4].isdigit() and value[5] == ":" \
-            and value[6].isdigit() and value[7].isdigit()):
-            raise ValidationError(u'Ensure this value is in the format HH:MM:SS')
-        if str(value) == "00:00:00":
-            raise ValidationError(u'Ensure this value is larger than 00:00:00.')
-            
-        seconds = int(value[6:8])
-        if not (seconds >= 0 and seconds <= 59):
-            raise ValidationError(u'Seconds must range between 0 and 59.')
-        minutes = int(value[3:5])
-        if not (minutes >= 0 and minutes <= 59):
-            raise ValidationError(u'Minutes must range between 0 and 59.')
-            
-        return value
-
 class ScreenSaverTimeForm(Form):        
-    screensaver_time = ScreenSaverTimeField()
+    screensaver_time = TimeField(input_formats=['%H:%M'])

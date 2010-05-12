@@ -505,19 +505,17 @@ class ApplicationManagementTest(TestCase):
         self.assertContains(response, "screensaver_time")
         self.assertContains(response, "submit")
         
+        correct_time = "01:05"
         #The following tests use several incorrect formats for submitting time, followed by one final, correct format
-        test_response("abcdefghijklmnop", 'Ensure this value is in the format HH:MM:SS') #Incorrect - more than len('HH:MM:SS') characters
-        test_response("abc", 'Ensure this value is in the format HH:MM:SS') #Incorrect - less than len('HH:MM:SS') characters
-        test_response("abcdefgh", 'Ensure this value is in the format HH:MM:SS') #len('HH:MM:SS') characters, but still incorrect
-        test_response("12345678", 'Ensure this value is in the format HH:MM:SS') #Numerical, but still incorrect
-        test_response("12:34 56", 'Ensure this value is in the format HH:MM:SS') #Missing one colon
-        test_response("00:00:00", 'Ensure this value is larger than 00:00:00.') #Correct format, but must be larger than 00:00:00
-        test_response("00:00:60", 'Seconds must range between 0 and 59.') #More than 59 seconds
-        test_response("00:60:00", 'Minutes must range between 0 and 59.') #More than 59 minutes
-        test_response("01:05:03", 'Screensaver inactivity time was set successfully.')
+        test_response("abcd", 'Enter a valid time.')
+        test_response("1234", 'Enter a valid time.')
+        test_response("12 34", 'Enter a valid time.') #Missing one colon
+        test_response("00:00", 'Time must be at least 00:01 (one minute).') #Must be larger than 00:00
+        test_response("00:60", 'Enter a valid time.') #More than 59 minutes
+        test_response("24:00", 'Enter a valid time.') #More than 23 hours (maximum is 23:59)
+        test_response(correct_time, 'Screensaver inactivity time was set successfully.')
         
-        #Screensaver time should now be the equivalent in seconds to 01:05:03
-        seconds = int("01") * 3600 + int("05") * 60 + int("03")
-        self.assertEqual(ScreensaverControl.objects.all()[0].screensaver_inactivity_time, seconds)
+        time_in_database = ScreensaverControl.objects.all()[0].screensaver_inactivity_time
+        self.assertEqual(str(time_in_database), correct_time + ":00")
     def tearDown(self):
         open(self.logger.fname, "w").write("\n")
