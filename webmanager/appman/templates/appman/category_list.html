@@ -7,6 +7,13 @@
 {% endblock %}
 
 {% block content %}
+    {% if messages %}
+        <blockquote>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+        </blockquote>
+    {% endif %}
 <div id="addcat" align="right">
 	<ul class="object-tools">
 		<li><a href='{% url category-add %}' class="add-button">Add Category</a></li>

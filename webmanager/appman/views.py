@@ -47,16 +47,27 @@ def application_list(request):
 @login_required
 def application_filter(request):
     form = ApplicationFilterForm()
-    #TODO add some message 
-    if request.POST.get('category','') =='' and request.POST.get('myApps','off')=='on':
+    ownership = request.POST.get('myApps','off')
+    cat = request.POST.get('category','')
+    if ownership=='on':
+        owner = 'mine'
+    else :
+        owner = 'everybody'
+    if  cat =='' and ownership=='on':
         #show only this user applications
         cs = Application.objects.filter(owner = request.user)
-    elif request.POST.get('myApps','off') == 'on':
-        cs = Application.objects.filter(category = request.POST.get('category',''),owner = request.user)
-    elif request.POST.get('myApps','off') == 'off' and request.POST.get('category','') !='':
-        cs = Application.objects.filter(category = request.POST.get('category','')) 
+    elif ownership == 'on':
+        cs = Application.objects.filter(category = cat,owner = request.user)
+    elif ownership == 'off' and cat !='':
+        cs = Application.objects.filter(category = cat) 
     else:
         return HttpResponseRedirect(reverse('application-list'))
+
+    try:
+        cat_name = Category.objects.get(id = cat )
+    except ValueError:
+        cat_name ='All'
+    request.user.message_set.create(message="Filtering %s of %s applications."%(cat_name,owner))
 
     return render(request,'appman/application_list.html', {'application_list': cs,
         'form': form  })
@@ -65,6 +76,7 @@ def application_filter(request):
 def application_search(request):
     cs = Application.objects.filter(name__contains = request.POST.get('q',''))|Application.objects.filter(description__contains = request.POST.get('q',''))
     form = ApplicationFilterForm()
+    request.user.message_set.create(message="Searching for %s."%request.POST.get('q','') )
     return render(request,'appman/application_list.html', {'application_list': cs,
         'form': form  })
 
@@ -96,9 +108,11 @@ def application_add(request):
                 app.save()
                 delete_path(temporary_named_path)
             else:
-                app.save()
+                app.save()            
+            request.user.message_set.create(message="Application successfully submitted." )
             return HttpResponseRedirect(reverse('application-detail', args=[str(app.id)]))
         else:
+            request.user.message_set.create(message="Invalid form, please correct the following errors.")
             if temporary_named_path:
                 delete_path(temporary_named_path)
     else:
@@ -134,7 +148,7 @@ def application_detail(request,object_id):
     try:
         app = Application.objects.get(id=object_id)
     except Application.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('application-list'))
     return object_detail(request, extra_context={'form': ReportAbuseForm()}, object_id=object_id, queryset=cs, template_object_name="application")
 
@@ -144,8 +158,9 @@ def application_admin_remove(request,object_id):
 
     try:
         app = Application.objects.get(id=object_id)
+        request.user.message_set.create(message="Application %s removed successfully."%(app.name))
     except Application.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('application-list'))
     app = get_object_or_404(Application, pk=object_id)
     email_from = settings.DEFAULT_FROM_EMAIL
@@ -162,13 +177,15 @@ def application_edit(request, object_id):
         filepath = fullpath(request.POST['hidFileID'].strip())
         try:
             app = Application.objects.get(id=object_id)
+
         except Application.DoesNotExist:
-            #TODO send message
+            request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
             return HttpResponseRedirect(reverse('application-list'))
 
         if filepath and os.path.isfile(filepath):
             app.zipfile = File(open(filepath))
             app.save()
+
     return update_object(request, form_class=ApplicationEditForm, 
             object_id=object_id, post_save_redirect=reverse('application-detail', args=[str(object_id)]))
             
@@ -176,8 +193,9 @@ def application_edit(request, object_id):
 def application_delete(request, object_id):
     try:
         app = Application.objects.get(id=object_id)
+        request.user.message_set.create(message="Application %s deleted successfully."%app.name)
     except Application.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
         return HttpResponseRedirect(reverse('application-list'))
     app = get_object_or_404(Application, id=object_id)
     app.delete()
@@ -187,8 +205,9 @@ def application_delete(request, object_id):
 def report_abuse(request, object_id):
     try:
         app = Application.objects.get(id=object_id)
+        request.user.message_set.create(message="Application %s reported successfully."%app.name)
     except Application.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
         cs = Application.objects.all()
         return object_list(request, queryset=cs, template_object_name="application")
     app = get_object_or_404(Application, id=object_id)
@@ -250,6 +269,7 @@ def category_add(request):
         if form.is_valid():
             cat = form.save(commit=False)
             cat.save()
+            request.user.message_set.create(message="Category %s added successfully."%cat.name)
             return HttpResponseRedirect(reverse('category-list'))
     else:
         form = form_class()
@@ -263,7 +283,7 @@ def category_edit(request, object_id):
     try:
         cat = Category.objects.get(id=object_id)
     except Category.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid category's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('category-list'))
     return update_object(request, form_class=CategoryForm, 
             object_id=object_id, post_save_redirect=reverse('category-list'))
@@ -272,8 +292,9 @@ def category_edit(request, object_id):
 def category_remove(request, object_id):
     try:
         cat = Category.objects.get(id=object_id)
+        request.user.message_set.create(message="Category %s removed successfully."%cat.name)
     except Category.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid category's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('category-list'))
     cat = get_object_or_404(Category, id=object_id)
     cat.delete()
