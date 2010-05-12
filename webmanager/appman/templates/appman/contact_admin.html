@@ -8,7 +8,7 @@
 
 {% block content %}
 
-    <p>You can choose the admin that will be notified in case of report abuse</p>
+    <blockquote>You can choose the admin that will be notified in case of report abuse</blockquote>
     <p>Current contact admin: {% if current_contact_admin %}{{ current_contact_admin }}{% else %}None.{% endif %}</p>
     {% if admin_list %}
         <form action="" method="post">
@@ -17,7 +17,7 @@
         {% for admin in admin_list %}
         	<option value="{{ admin.email }}"
 				{% ifequal current_contact_admin admin %}selected="selected"{% endifequal %}
-			>{{ admin.email }}</option>
+			>{{ admin.get_full_name }} ({{ admin.email }})</option>
         {% endfor %}
         <input type="submit" value="Submit" />
         
