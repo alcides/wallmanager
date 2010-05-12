@@ -73,7 +73,16 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'appman.backends.StudentPopBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 LOGIN_REDIRECT_URL = '/applications/'
+
+AUTH_LDAP_SERVER = "ldap://ldap3.dei.uc.pt"
+AUTH_LDAP_USER_BASE = lambda email: "uid=%s,ou=%s,ou=People,dc=dei,dc=uc,dc=pt" % ( email.split("@")[0], 'student' in email and 'student' or 'eden' )
+
 
 WALL_APP_DIR = relative('../mtmenu/apps/')
 ZIP_FOLDER = "applications"
@@ -83,3 +92,5 @@ DEFAULT_CATEGORY = "Others"
 APPS_MAX_LOG_ENTRIES = 5
 
 LOG_FILENAME = relative('log.txt')
+
+

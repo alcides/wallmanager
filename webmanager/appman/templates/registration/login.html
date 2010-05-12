@@ -7,8 +7,17 @@
 {% endblock %}
 
 {% block content %}
+
+<blockquote>
+	Login with your Student/Eden email and password.
+</blockquote>
+
 <form action="" method="post" enctype="multipart/form-data">
-  {{ form.as_ul }}
+  {{ form.non_field_errors }}
+  <ul>
+	<li><label for="id_username">Email:</label> {{ form.username }} {{ form.username.errors }}</li>
+	<li><label for="id_password">Password:</label> {{ form.password }} {{ form.password.errors }}</li>
+  </ul>
   <input type="submit" value="Login" />
 </form>
 {% endblock %}

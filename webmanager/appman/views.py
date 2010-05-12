@@ -301,17 +301,6 @@ def category_remove(request, object_id):
     cat = get_object_or_404(Category, id=object_id)
     cat.delete()
     return HttpResponseRedirect(reverse('category-list'))
-
-def account_register(request):
-    form = UserCreationForm()
-
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            new_user = form.save()
-            return HttpResponseRedirect("/accounts/login/")
-
-    return render_to_response("registration/register.html", {'form' : form })
     
 @staff_login_required
 def documentation_edit(request, documentation_id):
