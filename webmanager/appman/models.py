@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.conf import settings
 
 class Category(models.Model):
     name = models.CharField(max_length=30, unique=True)
@@ -38,6 +37,7 @@ class Application(models.Model):
     zipfile = models.FileField(upload_to=settings.ZIP_FOLDER)
     icon = models.ImageField(upload_to='icons')
     is_extracted = models.BooleanField(default=False)
+    is_running = models.BooleanField(default=False)
     
     def value(self):
         """ The value of an application, based on the likes and dislikes """
@@ -56,7 +56,7 @@ class Application(models.Model):
     
     def __unicode__(self):
         return u"%s" % self.name
-    
+            
     def save(self, force_insert=False, force_update=False):
         try:
             old_obj = Application.objects.get(pk=self.pk)
@@ -73,7 +73,7 @@ class Application(models.Model):
             pass
         
         super(Application, self).save(force_insert, force_update)
-    
+
     @models.permalink
     def get_absolute_url(self):
         return ("application-detail", [str(self.id)])
@@ -91,7 +91,7 @@ class ProjectorControl(models.Model):
 class ApplicationLog(models.Model):
     application = models.ForeignKey(Application)
     datetime = models.DateTimeField(auto_now_add=True)
-    error_description = models.CharField(max_length=255)
+    error_description = models.TextField(blank=True)
     
     def __unicode__(self):
         return u"%s log at %s" % (self.application.name, self.datetime)

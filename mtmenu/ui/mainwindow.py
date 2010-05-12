@@ -1,5 +1,5 @@
 from pymt import *
-from settings import WALL_DEFAULT_WIDTH, WALL_DEFAULT_HEIGHT
+from mtmenu.settings import WALL_DEFAULT_WIDTH, WALL_DEFAULT_HEIGHT
 
 __all__ = ['MainWindow']
 

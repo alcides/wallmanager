@@ -3,13 +3,13 @@
 
 <html lang="en">
 <head>
-	   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	   <title>WallManager</title>        
-	   {% block css %}
-	   <link rel="stylesheet" type="text/css" href="/media/css/main.css" media="screen"/>
-	   {% endblock %}
-
-	   {% block javascript %} {% endblock %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>WallManager</title>        
+	{% block css %}
+	<link rel="stylesheet" type="text/css" href="/media/css/main.css" media="screen"/>
+	{% endblock %}
+	<link rel="icon" href="/media/img/favicon.ico">
+	{% block javascript %} {% endblock %}
 </head>
 <body>
 	<div class="container">
@@ -32,6 +32,14 @@
 	
 			<div class="content">
 				<div class="item">
+					{% if messages %}
+						<ul class="messages">
+					    {% for message in messages %}
+					    	<li>{{ message }}</li>
+					    {% endfor %}
+						</ul>
+					{% endif %}
+					
 					<h1>{% block title%}{% endblock %}</h1>
 					<div>{% block content%}{% endblock %}</div>
 				</div>
@@ -52,7 +60,6 @@
 					<li><a href="{% url contact-admin %}">Contact Admin</a></li>
 					{% else %}
 					<li><a href="/accounts/login/">Login</a></li>
-					<li><a href="/accounts/register/">Register</a></li>
 					{% endif %}
 					<li><a href="/doc/">User Documentation</a></li>
 					<li><a href="/techdoc/">Technical Documentation</a></li>
@@ -74,7 +81,7 @@
 				{% endif %} 
 			</div>
 	
-			<div class="clearer"><span></span></div>
+			<div class="clear"><span></span></div>
 	
 		</div>
 

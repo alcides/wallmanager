@@ -9,6 +9,11 @@ from django.core.mail import send_mail
 
 from appman.models import Application, ApplicationLog, WallManager
 from appman.models import Application, WallManager
+
+from appman.models import Application, ApplicationLog, WallManager
+from appman.utils.unzip import unzip
+from appman.utils.uncompress import UncompressThread
+from appman.utils.log_file import logger
 from appman.utils import get_contact_admin_email
 
 #Custom signal declarations
@@ -38,18 +43,27 @@ def remove_file(file):
 
 def uncompress(sender, instance, signal, *args, **kwargs):
     """ Deletes the previous version and starts the uncompressing of the file """
+    application_was_added = kwargs['created']
+    if application_was_added:
+        logger.log_app_event(instance, 'added')
+    else:
+        logger.log_app_event(instance, 'edited')
+    
     path = get_app_dir(instance)
     remove_dir(path)
     if instance.zipfile:
         from appman.utils.uncompress import UncompressThread
-        UncompressThread(sender,instance, path).start()
+        UncompressThread(sender,instance, path, extracted_email_signal).start()
     
 def remove_app(sender, instance, signal, *args, **kwargs):
-    """ Deletes the uncompressed folder """    
-    if instance.is_extracted:
+    """ Deletes the uncompressed folder """
+    logger.log_app_event(instance, 'deleted')
+    
+    if instance.is_extracted and not instance.is_running:
         remove_dir(get_app_dir(instance))
     remove_file(instance.zipfile)
     remove_file(instance.icon)
+    logger.log_app_event(instance, 'removed from filesystem')
 
 def send_mail_when_app_available(sender, **kwargs):
     """ Sends an e-mail message informing the user that the application is ready to be used """
@@ -58,6 +72,8 @@ def send_mail_when_app_available(sender, **kwargs):
     else:
         success = True
     application = kwargs['application']
+    logger.log_app_event(application, 'deployed')
+    
     email_from = settings.DEFAULT_FROM_EMAIL
     email_to = application.owner.email
     if success:
@@ -91,4 +107,5 @@ signals.post_save.connect(uncompress, sender=Application)
 signals.post_save.connect(remove_extra_logs, sender=ApplicationLog)
 signals.post_delete.connect(remove_app, sender=Application)
 signals.post_delete.connect(check_if_contact_admin, sender=User)
+
 extracted_email_signal.connect(send_mail_when_app_available)

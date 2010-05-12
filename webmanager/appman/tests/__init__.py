@@ -1,4 +1,5 @@
 import os
+import re
 
 from datetime import datetime, time
 from django.core import mail
@@ -8,11 +9,13 @@ from django.contrib.flatpages.models import FlatPage
 from django.core.files import File
 from django.db.models.signals import pre_save, post_save, post_delete
 
-from appman.models import *
-from appman.signals import get_app_dir, remove_extra_logs, check_if_contact_admin
 from appman.utils.fileutils import *
 from appman.utils import get_contact_admin_email
-#from appman.tests.uncompress import UncompressTest
+from appman.utils.log_file import logger
+from appman.utils.uncompress import UncompressThread
+from appman.tests.uncompress import UncompressTest
+from appman.models import *
+from appman.signals import *
 
 APPS_MAX_LOG_ENTRIES = 5
 DEFAULT_CATEGORY = "Others"
@@ -28,26 +31,32 @@ class ApplicationManagementTest(TestCase):
         post_save.connect(remove_extra_logs, sender=ApplicationLog)
     
     def setUp(self):
-        #Creates usernames for Zacarias, Mr. Green and Prof. Plum
+        # Zacarias is a user who uploads apps
         self.zacarias = User.objects.create_user(username="zacarias_stu", email="zacarias@student.dei.uc.pt", password="zacarias")
         
-        self.green = User.objects.create_user(username="green_ede", email="green@dei.uc.pt", password="green")
-        self.green.is_staff = True
-        self.green.save()
+        # Alfredo is a visitor
+        self.alfredo = User.objects.create_user(username="alfredo_stu", email="alfredo@student.dei.uc.pt", password="alfredo")
         
+        # Prof. Plum is an admin for the app.
         self.plum = User.objects.create_user(username="plum_ede", email="plum@dei.uc.pt", password="plum")
         self.plum.is_staff = True
         self.plum.is_superuser = True
         self.plum.save()
         		
         self.educational = Category.objects.create(name="Educational")
-        self.games = Category.objects.create(name="Games")
+        self.TestCat = Category.objects.create(name="TestCat")
         
-        self.gps = Application.objects.create(name="Gps Application", owner=self.zacarias, category=self.educational)
+        self.gps = Application.objects.create(name="Gps Application",description ="Some application", owner=self.zacarias, category=self.educational)
         
-    def do_login(self):
+        self.logger = logger
+        open(self.logger.fname, "w").write("\n")
+        
+    def do_login(self, user="zacarias"):
         """ Fakes login as standard user. """
-        login = self.client.login(username='zacarias_stu', password='zacarias')
+        if user == "zacarias":
+            login = self.client.login(username='zacarias_stu', password='zacarias')
+        else:
+            login = self.client.login(username='alfredo_stu', password='alfredo')
         self.assertEqual(login, True)
         return login
 
@@ -270,7 +279,7 @@ class ApplicationManagementTest(TestCase):
         login = self.do_admin_login()
         response = self.client.get('/categories/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Games</td>")
+        self.assertContains(response, "TestCat</td>")
         self.assertContains(response, "<tr>", Category.objects.count()+1) # 2 cat, plus header
     
     def test_authorized_add_category(self):
@@ -317,7 +326,7 @@ class ApplicationManagementTest(TestCase):
         """ Test removal of empty category. """
         login = self.do_admin_login()
         c = Category.objects.count()
-        response = self.client.post('/categories/%s/remove/'%self.games.id)
+        response = self.client.post('/categories/%s/remove/'%self.TestCat.id)
         self.assertRedirects(response, '/categories/')
         self.assertEqual(c-1, Category.objects.count())
 
@@ -338,72 +347,6 @@ class ApplicationManagementTest(TestCase):
     def test_default_category(self):
         """ Test existence of default category. """
         self.assertEqual(Category.objects.filter(name=DEFAULT_CATEGORY).count(), 1)
-    
-    def test_register_with_different_passwords(self):
-        """ Test different passwords in register form. """
-        u = User.objects.count()
-        #try to register a user with different passwords
-        post_data = {
-            'username': 'test',
-            'email': 'admin@student.dei.uc.pt',
-            'password1': 'admin',
-            'password2': 'administrator'
-        }
-        response = self.client.post('/accounts/register/', post_data)
-    	#check the error message
-    	self.assertContains(response, "Passwords do not match.")
-
-    	#confirm that there is no new user.
-    	self.assertEqual(User.objects.count(), u)
-
-    def test_register_with_wrong_email(self):
-        """ Tests email restrictions in register form. """
-        u = User.objects.count()
-        #try to register a user with different passwords
-        post_data = {
-            'username': 'test',
-            'email': 'admin@admin.pt',
-            'password1': 'admin',
-            'password2': 'admin'
-        }
-        response = self.client.post('/accounts/register/', post_data)
-    	#check the error message
-    	self.assertContains(response, "Email must be on uc.pt domain.")
-
-        #confirm that there is no new user
-    	self.assertEqual(User.objects.count(), u)
-
-    def test_register_without_password(self):
-        """ Tests register form without any password. """
-        u = User.objects.count()
-        #try to register a user with different passwords
-        post_data = {
-            'username': 'test',
-            'email': 'admin@student.dei.uc.pt',
-            'password1': '',
-            'password2': ''
-        }
-        response = self.client.post('/accounts/register/', post_data)
-    	#confirm that there is no new user
-    	self.assertEqual(User.objects.count(), u)
-
-
-    def test_register_sucessfull(self):
-        """ Test register form. """
-        u = User.objects.count()
-        #try to register a user with different passwords
-        post_data = {
-            'username': 'test',
-            'email': 'test@student.dei.uc.pt',
-            'password1': 'testes',
-            'password2': 'testes'
-        }
-        response = self.client.post('/accounts/register/', post_data)
-    	#check the error message
-    	self.assertRedirects(response, '/accounts/login/')
-
-    	#confirm that there exists a new user
-    	self.assertEqual(User.objects.count(), u+1)
   
     def test_application_log_limit(self):
         """ Test if application log is deleting element besides the limit. """
@@ -417,10 +360,10 @@ class ApplicationManagementTest(TestCase):
         # Clean email inbox
         mail.outbox = []
         
-        login = self.do_login()
+        login = self.do_login(user="alfredo")
         response = self.client.get('/applications/%s/' % self.gps.id )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Report abuse")
+        self.assertContains(response, "Report Abuse")
         self.assertContains(response, "<form", 1)
         self.assertContains(response, "abuse_description")
         self.assertContains(response, "submit")
@@ -439,35 +382,115 @@ class ApplicationManagementTest(TestCase):
         self.assertTrue( sample_abuse_description in mail.outbox[0].body)
         self.assertTrue( self.gps.name in mail.outbox[0].body)
 
+    def test_search_application(self):
+        login = self.do_admin_login()
+        self.app = Application.objects.create(name="Myapp", description="An application", owner=self.zacarias, category=self.educational)
+
+        #test none app
+        post_data = {
+            'q':"Nothing else matters"
+        }
+        response = self.client.post('/applications/search/', post_data)
+        self.assertContains(response, '<td>%s'%self.educational.name, 0) 
+
+        #test search by title
+        post_data = {
+            'q':"My"
+        }
+        response = self.client.post('/applications/search/', post_data)
+        self.assertContains(response, '<td>%s'%self.educational.name, 1) 
+        
+        #test search by description
+        post_data = {
+            'q':"Some"
+        }
+        response = self.client.post('/applications/search/', post_data)
+        self.assertContains(response,  '<td>%s'%self.educational.name, 1) 
+        
+        
+
     def test_documentation_edit(self):
+        """ Tests edition of documentation """
         login = self.do_admin_login()
         #test the menu
         c = FlatPage.objects.count()
         response = self.client.post('/documentation/menu/')
-        self.assertContains(response, ">edit</a>", Category.objects.count()) 
+        exp = re.compile(r"\/documentation\/\d\/edit")
+        self.assertEqual( len(exp.findall(response.content)), FlatPage.objects.count() )
+        
+        for page in FlatPage.objects.all():
+            title = page.title
+            post_data = { 'title': title, 'content': 'This is a new content.' }
+            response = self.client.post('/documentation/%d/edit/' % page.id, post_data)
+            f = FlatPage.objects.get(title=title)
+            self.assertEqual(f.content, 'This is a new content.')
 
-        #update documentation 
+    def test_logging(self):
+        """ Tests logging capabilities """
+        def check_contents(type_):
+            contents = self.logger.retrieve_contents()
+            self.assertTrue(type_ in contents)
+         
+        
+        extract_folder = relative("../tests/temp")        
+        temp_app = Application.objects.create(name="Temporary Application", owner=self.zacarias, category=self.educational, zipfile = File(open(relative("../../tests/python_test_app.zip"))))
+        
+        uncompress(Application, temp_app, post_save, **{'created':True})
+        check_contents('added')
+        
+        thread = UncompressThread(Application, temp_app, extract_folder, extracted_email_signal)
+        thread.run()
+        check_contents('deployed')
+                
+        temp_app.name="Temporary Application 2"
+        temp_app.extraction_path = extract_folder
+        temp_app.save()
+        uncompress(Application, temp_app, post_save, **{'created':False})        
+        check_contents('edited')
+        
+        remove_app(Application, temp_app, post_delete)
+        temp_app.delete()
+        check_contents('deleted')
+        check_contents('removed from filesystem')
+        
+        response = self.client.post('/applications/filter/', post_data)  
+        self.assertContains(response, '<td>%s'%(self.zacarias.username), 1) 
+        
+    
+    def test_category_filter(self):
+        login = self.do_login()
+        self.games = Category.objects.get(name='Games')
+        self.app = Application.objects.create(name="Myapp", description="An application", owner=self.zacarias, category=self.educational)
+        self.app = Application.objects.create(name="Myapplication", description="An application", owner=self.zacarias, category=self.games)
+        self.app = Application.objects.create(name="Otherapp", description="Another application", owner=self.plum, category=self.games)
+
+        #confirm that the dropdown menu is correct
+        c = Category.objects.count()
+        response = self.client.get('/applications/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<option", c+1) 
+        
+        #filter my applications , this should return two applications
         post_data = {
-            'content': 'New content.',
-            'title': 'Documents'
+            'category': '',
+            'myApps': 'on'
         }
-        response = self.client.post('/documentation/1/edit/', post_data)
-        f = FlatPage.objects.get(title='Documents')
-        self.assertEqual(f.content, "New content.")
-       
-        #update faq 
+        response = self.client.post('/applications/filter/', post_data)  
+        self.assertContains(response, '<td>%s'%(self.zacarias.username), 3) 
+        #filter application by category
         post_data = {
-            'content': 'New faq content.',
-            'title': 'FaqDocuments'
+            'category': self.educational.id,
+            'myApps': 'off'
         }
-        response = self.client.post('/documentation/2/edit/', post_data)
-        f = FlatPage.objects.get(title='FaqDocuments')
-        self.assertEqual(f.content, "New faq content.")
-        #update tech documentation 
+        response = self.client.post('/applications/filter/', post_data)  
+        self.assertContains(response, '<td>%s'%(self.educational.name), 2) 
+
+        #filter application by category and owner
         post_data = {
-            'content': 'New tech content.',
-            'title': 'TDocuments'
+            'category': self.games.id,
+            'myApps': 'on'
         }
+        
         response = self.client.post('/documentation/3/edit/', post_data)
         f = FlatPage.objects.get(title='TDocuments')
         self.assertEqual(f.content, "New tech content.")
@@ -501,6 +524,6 @@ class ApplicationManagementTest(TestCase):
         response = self.client.get('/admin_contact/')
         self.assertContains(response, 'Current contact admin: None.')
         post_delete.receivers = []
-    
+        
     def tearDown(self):
-        pass
+        open(self.logger.fname, "w").write("\n")

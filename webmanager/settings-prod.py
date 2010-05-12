@@ -1,6 +1,6 @@
 from settings import *
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -15,3 +15,6 @@ DATABASE_USER='bitnami'             # Not used with sqlite3.
 DATABASE_PASSWORD='a23f155165'         # Not used with sqlite3.
 DATABASE_HOST=''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT='3306'             # Set to empty string for default. Not used with sqlite3.
+
+
+SESSION_COOKIE_SECURE = True

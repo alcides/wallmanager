@@ -1,0 +1,6 @@
+Everything in this project, with the exception of the flying spaghetti
+monster logo, is released under the WTFPL license published at:
+http://sam.zoy.org/wtfpl/
+
+The flying spaghetti monster logo (fsm.png) is under worldwide public
+domain.

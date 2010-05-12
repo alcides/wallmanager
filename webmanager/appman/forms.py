@@ -9,17 +9,21 @@ class CategoryForm(ModelForm):
     class Meta:
         model = Category
         fields = ('name',)
-	
+
+
 class ApplicationForm(ModelForm):
+    zipfile = FileField(label="Zip file")
+    
     class Meta:
         model = Application
         fields = ('name', 'zipfile','icon','category','description')
-
-class DocumentationForm(ModelForm):
-    class Meta:
-        model = FlatPage
-        fields = ('title','content')
         
+class ApplicationFilterForm(ModelForm):
+    class Meta:
+        model = Application
+        fields = ('category',)
+    myApps = BooleanField(label='Show only my applications',required=False) # it is required, but handled below for a custom error message.
+
 
 class ApplicationAddForm(ApplicationForm):
     tos = BooleanField(label='I agree to the terms of service.',
@@ -31,15 +35,23 @@ class ApplicationAddForm(ApplicationForm):
             raise ValidationError("You have to agree to the Terms of Service.")
 	
 class ApplicationEditForm(ApplicationForm):
-    zipfile = FileField(required=False)
-    icon = FileField(required=False)
+    zipfile = FileField(label="Zip file", required=False)
+    icon = ImageField(required=False)
+    
+    
+class DocumentationForm(ModelForm):
+    class Meta:
+        model = FlatPage
+        fields = ('title','content')
+    
 
+    
 class UserCreationForm(ModelForm):
     """
     A form that creates a user, with no privileges, from the given username and password.
     """
     username = RegexField(label=("Username"), max_length=30, regex=r'^\w+$', required=True)
-    email = EmailField(label=("Email"), required=True, help_text="Must be a uc.pt account.")
+    email = EmailField(label=("Email"), required=True, help_text="(Must be a uc.pt account.)")
     password1 = CharField(label=("Password"), widget=PasswordInput, required=True)
     password2 = CharField(label=("Password confirmation"), widget=PasswordInput, required=True)
 
@@ -89,4 +101,4 @@ class UserCreationForm(ModelForm):
         return user
 
 class ReportAbuseForm(Form):
-    abuse_description = CharField(widget=widgets.Textarea())
+    abuse_description = CharField(required=True, widget=widgets.Textarea())

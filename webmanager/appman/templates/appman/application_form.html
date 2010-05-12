@@ -31,13 +31,14 @@
 
 {% block content %}
 
-	{% if form.errors %}
-	<h2>Please correct the following error{{ form.errors|pluralize }}:</h2>
-	{% endif %}
+	<blockquote>This page allows you to upload an application bundle to the SenseWall.
+		To learn how to develop and prepare your app for deployment, please
+		read the technical documentation on the left menu.</blockquote>
 
 	<form action="" method="post" enctype="multipart/form-data">
-	  {{ form.as_p }}
-	  <input type="submit" value="Save" />
+		{{ form.as_ul }}
+		<div class="clear"></div>
+		<input type="submit" value="Save Application" />
 	</form>
 
 {% endblock %}

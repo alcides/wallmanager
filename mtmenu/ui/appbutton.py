@@ -1,4 +1,8 @@
 from pymt import *
+from mtmenu.ui.apppopup import AppPopup
+from threading import Timer
+
+from mtmenu.models import ApplicationProxy
 
 
 class AppButton(MTKineticItem):
@@ -10,19 +14,86 @@ class AppButton(MTKineticItem):
     
     This widget should be added to AppsGrid on Menu's UI construction"""
     def __init__(self, app, **kwargs):
-        self.app = app
-
         kwargs.setdefault('label', unicode(app))
         kwargs.setdefault('deletable', False)
-        #kwargs.setdefault('width', 90)
-        #kwargs.setdefault('height', 40)
-        #kwargs.setdefault('font_size', 16)
+        kwargs.setdefault('anchor_x', 'center')
+        kwargs.setdefault('anchor_y', 'middle')
+        kwargs.setdefault('halign', 'center')
+        kwargs.setdefault('valign', 'middle')
+        kwargs.setdefault('size', (100,100))        
+        
+        self.double_tap_detected = False
+        self.app = app
+        self.pop = None
+      
         super(AppButton, self).__init__(**kwargs)
+        
 
-    """Execute application on click"""
-    def on_press( self, touch ):
+
+    """Execute application on double click
+       Open popup on single click"""
+    def on_press( self, touch ):  
+        self.double_tap_detected = touch.is_double_tap
+        if touch.is_double_tap:
+            self.pop = None
+            self.open_app()
+                        
+        #if single tap and popup not already open
+        elif not self.pop:  
+            print self.pos
+            self.app = ApplicationProxy.objects.filter(id = self.app.id)[0]
+            self.pop = AppPopup(self.app, pos= self.pos, style={'bg-color':(0,0,0,0.9)})
+            Timer(0.5, self.open_popup).start() #make sure is not a double tap
+
+
+
+    def open_popup(self):
+        if self.double_tap_detected:
+            return  
+            
+        self.get_root_window().add_widget(self.pop)
+        self.pop = None
+
+
+    def open_app(self):
         print '\nLoading %s...\n' % unicode(self.app)
         print 'ID: %i' % self.app.id
         print '\tPath: %s\n' % self.app.get_extraction_fullpath
         print '\tBoot file: %s\n' % self.app.get_boot_file()
         self.app.execute()
+        
+        print 'Updating category and application lists'
+        #refresh category in main thread
+        from mtmenu.ui import category_grid
+        category_grid.refresh()
+        self.parent.refresh( self.app.category )
+        
+        
+    def draw(self):
+        self.draw_background()
+        self.draw_label()
+        self.draw_icon()
+        
+        
+    def draw_icon(self):
+        try:
+            self.image = Image( "../webmanager/media/"+str(self.app.icon) )
+            x,y = list(self.center)
+            self.image.pos = x - self.image.width /2, y - self.image.height /2      
+            self.image.draw()
+        except:
+            #print "Icon Exception: Unrecognized type of format"
+            pass
+        
+        
+    def draw_background(self):
+        self.style = {'bg-color': (0, 1, 0, 1), 'draw-background': 0, 'draw-border': True, 'border-radius': 10}
+        set_color(*self.style.get('bg-color'))
+        drawCSSRectangle(pos=self.pos, size=self.size,  style = self.style)
+
+
+    def draw_label(self, dx=0, dy=0):
+        pos = list(self.center)
+        pos[1] -= 50
+        drawLabel(label= self.label, pos=pos, size=(100,None), halign= 'center', anchor_y='top', font_size= 10)
+
