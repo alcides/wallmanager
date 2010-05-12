@@ -32,6 +32,14 @@
 	
 			<div class="content">
 				<div class="item">
+					{% if messages %}
+						<ul class="messages">
+					    {% for message in messages %}
+					    	<li>{{ message }}</li>
+					    {% endfor %}
+						</ul>
+					{% endif %}
+					
 					<h1>{% block title%}{% endblock %}</h1>
 					<div>{% block content%}{% endblock %}</div>
 				</div>

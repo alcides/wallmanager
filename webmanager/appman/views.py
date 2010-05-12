@@ -3,7 +3,7 @@ import os
 from django.views.generic.list_detail import *
 from django.views.generic.create_update import *
 from django.shortcuts import render_to_response, get_object_or_404
-from django.contrib.auth.decorators import login_required,user_passes_test
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404
 from django.core.urlresolvers import reverse
@@ -57,7 +57,7 @@ def application_filter(request):
         #show only this user applications
         cs = Application.objects.filter(owner = request.user)
     elif ownership == 'on':
-        cs = Application.objects.filter(category = cat,owner = request.user)
+        cs = Application.objects.filter(category = cat, owner = request.user)
     elif ownership == 'off' and cat !='':
         cs = Application.objects.filter(category = cat) 
     else:
@@ -67,18 +67,16 @@ def application_filter(request):
         cat_name = Category.objects.get(id = cat )
     except ValueError:
         cat_name ='All'
-    request.user.message_set.create(message="Filtering %s of %s applications."%(cat_name,owner))
 
     return render(request,'appman/application_list.html', {'application_list': cs,
-        'form': form  })
+        'form': form, 'subtitle': "Filtering %s of %s applications."%(cat_name,owner) })
 
 @login_required
 def application_search(request):
     cs = Application.objects.filter(name__contains = request.POST.get('q',''))|Application.objects.filter(description__contains = request.POST.get('q',''))
     form = ApplicationFilterForm()
-    request.user.message_set.create(message="Searching for %s."%request.POST.get('q','') )
     return render(request,'appman/application_list.html', {'application_list': cs,
-        'form': form  })
+        'form': form , 'subtitle': "Searching for %s."%request.POST.get('q','')  })
 
 @login_required
 def application_add(request):

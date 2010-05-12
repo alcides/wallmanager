@@ -8,8 +8,8 @@
 
 {% block content %}
 
-{% if messages %}
-{% endif %}
+{% if subtitle %}<h3>{{ subtitle }}</h3>{% endif %}
+
 <script type="text/javascript">
 function clearDefaultText(e) {
     var inp_field = document.getElementById('input_search_field');    
@@ -34,16 +34,6 @@ function changeState(){
     }
 }
 </script>
-
-<ul>
-{% if messages %}
-    <blockquote>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-    </blockquote>
-{% endif %}
-</ul>
 
 <div id="appfilter" align="center">
     <a href="#" onclick="changeState()">Show filters</a>
