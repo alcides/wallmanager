@@ -276,7 +276,7 @@ def manage_admins(request):
     return render(request,'appman/admins.html')
 
 @superuser_required()
-def contact_admin(request):
+def define_contact_admin(request):
     admin_list = User.objects.filter(is_staff = True)
     try:
         current_contact_admin = WallManager.objects.all()[0].contact
@@ -287,7 +287,7 @@ def contact_admin(request):
         WallManager.objects.create(contact = contact_admin)
         current_contact_admin = contact_admin
         request.user.message_set.create(message="The contact admin was defined successfully.")
-    return render(request,'appman/contact_admin.html',{'admin_list': admin_list, 'current_contact_admin': current_contact_admin})
+    return render(request,'appman/define_contact_admin.html',{'admin_list': admin_list, 'current_contact_admin': current_contact_admin})
 
 @staff_login_required
 def category_list(request):

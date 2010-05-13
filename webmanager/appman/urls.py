@@ -30,6 +30,6 @@ urlpatterns = patterns('appman.views',
 	url(r'^documentation/(?P<documentation_id>\d+)/edit/$','documentation_edit', name="documentation-edit"),
 	
 	url(r'^admins/$', 'manage_admins', name="manage-admins"),
-	url(r'^admin_contact/$', 'contact_admin', name="define-admin"),
+	url(r'^admins/contact/$', 'define_contact_admin', name="define-admin"),
 
 )
