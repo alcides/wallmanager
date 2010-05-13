@@ -60,10 +60,17 @@ h1,h2,h3 {
 }
 
 blockquote {
-    background-color: #ECF0C5;
-    text-align: justify;
+    background-color: #EEE;
+    border: solid #DDD 1px;
+    font-family: Georgia;
+    font-style: italic;
+    font-size: 13px;
+    line-height: 140%;
+    word-spacing: 1px;
+    text-align: left;
     padding: 3px;
     margin: 10px;
+    margin-bottom: 20px;
 }
 
 
@@ -367,4 +374,11 @@ div.log code.description {
     font-style: none;
     font-size: 14px;
     font-family: Consolas, "Courier New", sans-serif;
+}
+
+
+.messages li {
+    list-style-position: inside;
+    padding: 10px;
+    background-color: #F6F1CF;
 }
