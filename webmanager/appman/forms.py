@@ -17,12 +17,6 @@ class ApplicationForm(ModelForm):
     class Meta:
         model = Application
         fields = ('name', 'zipfile','icon','category','description')
-        
-class ApplicationFilterForm(ModelForm):
-    class Meta:
-        model = Application
-        fields = ('category',)
-    myApps = BooleanField(label='Show only my applications',required=False) # it is required, but handled below for a custom error message.
 
 
 class ApplicationAddForm(ApplicationForm):
