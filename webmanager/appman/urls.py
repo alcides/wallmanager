@@ -23,6 +23,7 @@ urlpatterns = patterns('appman.views',
 	url(r'^categories/add/$', 'category_add', name="category-add"),
 	url(r'^categories/(?P<object_id>\d+)/remove/$', 'category_remove', name="category-remove"),
 	
+	url(r'^reboot/$', 'reboot', name="reboot"),
 	url(r'^projectors/$', 'projectors', name="projectors"),
 	url(r'^screensaver/$', 'screensaver', name="screensaver"),
 	url(r'^suspension/$', 'suspension', name="suspension"),
