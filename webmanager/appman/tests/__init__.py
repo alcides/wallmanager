@@ -528,30 +528,28 @@ class ApplicationManagementTest(TestCase):
         """ Test superuser requirement in defining the contact administrator. """
         #Regular user
         login = self.do_login()
-        response = self.client.get('/admin_contact/')
-        self.assertRedirects(response, '/accounts/login/?next=/admin_contact/')
+        response = self.client.get('/admins/contact/')
+        self.assertRedirects(response, '/accounts/login/?next=/admins/contact/')
         #Admin
         login = self.do_normal_admin_login()
-        response = self.client.get('/admin_contact/')
-        self.assertRedirects(response, '/accounts/login/?next=/admin_contact/')
+        response = self.client.get('/admins/contact/')
+        self.assertRedirects(response, '/accounts/login/?next=/admins/contact/')
         
     def test_define_contact_admin(self):
         login = self.do_admin_login()
-        response = self.client.get('/admin_contact/')
-        self.assertContains(response, 'Current contact admin: None.')
+        response = self.client.get('/admins/contact/')
         #Make sure Mr. Green is listed as an admin and make him the new contact admin
-        self.assertContains(response, '<option value="%s">%s</option>' % (self.green.email, self.green.email))
+        self.assertContains(response, '<option value="%s"' % self.green.email)
         post_data = {
             'contact_admin': 'green@dei.uc.pt',
         }
-        response = self.client.post('/admin_contact/', post_data)
+        response = self.client.post('/admins/contact/', post_data)
         self.assertContains(response, 'The contact admin was defined successfully.')
-        self.assertContains(response, 'Current contact admin: %s' % self.green.email)
         #Remove Mr. Green from the admins (requires signal for contact admin update)
         post_delete.connect(check_if_contact_admin, sender=User)
         self.green.delete()
-        response = self.client.get('/admin_contact/')
-        self.assertContains(response, 'Current contact admin: None.')
+        response = self.client.get('/admins/contact/')
+        self.assertContains(response, '<option value="%s"' % self.green.email, 0)
         post_delete.receivers = []
 
 
@@ -586,7 +584,40 @@ class ApplicationManagementTest(TestCase):
         self.assertEqual(mail.outbox[0].to[0], get_contact_admin_email())
         self.assertEqual(mail.outbox[0].subject, '[WallManager] Message from user %s' % self.zacarias.email)
         self.assertTrue( sample_message in mail.outbox[0].body)
+
         
+    def test_screensaver_time(self):
+        def test_response(input, expected_content):
+            post_data = {
+                'screensaver_time': input,
+            }
+            response = self.client.post('/screensaver/', post_data)
+            self.assertContains(response, expected_content)
+            
+            
+        """ Tests the screensaver time setting. """
+        login = self.do_admin_login()
+        response = self.client.get('/screensaver/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "ScreenSaver")
+        self.assertContains(response, "<form", 1)
+        self.assertContains(response, "screensaver_time")
+        self.assertContains(response, "submit")
+        
+        correct_time = "01:05"
+        #The following tests use several incorrect formats for submitting time, followed by one final, correct format
+        test_response("abcd", 'Enter a valid time.')
+        test_response("1234", 'Enter a valid time.')
+        test_response("12 34", 'Enter a valid time.') #Missing one colon
+        test_response("00:00", 'Time must be at least 00:01 (one minute).') #Must be larger than 00:00
+        test_response("00:60", 'Enter a valid time.') #More than 59 minutes
+        test_response("24:00", 'Enter a valid time.') #More than 23 hours (maximum is 23:59)
+        test_response(correct_time, 'Screensaver inactivity time was set successfully.')
+        
+        time_in_database = ScreensaverControl.objects.all()[0].screensaver_inactivity_time
+        self.assertEqual(str(time_in_database), correct_time + ":00")
+
+
     def tearDown(self):
         open(self.logger.fname, "w").write("\n")
 

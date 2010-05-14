@@ -105,3 +105,6 @@ class ReportAbuseForm(Form):
 
 class MessageToAdminForm(Form):
     message = CharField(required=True, widget=widgets.Textarea())
+
+class ScreenSaverTimeForm(Form):        
+    screensaver_time = TimeField(input_formats=['%H:%M'], help_text="Use the format (HH:MM)")

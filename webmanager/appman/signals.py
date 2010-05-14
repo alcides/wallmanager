@@ -1,5 +1,6 @@
 import os
 from shutil import rmtree
+from smtplib import SMTPException
 
 from django.db.models import signals
 from django.conf import settings
@@ -78,13 +79,17 @@ def send_mail_when_app_available(sender, **kwargs):
     email_to = application.owner.email
     if success:
         message = 'Your application, %s, has been successfully deployed.' % application.name
-        send_mail('[WallManager] Application successfully deployed', message, email_from, [email_to])
+        subject = '[WallManager] Application successfully deployed'
     else:
         message = """Your application, %s, was not deployed. \n
         Please check if the zipfile is valid, contains a boot.bat \n
         and follows the technical guidelines.""" % application.name
+        subject = '[WallManager] Error deploying application.'
+    try: 
+        send_mail(subject, message, email_from, [email_to])
+    except SMTPException:
+        application.owner.message_set.create(message = message)
         
-        send_mail('[WallManager] Error deploying application.', message, email_from, [email_to])
     
 def remove_extra_logs(sender, **kwargs):
     """ Removes logs after a certain limit by Application. """

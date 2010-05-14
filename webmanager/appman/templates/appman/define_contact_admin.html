@@ -23,7 +23,7 @@
         {% for admin in admin_list %}
         	<option value="{{ admin.email }}"
 				{% ifequal current_contact_admin admin %}selected="selected"{% endifequal %}
-			>{{ admin.get_full_name }} ({{ admin.email }})</option>
+			>{{ admin.username }} ({{ admin.email }})</option>
         {% endfor %}
         </select></li>
         <li><input type="submit" value="Set as contact admin" /></li>

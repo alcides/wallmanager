@@ -265,7 +265,24 @@ def projectors(request):
 
 @staff_required()
 def screensaver(request):
-    return render(request,'appman/screensaver.html')
+    try:
+        current_screensaver_time = ScreensaverControl.objects.get().screensaver_inactivity_time
+    except ScreensaverControl.DoesNotExist:
+        current_screensaver_time = ScreensaverControl.objects.create(screensaver_inactivity_time='15:00')
+    
+    if request.method == 'POST':
+        form = ScreenSaverTimeForm(request.POST)
+        if form.is_valid():
+            time = form.cleaned_data['screensaver_time']
+            if str(time) == "00:00:00":
+                request.user.message_set.create(message="Time must be at least 00:01 (one minute).")
+            else:
+                ScreensaverControl.objects.create(screensaver_inactivity_time = time)
+                request.user.message_set.create(message="Screensaver inactivity time was set successfully.")
+    else:
+        form = ScreenSaverTimeForm(data= {'screensaver_time': current_screensaver_time})
+        
+    return render(request,'appman/screensaver.html', {'current_screensaver_time': current_screensaver_time, 'form': form})
 
 @staff_required()
 def suspension(request):
