@@ -103,4 +103,4 @@ def projectors_power(power, klass=ProjectorManager, projector_ips=PROJECTOR_IPS)
             if power:
                 projector.power_on()
             else:
-                projector.power_on()
+                projector.power_off()
