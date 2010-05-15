@@ -77,7 +77,7 @@
 					<li><a href="{% url manage-admins %}">Manage Admins</a></li>
 					<li><a href="{% url define-admin %}">Define Contact Admin</a></li>
 					{% endif %} 
-					<li><a href="{% url reboot %}">Reboot</a></li>
+					<li><a onclick="return confirm('Are you really sure you want to reboot?');"href="{% url reboot %}">Reboot</a></li>
 				</ul>
 				{% endif %} 
 			</div>
