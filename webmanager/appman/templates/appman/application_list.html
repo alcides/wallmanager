@@ -32,7 +32,7 @@
 	<h4>Categories</h4>
 	<ul>
 	{% for category in categories %}
-		<li><a href="{% url application-list category.name %}">{{ category.name }}</a></li>
+		<li><a href="{% url application-list object_id=category.id %}">{{ category.name }}</a></li>
 	{% endfor %}
 	</ul>
 </div>

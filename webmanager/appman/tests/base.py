@@ -43,7 +43,7 @@ class BaseTest(TestCase):
         self.green.is_superuser = False
         self.green.save()
         		
-        self.educational = Category.objects.create(name="Educational")
+        self.educational = Category.objects.create(name="Educational Stuff")
         self.TestCat = Category.objects.create(name="TestCat")
         
         self.gps = Application.objects.create(name="Gps Application",description ="Some application", owner=self.zacarias, category=self.educational)

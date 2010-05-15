@@ -52,14 +52,14 @@ def contact(request):
     return render(request,'appman/contact.html',{'form': form})
     
 @login_required
-def application_list(request, scope=''):
+def application_list(request, scope='', object_id=False):
     cs = Application.objects.all()
     cat = ''
     if scope == 'mine':
         cs = cs.filter(owner = request.user)
-    elif scope:
+    if object_id:
         try:
-            cat = Category.objects.get(name = scope)
+            cat = Category.objects.get(id = object_id)
             cs = cs.filter(category = cat)
         except Category.DoesNotExist:
             cat = ""
