@@ -17,7 +17,7 @@ from appman.forms import *
 from appman.models import *
 from appman.decorators import *
 from appman.utils.fileutils import *
-from appman.utils import get_contact_admin_email
+from appman.utils import get_contact_admin_email, reboot_os
 
 # Helper
 
@@ -361,3 +361,9 @@ def documentation_menu(request):
     #shows the menu for selecting the documentation to edit
     cs = FlatPage.objects.all()
     return object_list(request, queryset=cs, template_object_name="flatpage")
+
+@staff_login_required
+def reboot(request):
+    reboot_os()
+    request.user.message_set.create(message="SenseWall will reboot shortly.")
+    return HttpResponseRedirect(reverse('home'))
