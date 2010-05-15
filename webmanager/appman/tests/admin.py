@@ -12,8 +12,8 @@ from base import *
 class AdminTest(BaseTest):
     def test_uniqueness_control(self):
         """ Tests uniqueness of the Projector Control object. """
-        c1 = ProjectorControl.objects.create(inactivity_time=1, startup_time=time(1), shutdown_time=time(2))
-        c2 = ProjectorControl.objects.create(inactivity_time=1, startup_time=time(1), shutdown_time=time(3))
+        c1 = ProjectorControl.objects.create(inactivity_time=1, startup_week_time=time(1), shutdown_week_time=time(2), startup_weekend_time=time(2), shutdown_weekend_time=time(2))
+        c2 = ProjectorControl.objects.create(inactivity_time=1, startup_week_time=time(1), shutdown_week_time=time(2), startup_weekend_time=time(2), shutdown_weekend_time=time(2))
         self.assertEqual( ProjectorControl.objects.count(), 1)
     
     def test_requires_superuser_to_define_contact_admin(self):

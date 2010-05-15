@@ -43,7 +43,10 @@ class DocumentationForm(ModelForm):
     class Meta:
         model = FlatPage
         fields = ('title','content')
-    
+        
+class ProjectorControlForm(ModelForm):
+    class Meta:
+        model = ProjectorControl
 
     
 class UserCreationForm(ModelForm):

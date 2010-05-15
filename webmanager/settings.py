@@ -94,4 +94,4 @@ APPS_MAX_LOG_ENTRIES = 5
 
 LOG_FILENAME = relative('log.txt')
 
-
+PROJECTOR_IPS = ('192.168.1.254', '192.168.1.253')

@@ -14,7 +14,7 @@ class UncompressTest(TestCase):
         
     def test_zip_extraction(self):
         """ Tests if Zipfiles are extracted and email is sent. """
-        extract_folder = relative("../../tests/temp")
+        extract_folder = relative("../tests/temp")
     
         # Clean email inbox
         mail.outbox = []

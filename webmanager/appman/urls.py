@@ -26,7 +26,6 @@ urlpatterns = patterns('appman.views',
 	url(r'^reboot/$', 'reboot', name="reboot"),
 	url(r'^projectors/$', 'projectors', name="projectors"),
 	url(r'^screensaver/$', 'screensaver', name="screensaver"),
-	url(r'^suspension/$', 'suspension', name="suspension"),
 	url(r'^documentation/menu/$','documentation_menu', name="documentation-menu"),
 	url(r'^documentation/(?P<documentation_id>\d+)/edit/$','documentation_edit', name="documentation-edit"),
 	
