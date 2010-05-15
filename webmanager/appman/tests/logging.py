@@ -27,7 +27,7 @@ class LoggingTest(BaseTest):
         extract_folder = relative("../tests/temp")        
         temp_app = Application.objects.create(name="Temporary Application", owner=self.zacarias, category=self.educational, zipfile = File(open(relative("../../tests/python_test_app.zip"))))
 
-        uncompress(Application, temp_app, post_save, **{'created':True})
+        uncompress_file(Application, temp_app, post_save, **{'created':True})
         check_contents('added')
 
         thread = UncompressThread(Application, temp_app, extract_folder, extracted_email_signal)
@@ -37,7 +37,7 @@ class LoggingTest(BaseTest):
         temp_app.name="Temporary Application 2"
         temp_app.extraction_path = extract_folder
         temp_app.save()
-        uncompress(Application, temp_app, post_save, **{'created':False})        
+        uncompress_file(Application, temp_app, post_save, **{'created':False})        
         check_contents('edited')
 
         remove_app(Application, temp_app, post_delete)

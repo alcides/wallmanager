@@ -4,7 +4,7 @@ import threading
 
 from django.conf import settings
 
-from appman.utils.unzip import unzip
+import appman.utils.unzip as unzip
 
 class UncompressThread(threading.Thread):
     """ Thread that uncompresses a certain zip file."""
@@ -25,9 +25,11 @@ class UncompressThread(threading.Thread):
             
     def extract_file(self):
         try:
-            un = unzip()
+            un = unzip.unzip()
             un.extract(str(self.instance.zipfile.path) , self.path)
             return os.path.exists(os.path.join(self.path, 'boot.bat'))
+        except unzip.zipfile.BadZipfile:
+            return False
         except IOError:
             return False
             

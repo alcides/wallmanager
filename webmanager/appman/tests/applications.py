@@ -1,4 +1,4 @@
-from datetime import datetime, time
+import datetime
 
 from django.core.files import File
 from django.core import mail
@@ -28,7 +28,7 @@ class ApplicationTest(BaseTest):
     def test_application_log_representation(self):
         """ Tests if logs are well represented. """
         self.log = ApplicationLog.objects.create(application=self.gps, error_description="Error importing library X.")
-        self.log.datetime = datetime(2010,1,1,15,0,1)
+        self.log.datetime = datetime.datetime(2010,1,1,15,0,1)
         self.log.save()
         self.assertEqual( unicode(self.log),  u"Gps Application log at 2010-01-01 15:00:01")
 

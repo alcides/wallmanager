@@ -268,6 +268,7 @@ def projectors(request):
             new_proj = form.save()
             thread = ProjectorsThread(new_proj)	
             thread.start()
+            request.user.message_set.create(message="Projector settings will be modified. This operation may take up to 10 minutes.")
             return HttpResponseRedirect(reverse('projectors'))
     else:
         obj, flag = ProjectorControl.objects.get_or_create(id=1)
