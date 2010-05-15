@@ -18,9 +18,7 @@ if __name__ == '__main__':
         print title
         print 20*"+"
         
-    sep("Wall Application")
-    
-    
+    sep("Wall Application")    
     unittest.main()
     
     sep("Web Application")

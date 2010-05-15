@@ -2,10 +2,10 @@ from django.test import TestCase
 from django.core import mail
 from django.core.files import File
 
-from appman.models import *
-from appman.signals import *
 from appman.utils.uncompress import UncompressThread
 from appman.utils.fileutils import relative
+from appman.models import *
+from appman.signals import extracted_email_signal
 
 class UncompressTest(TestCase):
     def setUp(self):

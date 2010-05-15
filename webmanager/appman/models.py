@@ -3,7 +3,6 @@ import datetime
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.conf import settings
 
 class Category(models.Model):
     name = models.CharField(max_length=30, unique=True)
@@ -93,6 +92,14 @@ class ProjectorControl(models.Model):
         ProjectorControl.objects.all().delete()
         super(ProjectorControl,self).save(*args, **kwargs)
         
+class ScreensaverControl(models.Model):
+    screensaver_inactivity_time = models.TimeField()
+    
+    def save(self, *args, **kwargs):
+        """ There can be only one ScreensaverControl instance."""
+        ScreensaverControl.objects.all().delete()
+        super(ScreensaverControl,self).save(*args, **kwargs)
+        
 class ApplicationLog(models.Model):
     application = models.ForeignKey(Application)
     datetime = models.DateTimeField(auto_now_add=True)
@@ -100,3 +107,11 @@ class ApplicationLog(models.Model):
     
     def __unicode__(self):
         return u"%s log at %s" % (self.application.name, self.datetime)
+        
+class WallManager(models.Model):
+    contact = models.EmailField(blank=True)
+    
+    def save(self, *args, **kwargs):
+        """ There can be only one WallManager instance."""
+        WallManager.objects.all().delete()
+        super(WallManager,self).save(*args, **kwargs)

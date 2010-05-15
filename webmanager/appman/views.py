@@ -1,9 +1,10 @@
 import os
+from smtplib import SMTPException
 
 from django.views.generic.list_detail import *
 from django.views.generic.create_update import *
 from django.shortcuts import render_to_response, get_object_or_404
-from django.contrib.auth.decorators import login_required,user_passes_test
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404
 from django.core.urlresolvers import reverse
@@ -27,22 +28,78 @@ def render(request, template, opts = {}):
 #Non-Authenticated User Views
 def home(request):
 	return render(request,'appman/home.html')
-	
-def documentation(request):
-	return render(request,'appman/doc.html')
-
-def faq(request):
-	return render(request,'appman/faq.html')
 
 #Authenticated User Views
 @login_required
 def contact(request):
-    return render(request,'appman/contact.html')
+    if request.method == 'POST':
+        form = MessageToAdminForm(request.POST)
+        if form.is_valid():
+            subject = '[WallManager] Message from user %s' % request.user.email
+            message = 'Dear WallManager administrator,\n\n\
+                The user %s has sent you a message using the website\'s administrator contact form. The message is as follows:\n\n\
+                %s' % (request.user.email, form.cleaned_data['message'])
+            email_from = settings.DEFAULT_FROM_EMAIL
+            email_to = get_contact_admin_email()
+            try:
+                send_mail(subject, message, email_from, [email_to])
+                request.user.message_set.create(message="Your message was sent successfully to the designated contact administrator.")
+            except SMTPException, e:
+                request.user.message_set.create(message="Unable to send your message. Please try again later.")
+    else:
+        form = MessageToAdminForm()
+    return render(request,'appman/contact.html',{'form': form})
     
 @login_required
 def application_list(request):
     cs = Application.objects.all()
-    return object_list(request, queryset=cs, template_object_name="application")
+    form = ApplicationFilterForm()
+    return render(request,'appman/application_list.html', {'application_list': cs, "form": form})
+
+@login_required
+def application_filter(request):
+    form = ApplicationFilterForm()
+    ownership = request.POST.get('myApps','off')
+    cat = request.POST.get('category','')
+    if ownership=='on':
+        owner = 'mine'
+    else :
+        owner = 'everybody'
+    if  cat =='' and ownership=='on':
+        #show only this user applications
+        cs = Application.objects.filter(owner = request.user)
+    elif ownership == 'on':
+        cs = Application.objects.filter(category = cat, owner = request.user)
+    elif ownership == 'off' and cat !='':
+        cs = Application.objects.filter(category = cat) 
+    else:
+        return HttpResponseRedirect(reverse('application-list'))
+
+    try:
+        cat_name = Category.objects.get(id = cat )
+    except ValueError:
+        cat_name ='All'
+
+    return render(request,'appman/application_list.html', {'application_list': cs,
+        'form': form, 'subtitle': "Filtering %s of %s applications."%(cat_name,owner) })
+
+@login_required
+def application_search(request):
+    cs = Application.objects.filter(name__contains = request.POST.get('q',''))|Application.objects.filter(description__contains = request.POST.get('q',''))
+    form = ApplicationFilterForm()
+    return render(request,'appman/application_list.html', {'application_list': cs,
+        'form': form , 'subtitle': "Searching for %s."%request.POST.get('q','')  })
+
+@login_required
+def application_log(request, object_id):
+    cs = ApplicationLog.objects.filter(application = object_id)
+    try:
+        app = Application.objects.get(id=object_id)
+    except Application.DoesNotExist:
+        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
+        return HttpResponseRedirect(reverse('application-list'))
+        
+    return render(request,'appman/application_log.html', {'logs': cs,'identifier':object_id, 'appname':app.name})
 
 @login_required
 def application_add(request):
@@ -72,9 +129,11 @@ def application_add(request):
                 app.save()
                 delete_path(temporary_named_path)
             else:
-                app.save()
+                app.save()            
+            request.user.message_set.create(message="Application successfully submitted." )
             return HttpResponseRedirect(reverse('application-detail', args=[str(app.id)]))
         else:
+            request.user.message_set.create(message="Invalid form, please correct the following errors.")
             if temporary_named_path:
                 delete_path(temporary_named_path)
     else:
@@ -105,14 +164,14 @@ def application_upload(request):
     else:
         return HttpResponseRedirect(reverse('application-add'))
 
-def application_detail(request,object_id):
+def application_detail(request,object_id,form=ReportAbuseForm()):
     cs = Application.objects.all()
     try:
         app = Application.objects.get(id=object_id)
     except Application.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('application-list'))
-    return object_detail(request, extra_context={'form': ReportAbuseForm()}, object_id=object_id, queryset=cs, template_object_name="application")
+    return object_detail(request, extra_context={'form': form}, object_id=object_id, queryset=cs, template_object_name="application")
 
 @staff_login_required
 def application_admin_remove(request,object_id):
@@ -120,8 +179,9 @@ def application_admin_remove(request,object_id):
 
     try:
         app = Application.objects.get(id=object_id)
+        request.user.message_set.create(message="Application %s removed successfully."%(app.name))
     except Application.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('application-list'))
     app = get_object_or_404(Application, pk=object_id)
     email_from = settings.DEFAULT_FROM_EMAIL
@@ -138,13 +198,15 @@ def application_edit(request, object_id):
         filepath = fullpath(request.POST['hidFileID'].strip())
         try:
             app = Application.objects.get(id=object_id)
+
         except Application.DoesNotExist:
-            #TODO send message
+            request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
             return HttpResponseRedirect(reverse('application-list'))
 
         if filepath and os.path.isfile(filepath):
             app.zipfile = File(open(filepath))
             app.save()
+
     return update_object(request, form_class=ApplicationEditForm, 
             object_id=object_id, post_save_redirect=reverse('application-detail', args=[str(object_id)]))
             
@@ -152,8 +214,9 @@ def application_edit(request, object_id):
 def application_delete(request, object_id):
     try:
         app = Application.objects.get(id=object_id)
+        request.user.message_set.create(message="Application %s deleted successfully."%app.name)
     except Application.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
         return HttpResponseRedirect(reverse('application-list'))
     app = get_object_or_404(Application, id=object_id)
     app.delete()
@@ -163,25 +226,30 @@ def application_delete(request, object_id):
 def report_abuse(request, object_id):
     try:
         app = Application.objects.get(id=object_id)
+        request.user.message_set.create(message="Application %s reported successfully."%app.name)
     except Application.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
         cs = Application.objects.all()
         return object_list(request, queryset=cs, template_object_name="application")
     app = get_object_or_404(Application, id=object_id)
     if request.method == 'POST':
-        abuse_description = request.POST['abuse_description']
-        email_from = settings.DEFAULT_FROM_EMAIL
-        email_to = get_contact_admin_email()
-        current_site = Site.objects.get_current()
-        message = """ User %s reported an abuse in application %s (http://%s%s) described as: 
+        form = ReportAbuseForm(request.POST)
+        if (form.is_valid()):
+            abuse_description = form.cleaned_data['abuse_description']
+            email_from = settings.DEFAULT_FROM_EMAIL
+            email_to = get_contact_admin_email()
+            current_site = Site.objects.get_current()
+            message = """ User %s reported an abuse in application %s (http://%s%s) described as: 
         
-        %s """ % (request.user.email.strip(), app.name, current_site.domain, app.get_absolute_url(), abuse_description) 
+            %s """ % (request.user.email.strip(), app.name, current_site.domain, app.get_absolute_url(), abuse_description) 
 
-        try:
-            send_mail('[WallManager] Application ' + app.name + ' received an abuse report.', message, email_from, [email_to])
-            request.user.message_set.create(message="Your report was sent successfully.")
-        except:
-            request.user.message_set.create(message="Failure while sending e-mail message containing the report. Please try again later.")
+            try:
+                send_mail('[WallManager] Application ' + app.name + ' received an abuse report.', message, email_from, [email_to])
+                request.user.message_set.create(message="Your report was sent successfully.")
+            except:
+                request.user.message_set.create(message="Failure while sending e-mail message containing the report. Please try again later.")
+        else:
+            return application_detail(request, object_id, form)
         return HttpResponseRedirect(reverse('application-list'))
         
 #Decorators
@@ -209,15 +277,42 @@ def projectors(request):
 
 @staff_required()
 def screensaver(request):
-    return render(request,'appman/screensaver.html')
+    try:
+        current_screensaver_time = ScreensaverControl.objects.get().screensaver_inactivity_time
+    except ScreensaverControl.DoesNotExist:
+        current_screensaver_time = ScreensaverControl.objects.create(screensaver_inactivity_time='15:00')
+    
+    if request.method == 'POST':
+        form = ScreenSaverTimeForm(request.POST)
+        if form.is_valid():
+            time = form.cleaned_data['screensaver_time']
+            if str(time) == "00:00:00":
+                request.user.message_set.create(message="Time must be at least 00:01 (one minute).")
+            else:
+                ScreensaverControl.objects.create(screensaver_inactivity_time = time)
+                request.user.message_set.create(message="Screensaver inactivity time was set successfully.")
+    else:
+        form = ScreenSaverTimeForm(data= {'screensaver_time': current_screensaver_time})
+        
+    return render(request,'appman/screensaver.html', {'current_screensaver_time': current_screensaver_time, 'form': form})
 
 @superuser_required()
 def manage_admins(request):
     return render(request,'appman/admins.html')
 
 @superuser_required()
-def contact_admin(request):
-    return render(request,'appman/contact_admin.html')
+def define_contact_admin(request):
+    admin_list = User.objects.filter(is_staff = True)
+    try:
+        current_contact_admin = WallManager.objects.all()[0].contact
+    except IndexError:
+        current_contact_admin = None
+    if request.method == 'POST':
+        contact_admin = request.POST['contact_admin']
+        WallManager.objects.create(contact = contact_admin)
+        current_contact_admin = contact_admin
+        request.user.message_set.create(message="The contact admin was defined successfully.")
+    return render(request,'appman/define_contact_admin.html',{'admin_list': admin_list, 'current_contact_admin': current_contact_admin})
 
 @staff_login_required
 def category_list(request):
@@ -233,18 +328,21 @@ def category_add(request):
         if form.is_valid():
             cat = form.save(commit=False)
             cat.save()
+            request.user.message_set.create(message="Category %s added successfully."%cat.name)
             return HttpResponseRedirect(reverse('category-list'))
     else:
         form = form_class()
 
-    return render_to_response('appman/category_form.html', {'form': form,})
+    return render(request,'appman/application_form.html', {
+        'form': form,
+    })
 
 @staff_login_required
 def category_edit(request, object_id):
     try:
         cat = Category.objects.get(id=object_id)
     except Category.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid category's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('category-list'))
     return update_object(request, form_class=CategoryForm, 
             object_id=object_id, post_save_redirect=reverse('category-list'))
@@ -253,23 +351,13 @@ def category_edit(request, object_id):
 def category_remove(request, object_id):
     try:
         cat = Category.objects.get(id=object_id)
+        request.user.message_set.create(message="Category %s removed successfully."%cat.name)
     except Category.DoesNotExist:
-        #TODO send message
+        request.user.message_set.create(message="Invalid category's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('category-list'))
     cat = get_object_or_404(Category, id=object_id)
     cat.delete()
     return HttpResponseRedirect(reverse('category-list'))
-
-def account_register(request):
-    form = UserCreationForm()
-
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            new_user = form.save()
-            return HttpResponseRedirect("/accounts/login/")
-
-    return render_to_response("registration/register.html", {'form' : form })
     
 @staff_login_required
 def documentation_edit(request, documentation_id):
