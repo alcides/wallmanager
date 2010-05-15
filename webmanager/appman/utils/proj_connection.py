@@ -2,6 +2,8 @@ import os
 from appman.utils.projectors import *
 import threading
 
+lock = threading.Lock()
+
 class ProjectorsThread(threading.Thread):
 	""" Thread that makes the conncetion to the rojectors."""
 	def __init__(self,proj):
@@ -14,5 +16,7 @@ class ProjectorsThread(threading.Thread):
 		return [date.hour,date.minute]
 		
 	def run(self):
+		lock.acquire()
 		set_projectors_time(self.week_on, self.week_off, self.weekend_on, self.weekend_off)
+		lock.release()
 

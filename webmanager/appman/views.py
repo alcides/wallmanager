@@ -194,40 +194,22 @@ def superuser_required(login_url=None):
 #Admin Views
 @staff_required()
 def projectors(request):
-    form_class = ProjectorControlForm
-    old_proj = ProjectorControl.objects.all()
     if request.method == 'POST':
-        form = form_class(request.POST)
+        form = ProjectorControlForm(request.POST)
         if form.is_valid():
-            new_proj = form.save(commit=False)
-            if old_proj:
-                new_proj.inactivity_time = old_proj[0].inactivity_time
-            else:
-                new_proj.inactivity_time = 2
-            new_proj.save()
+            new_proj = form.save()
             thread = ProjectorsThread(new_proj)	
-            thread.run()
+            thread.start()
             return HttpResponseRedirect(reverse('projectors'))
     else:
-        if old_proj:
-            proj = old_proj[0]
-            form = form_class(initial={'startup_week_time': '%s' % (proj.startup_week_time),
-                                       'shutdown_week_time': '%s' % (proj.shutdown_week_time),
-                                       'startup_weekend_time': '%s' % (proj.startup_weekend_time),
-                                       'shutdown_weekend_time': '%s' % (proj.shutdown_weekend_time),
-                                       })
-        else:
-            form = form_class()
+        obj, flag = ProjectorControl.objects.get_or_create(id=1)
+        form = ProjectorControlForm(instance=obj)
             
     return render(request,'appman/projectors.html', {'form': form})
 
 @staff_required()
 def screensaver(request):
     return render(request,'appman/screensaver.html')
-
-@staff_required()
-def suspension(request):
-    return render(request,'appman/suspension.html')
 
 @superuser_required()
 def manage_admins(request):

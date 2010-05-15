@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -80,11 +82,11 @@ class Application(models.Model):
         return ("application-detail", [str(self.id)])
         
 class ProjectorControl(models.Model):
-    inactivity_time = models.IntegerField()
-    startup_week_time = models.TimeField()
-    shutdown_week_time = models.TimeField()
-    startup_weekend_time = models.TimeField()
-    shutdown_weekend_time = models.TimeField()
+    inactivity_time = models.IntegerField(default=2)
+    startup_week_time = models.TimeField(default=datetime.time(10,0))
+    shutdown_week_time = models.TimeField(default=datetime.time(20,30))
+    startup_weekend_time = models.TimeField(default=datetime.time(10,0))
+    shutdown_weekend_time = models.TimeField(default=datetime.time(20,30))
 
     def save(self, *args, **kwargs):
         """ There can be only one ProjectorControl instance."""

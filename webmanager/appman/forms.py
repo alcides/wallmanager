@@ -41,7 +41,6 @@ class DocumentationForm(ModelForm):
 class ProjectorControlForm(ModelForm):
     class Meta:
         model = ProjectorControl
-        fields = ('startup_week_time','shutdown_week_time','startup_weekend_time','shutdown_weekend_time')
 
 class UserCreationForm(ModelForm):
     """
