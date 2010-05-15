@@ -1,61 +1,41 @@
 {% extends 'base.html' %}
 
-{% block title %} Applications List {% endblock %}
+{% block title %} Applications {% endblock %}
+
+{% block javascript %}<script src="/media/js/applications.js"></script>{% endblock %}
 
 {% block breadcrumb%}
-	<li>Applications</li>
+	<li><a href="{% url application-list %}">Applications</a></li>
+	{% if cat %}<li>{{ cat }}</li>{% endif%}
 {% endblock %}
 
 {% block content %}
 
-{% if subtitle %}<h3>{{ subtitle }}</h3>{% endif %}
+{% if cat %}<h3>{{ cat }}</h3>{% endif%}
 
-<script type="text/javascript">
-function clearDefaultText(e) {
-    var inp_field = document.getElementById('input_search_field');    
-    if(inp_field.value == "Search for...."){
-    inp_field.value ="";
-    }
-    
-}
-function setDefaultText(e){
-    var inp_field = document.getElementById('input_search_field');    
-    if(inp_field.value==""){
-        inp_field.value ="Search for....";
-        }
-}
-function changeState(){
-    var menu = document.getElementById('ddmenu');
-    if(menu.style.visibility=="visible"){
-        menu.style.visibility="hidden";
-    }
-    else if(menu.style.visibility=="hidden"){
-        menu.style.visibility="visible";
-    }
-}
-</script>
-
-<div id="appfilter" align="center">
-    <a href="#" onclick="changeState()">Show filters</a>
-    <form action="/applications/filter/" method="POST"  id="ddmenu" style="visibility:hidden" >
-        {{form.as_p}}
-        <input type="submit" value="Go!" />
-    </form>
-</div>
-
-<div id="searchapp" align="left">
+<div id="app_search">
     <form action="/applications/search/" method="POST" >
-        <input type="text" value="Search for...." name="q" id="input_search_field" onblur="setDefaultText()" onfocus="clearDefaultText()" value=""/>
+        <input type="search" value="{% if query %}{{ query }}{% endif %}" name="q" id="input_search_field" />
         <input type="submit" value="Search" />
     </form>
 </div>
 
-<div id="addapp" align="right">
+<div class="clear"></div>
+<div id="app_add">
 	<ul class="object-tools">
 		<li><a href='{% url application-add %}' class="add-button">Add Application</a></li>
-	</ul>	
+		<li><a href='#' onclick="changeState();">Show Categories</a></li>
+	</ul>
 </div>
 
+<div id="app_filter" style="display: none;">
+	<h4>Categories</h4>
+	<ul>
+	{% for category in categories %}
+		<li><a href="{% url application-list category.name %}">{{ category.name }}</a></li>
+	{% endfor %}
+	</ul>
+</div>
 
 {% load show_stars %}
 <div id="applist">

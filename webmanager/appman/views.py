@@ -12,6 +12,7 @@ from django.core.files import File
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.contrib.flatpages.models import FlatPage
+from django.db.models import Q
 
 from appman.forms import *
 from appman.models import *
@@ -51,44 +52,39 @@ def contact(request):
     return render(request,'appman/contact.html',{'form': form})
     
 @login_required
-def application_list(request):
+def application_list(request, scope=''):
     cs = Application.objects.all()
-    form = ApplicationFilterForm()
-    return render(request,'appman/application_list.html', {'application_list': cs, "form": form})
-
-@login_required
-def application_filter(request):
-    form = ApplicationFilterForm()
-    ownership = request.POST.get('myApps','off')
-    cat = request.POST.get('category','')
-    if ownership=='on':
-        owner = 'mine'
-    else :
-        owner = 'everybody'
-    if  cat =='' and ownership=='on':
-        #show only this user applications
-        cs = Application.objects.filter(owner = request.user)
-    elif ownership == 'on':
-        cs = Application.objects.filter(category = cat, owner = request.user)
-    elif ownership == 'off' and cat !='':
-        cs = Application.objects.filter(category = cat) 
-    else:
-        return HttpResponseRedirect(reverse('application-list'))
-
-    try:
-        cat_name = Category.objects.get(id = cat )
-    except ValueError:
-        cat_name ='All'
-
-    return render(request,'appman/application_list.html', {'application_list': cs,
-        'form': form, 'subtitle': "Filtering %s of %s applications."%(cat_name,owner) })
+    cat = ''
+    if scope == 'mine':
+        cs = cs.filter(owner = request.user)
+    elif scope:
+        try:
+            cat = Category.objects.get(name = scope)
+            cs = cs.filter(category = cat)
+        except Category.DoesNotExist:
+            cat = ""
+            
+    return render(request,'appman/application_list.html', {
+            'application_list': cs,
+            'categories': Category.objects.all(),
+            'cat': cat
+        })
 
 @login_required
 def application_search(request):
-    cs = Application.objects.filter(name__contains = request.POST.get('q',''))|Application.objects.filter(description__contains = request.POST.get('q',''))
-    form = ApplicationFilterForm()
-    return render(request,'appman/application_list.html', {'application_list': cs,
-        'form': form , 'subtitle': "Searching for %s."%request.POST.get('q','')  })
+    q = request.POST.get('q','')
+    cs = Application.objects.filter(
+            Q(name__icontains = q) |
+            Q(description__contains = q) |
+            Q(category__name__icontains = q) |
+            Q(owner__first_name__icontains = q) |
+            Q(owner__email__icontains = q)
+        )
+    return render(request,'appman/application_list.html', {
+            'application_list': cs,
+            'categories': Category.objects.all(),
+            'query': q 
+        })
 
 @login_required
 def application_log(request, object_id):

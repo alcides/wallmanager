@@ -251,16 +251,15 @@ blockquote {
 
 /* Add app button*/
 .object-tools {
+    clear: both;
 	display: block;
-	float: right;
+	float: left;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	font-weight: bold;
-	margin-bottom: -20px;
-	margin-left: 0px;
-	margin-right: 0px;
-	margin-top: -24px;
-	padding-left: 0px;
+	padding: 5px;
+	margin: 10px;
+	margin-top: 10px;
 	position: relative;
 	list-style-type: disc;
 	height: 16px;
@@ -294,13 +293,18 @@ blockquote {
 	background-clip: border-box;
 	background-attachment: scroll;
 	background: #999 url(/media/img/tooltag-add.gif) no-repeat 100% 0%;
-	color: white;
 	padding: 0.1em 25px 0.1em 8px;
-	height: 14px;
+}
+
+.object-tools a:link, .object-tools a:visited {
 	float: left;
 	display: block;
 	text-decoration: none;
 	cursor: auto;
+    color: white;
+    padding: .1em 14px .1em 8px;
+    height: 14px;
+    background: #999 url(/media/img/tool-right.gif) 100% 0 no-repeat;
 }
 
 /* Form */
@@ -343,9 +347,9 @@ blockquote {
     margin-bottom: 5px;
 }
 
-.content div.app h3 {
-    margin-top: 10px;
-    margin-bottom: 5px;
+.content h3 {
+    margin-top: -20px;
+    color: #333;
 }
 
 .content img.icon {
@@ -380,4 +384,28 @@ div.log code.description {
     list-style-position: inside;
     padding: 10px;
     background-color: #F6F1CF;
+}
+
+#app_search {
+    float: right;
+    padding: 5px;
+    margin: 10px;
+    background-color: #EEE;
+    border: solid #CCC 1px;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+#app_search input, #app_search form {
+    margin: 0;
+    padding: 0;
+}
+
+#app_filter {
+    clear: both;
+    margin-right: 10px;
+    margin-left: 10px;
+    padding: 10px;
+    background-color: #EEE;
 }
