@@ -1,11 +1,11 @@
 from pymt.ui.widgets.modalwindow import MTModalWindow
-from mtmenu.ui.votepopup import VotePopup
+from ui.votepopup import VotePopup
 from threading import Timer
 from mtmenu.utils import bring_window_to_front
 
 
 
-class CoverWindow( MTModalWindow ):
+class CoverWindow(MTModalWindow):
 
     def __init__(self, **kwargs):
         self.vote = VotePopup()
@@ -14,7 +14,7 @@ class CoverWindow( MTModalWindow ):
         
         
     def show(self):
-        from mtmenu.ui import main_window
+        from ui import main_window
         main_window.add_widget( self )
         
         

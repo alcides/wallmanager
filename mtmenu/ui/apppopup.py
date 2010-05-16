@@ -1,17 +1,19 @@
-from mtmenu.ui.popup import Popup
-from mtmenu.settings import POPUP_SIZE, POPUP_POSITION
+from ui.popup import Popup
 from threading import Timer
-
+from settings import APPPOPUP_SIZE
 
 class AppPopup( Popup ):
 
     def __init__(self, app, **kwargs):
+        
         self.app = app
         self.text = "Name: %s\nCategory: %s\nOwner: %s\nRuns: %s\nLikes: %s\nDislikes: %s" % (app.name, app.category, app.owner, app.runs, app.likes, app.dislikes)
         kwargs.setdefault('title', self.text)
         kwargs.setdefault('pos', (0,0))
+        kwargs.setdefault('size', APPPOPUP_SIZE)
         kwargs.setdefault('label_submit', 'Play')
         kwargs.setdefault('label_cancel', 'Cancel')
+        kwargs.setdefault('style', {'bg-color':(0,0,0,0.9)})
         
         self.timer = Timer(5.0, self.on_cancel)
         self.timer.start()

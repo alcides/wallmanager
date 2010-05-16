@@ -1,9 +1,10 @@
 import sys
 from os import environ, path
 from subprocess import Popen, PIPE
+from settings import APPS_REPOSITORY_PATH, APPS_BOOT_FILENAME
 from cStringIO import StringIO
 from threading import Thread
-from copy import deepcopy
+from application_running import set_app_running, remove_app_running, get_app_running
 
 
 from mtmenu.settings import *
@@ -61,7 +62,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             
             
         #hide scatter    
-        from mtmenu.ui import cover_window
+        from ui import cover_window
         cover_window.show()
         
         app_boot_file = self.get_boot_file()
@@ -82,9 +83,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 set_app_running(process)
 
                 get_app_running()
-                
-                from utils import bring_window_to_front
-                bring_window_to_front(process._handle)
+
                 # Concatenate output
                 output = StringIO()
                 for line in process.communicate():
@@ -92,7 +91,8 @@ class ApplicationProxy(models.Application, WallModelsProxy):
 
 
                 remove_app_running()
-                cover_window.resume(self)            
+                
+                cover_window.resume(self)
                 
                 self.end_run()                
                 
