@@ -1,55 +1,25 @@
 from pymt import *
+from ui import main_window, apps_list, top_bar, categories_list, proxy, background_image
 from gesture.gesture_scan import GestureScan
-from mtmenu.proxy import *
-from pymt.ui.window.win_glut import MTWindowGlut
-from mtmenu.models import ApplicationProxy, CategoryProxy
-from mtmenu.utils import *
-from mtmenu.ui import *
-from mtmenu.ui.ordermenu import OrderMenu
-from mtmenu.ui.imagebutton import ImageButton
-from mtmenu.ui.scatterimage import ScatterImage
-from mtmenu.settings import TOP_BAR_Y, SCATTER_SIZE
-
-
 
 if __name__ == '__main__':
-    # Start TUIO proxy
+    
+    # TUIO proxy
     proxy.start()
-
-    apps_grid.add( getAllApplications() )
-    category_grid.add( getAllCategories() )
     
+    # BACKGROUND
+    main_window.add_widget(background_image)
     
-    # Top left logo
-    logo = MTScatterWidget(size=(350,68), pos= (40, TOP_BAR_Y), do_rotation= False, do_translation= False, do_scale= False)
-    logo.add_widget( MTScatterImage(filename= 'images/logo.png', scale= 0.5, do_rotation= False, do_translation= False, do_scale= False) ) #icon
-    logo.add_widget( MTLabel(label='SenseWall', pos= (60, 14), font_size= 40) ) #main_label
-    logo.add_widget( MTLabel(label='http://sensewall.dei.uc.pt', pos= (60, 0), font_size= 16) ) #other label
-    scatter.add_widget( logo )
-
-    # Top right help icon
-    help = MTScatterWidget(size=(62,62), pos= (SCATTER_SIZE[0]-68, TOP_BAR_Y), do_rotation= False, do_translation= False, do_scale= False)
-    help.add_widget( ImageButton(filename= 'images/help.png', scale= 0.9) )
-    scatter.add_widget( help )
+    # TOPBAR
+    main_window.add_widget(top_bar)
     
-    # Order by menu
-    order = OrderMenu(pos= (SCATTER_SIZE[0]-250, TOP_BAR_Y)  )
-    scatter.add_widget( order )
+    # APPSLIST
+    main_window.add_widget(apps_list)
     
-    # Add widgets to Scatter
-    scatter.add_widget(apps_grid)
-    scatter.add_widget(category_grid)
-
-
-    # Add background image to MainWindow
-    main_window.add_widget( ScatterImage(filename= 'images/wallpaper.jpg') )
+    # CATEGORIES LIST
+    main_window.add_widget(categories_list)
     
-    # Add Scatter to MainWindow
-    main_window.add_widget(scatter)
-    
-    #Add gesture recognition
+    # GESTURE
     main_window.add_widget(GestureScan())
-
     
-    # Execute main loop
-    runTouchApp()
+    runTouchApp();

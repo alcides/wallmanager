@@ -1,23 +1,28 @@
-from settings import APPS_GRID_POSITION, APPS_GRID_SIZE, CATEGORY_GRID_POSITION, CATEGORY_GRID_SIZE
-
-
 from ui.mainwindow import MainWindow
-main_window = MainWindow(width=800, height=600)
+main_window = MainWindow()
 
+# APPSLIST
+from mtmenu.ui.appslist import AppsList
+from utils import get_all_applications
+apps_list = AppsList(get_all_applications())
+
+# TOPBAR
+from ui.topbar import TopBar
+top_bar = TopBar()
+
+# CATEGORIES LIST
+from ui.categorylist import CategoryList
+from utils import get_all_categories
+categories_list = CategoryList(apps_list, get_all_categories())
+
+# PROXY
+from proxy import Proxy
+proxy = Proxy()
+
+# BACKGROUND
+from ui.backgroundimage import BackgroundImage
+background_image = BackgroundImage(filename = 'images/wallpaper.png')
+
+# COVERWINDOW
 from ui.coverwindow import CoverWindow
 cover_window = CoverWindow()
-
-
-# Scatter to make AppsList movable
-from mtmenu.ui.scatter import Scatter
-scatter = Scatter()
-
-
-# Construct AppsList looping through all apps
-from mtmenu.ui.appslist import AppsList
-apps_grid = AppsList(pos= APPS_GRID_POSITION, size= APPS_GRID_SIZE)
- 
-# Construct CategoryList looping through all categories 
-from mtmenu.ui.categorylist import CategoryList
-category_grid = CategoryList(pos= CATEGORY_GRID_POSITION, size= CATEGORY_GRID_SIZE, style={'scrollbar-size':0}) 
-

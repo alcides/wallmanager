@@ -39,8 +39,7 @@ class AppButton(MTKineticItem):
                         
         #if single tap and popup not already open
         elif not self.pop:  
-            print self.pos 
-            self.pop = AppPopup(self.app, pos= self.pos)
+            self.pop = AppPopup(self.app, pos = self.pos)
             Timer(0.5, self.open_popup).start() #make sure is not a double tap
 
 
@@ -57,31 +56,41 @@ class AppButton(MTKineticItem):
     def open_app(self):
         print '\nLoading %s...\n' % unicode(self.app)
         print 'ID: %i' % self.app.id
-        print '\tPath: %s\n' % self.app.get_extraction_fullpath
-        print '\tBoot file: %s\n' % self.app.get_boot_file()
+        print 'Path: %s\n' % self.app.get_extraction_fullpath()
+        print 'Boot file: %s\n' % self.app.get_boot_file()
         self.app.execute()
+        
+        #refresh cstegory in main thread
+        from mtmenu.ui import categories_list
+        categories_list.refresh()
+        self.parent.refresh(self.app.category)
         
         
     def draw(self):
+        print self.size
         self.draw_background()
         self.draw_label()
-        self.image = Image("images/icon.png")
-        x,y = list(self.center)
-        self.image.pos = x - self.image.width /2, y - self.image.height /2      
-        self.image.draw()
+        self.draw_icon()
+        
+    def draw_icon(self):
+        try:
+            self.image = Image( "../webmanager/media/%s" % str(self.app.icon) )
+            x,y = list(self.center)
+            self.image.pos = x - self.image.width /2, y - self.image.height /2      
+            self.image.draw()
+        except:
+            #print "Icon Exception: Unrecognized type of format"
+            pass
         
         
     def draw_background(self):
-        self.style = {'bg-color': (0, 1, 0, 1), 'draw-background': 0, 'draw-border': True, 'border-radius': 10}
-        set_color(*self.style.get('bg-color'))
-        drawCSSRectangle(pos=self.pos, size=self.size,  style = self.style)
+        style = {'bg-color': (1, 1, 1, 1), 'draw-background': 0, 'draw-border': True, 'border-radius': 10}
+        set_color(*style.get('bg-color'))
+        drawCSSRectangle(pos=self.pos, size=self.size,  style = style)
 
 
     def draw_label(self, dx=0, dy=0):
         pos = list(self.center)
-        pos[0] -= len(self.label) /2
         pos[1] -= 50
-
-        label= self.label
-        drawLabel(label=label, pos=pos, size=(100,None), halign= 'center', anchor_y='top', font_size= 10)
+        drawLabel(label= self.label, pos=pos, size=(100,None), halign= 'center', anchor_y='top', font_size= 10)
 
