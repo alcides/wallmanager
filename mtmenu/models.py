@@ -75,6 +75,11 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 set_app_running(process)
 
                 get_app_running()
+                
+                
+                from utils import bring_window_to_front
+                bring_window_to_front(process._handle)
+                
                 # Concatenate output
                 output = StringIO()
                 for line in process.communicate():

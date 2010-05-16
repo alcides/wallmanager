@@ -20,7 +20,9 @@ class CoverWindow(MTModalWindow):
         self.hide()
         
     
-    def resume(self, app):    
+    def resume(self, app):
+        bring_window_to_front()
+            
         self.vote.app = app
         self.add_widget( self.vote )
         self.timer = Timer(self.TIME, self.hide)
