@@ -4,7 +4,7 @@ from subprocess import Popen, PIPE
 from settings import APPS_REPOSITORY_PATH, APPS_BOOT_FILENAME, PRODUCTION
 from cStringIO import StringIO
 from threading import Thread
-from application_running import set_app_running, remove_app_running, get_app_running
+from application_running import set_app_running, remove_app_running, get_app_running, is_app_running
 
 
 # Go back one directory and adds it to sys.path
@@ -63,7 +63,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         app_boot_file = self.get_boot_file()
         success = False
         
-        if app_boot_file:
+        if app_boot_file and not is_app_running():
             
             try:
                 
