@@ -1,7 +1,7 @@
 import sys
 from os import environ, path
 from subprocess import Popen, PIPE
-from settings import APPS_REPOSITORY_PATH, APPS_BOOT_FILENAME
+from settings import APPS_REPOSITORY_PATH, APPS_BOOT_FILENAME, PRODUCTION
 from cStringIO import StringIO
 from threading import Thread
 from application_running import set_app_running, remove_app_running, get_app_running
