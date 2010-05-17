@@ -82,7 +82,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 # defines the application that is running
                 set_app_running(process)
                 
-                print 'pid %d' % process.pid
+                print "Running application: %s" % self.name
                 
                 from utils import bring_window_to_front
                 bring_window_to_front(True)
@@ -103,10 +103,12 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 self.add_log_entry(output.getvalue())    
                     
                 success = True
-            except:
+                print "Application terminated"
+            except e:
                 print "EXCEPTION RUNNING APPLICATION"
-                raise
-            
+                print e
+        else:
+            print "Could not run app because no boot file or another app running"
         return success
         
         
