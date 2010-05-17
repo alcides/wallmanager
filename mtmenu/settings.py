@@ -9,6 +9,10 @@ sys.path.append('..')
 def relative(*x):
     return join(abspath(dirname(__file__)), *x)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 492a271... gesture undetected bug resolved
 #SET TRUE ON WALL
 PRODUCTION = False
 

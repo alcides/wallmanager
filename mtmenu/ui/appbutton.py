@@ -61,13 +61,13 @@ class AppButton(MTKineticItem):
         self.app.execute()
 
         #refresh cstegory in main thread
-        from mtmenu.ui import categories_list
+        from mtmenu import categories_list
         categories_list.refresh()
         self.parent.refresh(self.app.category)
         
         
     def draw(self):
-        print self.size
+        #print self.size
         self.draw_background()
         self.draw_label()
         self.draw_icon()

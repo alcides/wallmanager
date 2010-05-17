@@ -2,7 +2,7 @@ import sys
 sys.path.append("..")
 
 from pymt import *
-from ui import main_window, apps_list, top_bar, categories_list, proxy, background_image
+from mtmenu import *
 from gesture.gesture_scan import GestureScan
 
 if __name__ == '__main__':

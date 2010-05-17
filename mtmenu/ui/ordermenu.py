@@ -14,11 +14,10 @@ class OrderMenu( Popup ):
 
     
     def on_cancel(self):
-        from mtmenu.ui import apps_grid
-        apps_grid.reorder( 'value')
+        from mtmenu import apps_grid
+        apps_grid.reorder( order_by= 'runs' )
         
             
     def on_submit(self):
-        from mtmenu.ui import apps_grid
-        apps_grid.reorder( 'name' )
-
+        from mtmenu import apps_grid
+        apps_grid.reorder( order_by= 'name' )

@@ -101,7 +101,7 @@ class TopBar(MTWidget):
         self.selected_order = order
         self.draw()
         
-        from ui import apps_list
+        from mtmenu import apps_list
         apps_list.reorder(order)
         
         
