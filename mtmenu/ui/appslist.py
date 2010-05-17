@@ -18,7 +18,7 @@ class AppsList(MTKineticList):
         kwargs.setdefault('h_limit', APPSLIST_NUMBER_OF_LINES)
         kwargs.setdefault('w_limit',0)
         kwargs.setdefault('font_size', 12)
-        kwargs.setdefault('padding_x', 300)
+        kwargs.setdefault('padding_x', 100)
         kwargs.setdefault('padding_y', 50)
         kwargs.setdefault('style', {'bg-color':(0,0,0,0)})
         super(AppsList, self).__init__(**kwargs)
