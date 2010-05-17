@@ -59,6 +59,8 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         #hide scatter  
         if is_app_running():
             return False
+        
+        set_app_running(True)
           
         from mtmenu import cover_window
         cover_window.show()
