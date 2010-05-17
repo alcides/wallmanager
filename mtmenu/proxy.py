@@ -1,7 +1,7 @@
 import socket
 from settings import PROXY_UDP_IP, PROXY_RECEIVING_PORT, PROXY_SENDING_PORT_ONE, PROXY_SENDING_PORT_TWO
 import threading
-from application_running import is_app_running
+from mtmenu.application_running import is_app_running
 
 
 class Proxy( threading.Thread ):
@@ -25,12 +25,14 @@ class Proxy( threading.Thread ):
         try:
             self.execute()
             print "PROXY STOPPED"
-        except:
-            raise
+        except e:
+            print "EXCEPTION ON PROXY"
+            print e 
 
 
     def execute(self):
         self.start_sockets()
+        print "PROXY SOCKETS STARTED"
         while self.flag:
             data= self.receive_sock.recv( 1024 ) # buffer size is 1024 bytes
             self.send_sock.sendto( data, (PROXY_UDP_IP, PROXY_SENDING_PORT_ONE) )

@@ -23,6 +23,7 @@ class CategoryList (MTKineticList):
         
         self.apps_list = apps_list
         self.add(categories)
+        self.current = None
         
         
     def add(self, categories):
@@ -36,7 +37,7 @@ class CategoryList (MTKineticList):
         self.clear()
         self.add( get_all_categories() )
         if not self.is_current_valid():
-            from ui import apps_list
+            from mtmenu import apps_list
             apps_list.refresh(None)
 
 

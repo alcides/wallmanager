@@ -60,7 +60,7 @@ class TopBar(MTWidget):
         # Order By
         x,y = self.pos[0]+TOPBAR_SIZE[0], self.pos[1]+TOPBAR_SIZE[1]
         drawLabel(label = 'order by',
-                  pos = (x-300, y-57),
+                  pos = (x-350, y-57),
                   font_size = 15,
                   center = False)
         
@@ -73,13 +73,13 @@ class TopBar(MTWidget):
         
         # Order by Name button
         image = Image(name_image)
-        self.name_pos = (x-420, y-110)
+        self.name_pos = (x-470, y-110)
         image.pos = self.name_pos 
         image.draw()
         
         # Order by Votes button
         image = Image(vote_image)
-        self.votes_pos = (x-268, y-110)
+        self.votes_pos = (x-318, y-110)
         image.pos = self.votes_pos   
         image.draw()
         
@@ -101,7 +101,7 @@ class TopBar(MTWidget):
         self.selected_order = order
         self.draw()
         
-        from ui import apps_list
+        from mtmenu import apps_list
         apps_list.reorder(order)
         
         

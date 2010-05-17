@@ -61,13 +61,13 @@ class AppButton(MTKineticItem):
         self.app.execute()
         
         #refresh cstegory in main thread
-        from mtmenu.ui import categories_list
+        from mtmenu import categories_list
         categories_list.refresh()
         self.parent.refresh(self.app.category)
         
         
     def draw(self):
-        print self.size
+        #print self.size
         self.draw_background()
         self.draw_label()
         self.draw_icon()
@@ -78,9 +78,10 @@ class AppButton(MTKineticItem):
             x,y = list(self.center)
             self.image.pos = x - self.image.width /2, y - self.image.height /2      
             self.image.draw()
-        except:
-            #print "Icon Exception: Unrecognized type of format"
-            pass
+        except e:
+            print "EXCEPTION on appbutton"
+            print e
+            
         
         
     def draw_background(self):

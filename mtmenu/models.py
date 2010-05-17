@@ -4,7 +4,7 @@ from subprocess import Popen, PIPE
 from settings import APPS_REPOSITORY_PATH, APPS_BOOT_FILENAME, PRODUCTION
 from cStringIO import StringIO
 from threading import Thread
-from application_running import set_app_running, remove_app_running, get_app_running, is_app_running
+from mtmenu.application_running import set_app_running, remove_app_running, get_app_running, is_app_running
 
 
 # Go back one directory and adds it to sys.path
@@ -56,14 +56,19 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             process execution"""
             
             
-        #hide scatter    
-        from ui import cover_window
+        #hide scatter  
+        if is_app_running():
+            return False
+        
+        set_app_running(True)
+          
+        from mtmenu import cover_window
         cover_window.show()
         
         app_boot_file = self.get_boot_file()
         success = False
         
-        if app_boot_file and not is_app_running():
+        if app_boot_file:
             
             try:
                 
@@ -72,16 +77,15 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 command = self.build_command(app_boot_file)
                 
                 # Starts application process and waits for it to terminate
-                process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath())
+                process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath(), shell = False)
                 
                 # defines the application that is running
                 set_app_running(process)
-
-                get_app_running()
                 
+                print "Running application: %s" % self.name
                 
                 from utils import bring_window_to_front
-                bring_window_to_front(process._handle)
+                bring_window_to_front(True)
                 
                 # Concatenate output
                 output = StringIO()
@@ -99,9 +103,12 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 self.add_log_entry(output.getvalue())    
                     
                 success = True
-            except:
-                raise
-            
+                print "Application terminated"
+            except e:
+                print "EXCEPTION RUNNING APPLICATION"
+                print e
+        else:
+            print "Could not run app because no boot file"
         return success
         
         
