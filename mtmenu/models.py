@@ -77,16 +77,15 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 command = self.build_command(app_boot_file)
                 
                 # Starts application process and waits for it to terminate
-                process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath(), shell = True)
+                process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath(), shell = False)
                 
                 # defines the application that is running
                 set_app_running(process)
                 
-                from time import sleep
-                sleep(3)
+                print 'pid %d' % process.pid
                 
                 from utils import bring_window_to_front
-                bring_window_to_front()
+                bring_window_to_front(True)
                 
                 # Concatenate output
                 output = StringIO()
