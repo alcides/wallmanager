@@ -1,5 +1,8 @@
+from time import sleep
+
 from models import *
 from window_manager import *
+from settings import MAX_ATTEMPTS, SLEEP_SECONDS_BETWEEN_ATTEMPTS
 
 def get_applications(cat=None, sort_by_value=False):
     if cat: 
@@ -30,15 +33,30 @@ def sort_apps(apps, sort_by_value):
     else:
         return apps.order_by('name')
     
-def bring_window_to_front(hwnd = None):
+def bring_window_to_front(toApp = False):
     ''' Bring the WallManager window to the front'''
+    from mtmenu import self_hwnd
     
-    if hwnd == None:
-        from mtmenu import self_hwnd
+    hwnd = None
+    
+    w = WindowMgr()
+    if toApp:
+        
+        for i in range(MAX_ATTEMPTS):
+            # loop for the open windows on the desktop
+            for handler, name in w.getWindows():
+                if handler != self_hwnd and name != ' Community Core Vision ' and name != 'Atalho para launcher':
+                    hwnd = handler
+                    print 'Changing context to handler %d with name %s' % (handler, name)
+                    break
+            if hwnd != None:
+                break
+            sleep(SLEEP_SECONDS_BETWEEN_ATTEMPTS)
+            
+        if hwnd == None:
+            hwnd = self_hwnd
+    else:
         hwnd = self_hwnd
     
-    w = WindowMgr(hwnd)
-    for win in w.getWindows():
-        print win
-    #w.find_window_wildcard()
-    #w.set_foreground()
+    w._handle = hwnd
+    w.set_foreground()
