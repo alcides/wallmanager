@@ -1,4 +1,4 @@
-from application_running import is_app_running, kill_app_running
+from mtmenu.application_running import is_app_running, kill_app_running
 from gesture.gesture_db import *
 from pymt import *
 import subprocess
