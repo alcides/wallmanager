@@ -1,6 +1,6 @@
 from pymt import *
 from categorybutton import CategoryButton
-from settings import CATEGORYLIST_SIZE, CATEGORYLIST_POSITION
+from settings import CATEGORYLIST_SIZE, CATEGORYLIST_POSITION, CATEGORYLIST_FRICTION
 from utils import get_all_categories
 
 class CategoryList (MTKineticList):
@@ -18,6 +18,7 @@ class CategoryList (MTKineticList):
         kwargs.setdefault('font_size', 14)
         kwargs.setdefault('size', CATEGORYLIST_SIZE)
         kwargs.setdefault('pos', CATEGORYLIST_POSITION)
+        kwargs.setdefault('friction', CATEGORYLIST_FRICTION)
         kwargs.setdefault('style', {'bg-color':(0,0,0,0)})
         super(CategoryList, self).__init__(**kwargs)
         
