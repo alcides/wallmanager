@@ -16,8 +16,9 @@ class CategoryButton(MTKineticItem):
         super(CategoryButton, self).__init__(**kwargs)
 
     def on_press( self, touch ):
-        from ui import apps_list
+        from mtmenu import apps_list
         apps_list.refresh(self.category)
+        self.parent.current = self.category
         
 
     def on_release( self, touch ):

@@ -30,9 +30,15 @@ def sort_apps(apps, sort_by_value):
     else:
         return apps.order_by('name')
     
-def bring_window_to_front(handle = None):
+def bring_window_to_front(hwnd = None):
     ''' Bring the WallManager window to the front'''
-    w = WindowMgr(handle)
-    if not handle:
-        w.find_window_wildcard("pymt")
-    w.set_foreground()
+    
+    if hwnd == None:
+        from mtmenu import self_hwnd
+        hwnd = self_hwnd
+    
+    w = WindowMgr(hwnd)
+    for win in w.getWindows():
+        print win
+    #w.find_window_wildcard()
+    #w.set_foreground()
