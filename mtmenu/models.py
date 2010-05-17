@@ -56,14 +56,17 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             process execution"""
             
             
-        #hide scatter    
+        #hide scatter  
+        if is_app_running():
+            return False
+          
         from mtmenu import cover_window
         cover_window.show()
         
         app_boot_file = self.get_boot_file()
         success = False
         
-        if app_boot_file and not is_app_running():
+        if app_boot_file:
             
             try:
                 
@@ -103,7 +106,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 print "EXCEPTION RUNNING APPLICATION"
                 print e
         else:
-            print "Could not run app because no boot file or another app running"
+            print "Could not run app because no boot file"
         return success
         
         

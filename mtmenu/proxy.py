@@ -25,8 +25,9 @@ class Proxy( threading.Thread ):
         try:
             self.execute()
             print "PROXY STOPPED"
-        except:
-            raise
+        except e:
+            print "EXCEPTION ON PROXY"
+            print e 
 
 
     def execute(self):
