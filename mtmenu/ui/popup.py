@@ -16,4 +16,3 @@ class Popup( MTPopup ):
         kwargs.setdefault('do_scale', False) 
 
         super(Popup, self).__init__(**kwargs)
-

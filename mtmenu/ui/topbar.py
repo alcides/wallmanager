@@ -5,11 +5,9 @@ from ui.helpbutton import HelpButton
 class TopBar(MTWidget):
     
     def __init__(self, **kwargs):
-        style = {'bg-color': (0, 1, 0, 1), 'draw-background': 1}
-        
         kwargs.setdefault('pos', TOPBAR_POSITION)
         kwargs.setdefault('size', TOPBAR_SIZE)
-        kwargs.setdefault('style', style)
+        kwargs.setdefault('style', {'bg-color': (0, 1, 0, 1), 'draw-background': 1})
         kwargs.setdefault('do_rotation', False)
         kwargs.setdefault('do_translation', False)
         kwargs.setdefault('do_scale', False)
