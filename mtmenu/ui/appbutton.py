@@ -78,9 +78,10 @@ class AppButton(MTKineticItem):
             x,y = list(self.center)
             self.image.pos = x - self.image.width /2, y - self.image.height /2      
             self.image.draw()
-        except:
-            #print "Icon Exception: Unrecognized type of format"
-            pass
+        except e:
+            print "EXCEPTION on appbutton"
+            print e
+            
         
         
     def draw_background(self):
