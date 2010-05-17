@@ -35,9 +35,7 @@ class Proxy( threading.Thread ):
         while self.flag:
             data= self.receive_sock.recv( 1024 ) # buffer size is 1024 bytes
             self.send_sock.sendto( data, (PROXY_UDP_IP, PROXY_SENDING_PORT_ONE) )
-            print "base send"
             if is_app_running():
-                print "sending..."
                 self.send_sock.sendto( data, (PROXY_UDP_IP, PROXY_SENDING_PORT_TWO) )
 
 proxy = Proxy()
