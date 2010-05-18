@@ -274,25 +274,27 @@ def projectors(request):
 
 @staff_required()
 def screensaver(request):
-    try:
-        current_screensaver_time = ScreensaverControl.objects.get().screensaver_inactivity_time
-    except ScreensaverControl.DoesNotExist:
-        current_screensaver_time = ScreensaverControl.objects.create(screensaver_inactivity_time='15:00')
-    
     if request.method == 'POST':
         form = ScreenSaverTimeForm(request.POST)
         if form.is_valid():
-            time = form.cleaned_data['screensaver_time']
+            time = form.cleaned_data['inactivity_time']
             if str(time) == "00:00:00":
                 request.user.message_set.create(message="Time must be at least 00:01 (one minute).")
             else:
-                ScreensaverControl.objects.create(screensaver_inactivity_time = time)
+                form.save()
                 request.user.message_set.create(message="Screensaver inactivity time was set successfully.")
+        else:
+            request.user.message_set.create(message="The form is not valid.")
+        return HttpResponseRedirect(reverse('screensaver'))
     else:
-        form = ScreenSaverTimeForm(data= {'screensaver_time': current_screensaver_time})
-        
-    return render(request,'appman/screensaver.html', {'current_screensaver_time': current_screensaver_time, 'form': form})
+        try:
+            form =  ScreenSaverTimeForm(instance=ScreensaverControl.objects.all()[0])
+        except IndexError:
+            form = ScreenSaverTimeForm(initial = {'inactivity_time':'00:30:00'} )
 
+        return render(request,'appman/screensaver.html', {'form': form})
+    
+    
 @superuser_required()
 def manage_admins(request):
     return render(request,'appman/admins.html')
