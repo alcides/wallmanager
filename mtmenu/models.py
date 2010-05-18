@@ -7,11 +7,6 @@ from threading import Thread
 from mtmenu.application_running import set_app_running, remove_app_running, get_app_running, is_app_running
 
 
-from mtmenu.settings import *
-from mtmenu.proxy import proxy
-from mtmenu.application_running import set_app_running, remove_app_running, get_app_running
-
-
 # Go back one directory and adds it to sys.path
 sys.path.append('..')
 sys.path.append('../webmanager')
@@ -102,6 +97,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 
                 cover_window.resume(self)
                 
+                        
                 self.end_run()                
                 
                 # Save output to database

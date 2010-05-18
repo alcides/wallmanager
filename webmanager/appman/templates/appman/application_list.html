@@ -1,43 +1,28 @@
 {% extends 'base.html' %}
 
-{% block title %} Applications {% endblock %}
-
-{% block javascript %}<script src="/media/js/applications.js"></script>{% endblock %}
+{% block title %} Applications List {% endblock %}
 
 {% block breadcrumb%}
-	<li><a href="{% url application-list %}">Applications</a></li>
-	{% if cat %}<li>{{ cat }}</li>{% endif%}
+	<li>Applications</li>
 {% endblock %}
 
 {% block content %}
 
-{% if cat %}<h3>{{ cat }}</h3>{% endif%}
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+<br/>
+</ul>
+{% endif %}
 
-<div id="app_search">
-    <form action="/applications/search/" method="POST" >
-        <input type="search" value="{% if query %}{{ query }}{% endif %}" name="q" id="input_search_field" />
-        <input type="submit" value="Search" />
-    </form>
-</div>
-
-<div class="clear"></div>
-<div id="app_add">
+<div id="addapp" align="right">
 	<ul class="object-tools">
 		<li><a href='{% url application-add %}' class="add-button">Add Application</a></li>
-		<li><a href='#' onclick="changeState();">Show Categories</a></li>
-	</ul>
+	</ul>	
 </div>
 
-<div id="app_filter" style="display: none;">
-	<h4>Categories</h4>
-	<ul>
-	{% for category in categories %}
-		<li><a href="{% url application-list object_id=category.id %}">{{ category.name }}</a></li>
-	{% endfor %}
-	</ul>
-</div>
-
-{% load show_stars %}
 <div id="applist">
 	<table class="gradient-style">
 		<thead>
@@ -57,7 +42,7 @@
 			<td><a href="{{ app.get_absolute_url }}">{{ app.name|limit:25 }}</a></td>
 			<td>{{ app.owner }}</td>
 			<td>{{ app.category }}</td>
-			<td>{% show_stars app.stars of 5 round to half %}</td>
+			<td>{{ app.stars }}</td>
 		</tr>
 		{% endfor %}
 	

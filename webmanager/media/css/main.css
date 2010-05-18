@@ -27,31 +27,22 @@ html {
 body {
 	background: #EEE url(/media/img/bg.gif);
 	color: #444;
-	font: normal 72.5% "Lucida Sans Unicode",sans-serif;
+	font: normal 62.5% "Lucida Sans Unicode",sans-serif;
 	margin: 0;
 	height: 100%;
 }
 
+p,ul {
+	font-size: 1.2em;
+	padding-bottom: 1.2em;
+}
 h1 {
 	font-size: 1.7em;
 	margin-bottom: 15px;
 }
 
 .content h1 {
-	margin-bottom: 20px;
-}
-
-a.button {
-    padding: 3px;
-    margin-top: 15px;
-    float: right;
-    display: block inline;
-    background-color: #DDD;
-    border: solid #333 1px;
-    color: #333;
-    text-decoration: none;
-    width: 100px;
-    text-align: center;
+	margin-bottom: 50px;
 }
 
 h1,h2,h3 {
@@ -59,23 +50,8 @@ h1,h2,h3 {
 	padding-top: 6px;
 }
 
-blockquote {
-    background-color: #EEE;
-    border: solid #DDD 1px;
-    font-family: Georgia;
-    font-style: italic;
-    font-size: 13px;
-    line-height: 140%;
-    word-spacing: 1px;
-    text-align: left;
-    padding: 3px;
-    margin: 10px;
-    margin-bottom: 20px;
-}
-
-
 /* misc */
-.clear {
+.clearer {
 	clear: both;
 }
 
@@ -84,6 +60,7 @@ blockquote {
 	background: url(/media/img/bgcontainer.gif) repeat-y;
 	margin: 0 auto;
 	width: 767px;
+	height: 100%;
 }
 
 /* title */
@@ -251,15 +228,16 @@ blockquote {
 
 /* Add app button*/
 .object-tools {
-    clear: both;
 	display: block;
-	float: left;
+	float: right;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	font-weight: bold;
-	padding: 5px;
-	margin: 10px;
-	margin-top: 10px;
+	margin-bottom: -20px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: -24px;
+	padding-left: 0px;
 	position: relative;
 	list-style-type: disc;
 	height: 16px;
@@ -293,119 +271,12 @@ blockquote {
 	background-clip: border-box;
 	background-attachment: scroll;
 	background: #999 url(/media/img/tooltag-add.gif) no-repeat 100% 0%;
+	color: white;
 	padding: 0.1em 25px 0.1em 8px;
-}
-
-.object-tools a:link, .object-tools a:visited {
+	height: 14px;
 	float: left;
 	display: block;
 	text-decoration: none;
 	cursor: auto;
-    color: white;
-    padding: .1em 14px .1em 8px;
-    height: 14px;
-    background: #999 url(/media/img/tool-right.gif) 100% 0 no-repeat;
 }
 
-/* Form */
-
-.content form {
-	border:0;
-	margin-top: 10px;
-}
-
-.content form ul, form li {
-	border:0;
-	margin:0;
-	padding:0;
-    list-style: none;
-}
-
-.content form li {
-	clear:both;
-	list-style:none;
-	padding-bottom:10px;
-}
-
-.content form label {
-	width:140px;
-	float:left;
-}
-
-.content form input[type=submit] {
-    margin-left: 160px;
-    clear: both;
-}
-
-.content div.app {
-   float: right;
-   width: 200px;
-}
-
-.content div.app p {
-    padding: 0;
-    margin-bottom: 5px;
-}
-
-.content h3 {
-    margin-top: -20px;
-    color: #333;
-}
-
-.content img.icon {
-    float: left;
-    margin: 5px;
-    width: 80px;
-    height: 80px;
-}
-
-p.description {
-    font-family: Georgia;
-    font-style: italic;
-    font-size: 14px;
-}
-
-
-div.log {
-    margin-bottom: 30px;
-}
-
-div.log code.description {
-    width: 100%;
-    display: block;
-    border: dashed 1px #CCC;
-    font-style: none;
-    font-size: 14px;
-    font-family: Consolas, "Courier New", sans-serif;
-}
-
-
-.messages li {
-    list-style-position: inside;
-    padding: 10px;
-    background-color: #F6F1CF;
-}
-
-#app_search {
-    float: right;
-    padding: 5px;
-    margin: 10px;
-    background-color: #EEE;
-    border: solid #CCC 1px;
-    border-radius: 10px;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-}
-
-#app_search input, #app_search form {
-    margin: 0;
-    padding: 0;
-}
-
-#app_filter {
-    clear: both;
-    margin-right: 10px;
-    margin-left: 10px;
-    padding: 10px;
-    background-color: #EEE;
-}

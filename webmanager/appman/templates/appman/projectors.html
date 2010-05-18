@@ -5,17 +5,3 @@
 {% block breadcrumb%}
 	<li>Projectors</li>
 {% endblock %}
-
-{% block content %}
-
-	{% if form.errors %}
-	<h2>Please correct the following error{{ form.errors|pluralize }}:</h2>
-	{% endif %}
-
-	<form action="" method="post" >
-		{{ form.as_ul }}
-		<div class="clear"></div>
-		<input type="submit" value="Update" />
-	</form>
-
-{% endblock %}

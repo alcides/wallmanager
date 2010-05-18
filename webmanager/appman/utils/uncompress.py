@@ -4,62 +4,41 @@ import threading
 
 from django.conf import settings
 
-import appman.utils.unzip as unzip
+from appman.utils.unzip import unzip
+from appman.signals import extracted_email_signal
 
 class UncompressThread(threading.Thread):
     """ Thread that uncompresses a certain zip file."""
-    def __init__(self, model, instance, path, signal):
+    def __init__(self, model, instance, path):
         self.model = model
         self.instance = instance
         self.path = str(path)
-        self.signal = signal
         threading.Thread.__init__(self)
 
-    def post_signal(self, success=True ):
-        if self.signal:
-            self.signal.send(sender=self, application=self.instance, success=success)
-            
-    def prepare_folder(self):
+    def run(self):
+        
         if not os.path.isdir(settings.WALL_APP_DIR):
             os.mkdir(settings.WALL_APP_DIR)
-            
-    def extract_file(self):
-        try:
-            un = unzip.unzip()
-            un.extract(str(self.instance.zipfile.path) , self.path)
-            return os.path.exists(os.path.join(self.path, 'boot.bat'))
-        except unzip.zipfile.BadZipfile:
-            return False
-        except IOError:
-            return False
-            
-    def safe_call(self, fun):
-        try:
-            return fun()
-        except Exception, e:
-            if settings.DATABASE_ENGINE == 'sqlite3':
-                if settings.DEBUG:
-                    print "Concurrent Exception (SQLite-related)", e
-                return False
-            else:
-                # Raise exception normally
-                raise e
-            
-    def run(self):
-        self.prepare_folder()
-        extracted = self.extract_file()
         
+        try:
+            un = unzip()
+            un.extract( str(self.instance.zipfile.path) , self.path)
+            extracted = os.path.exists(os.path.join(self.path, 'boot.bat'))
+        except IOError:
+            extracted = False
+    
         if extracted:
-            self.post_signal()
-            
-            def update_extracted():
+            extracted_email_signal.send(sender=self, application=self.instance)
+            try:
                 self.model.objects.filter(id=self.instance.id).update(is_extracted=True)
-            self.safe_call(update_extracted)
+            except:
+                # TODO: Remove: SQLite3 related
+                pass
         else:
             shutil.rmtree(self.path)
-            
-            def delete_extracted():
+            try:
                 self.model.objects.filter(id=self.instance.id)
-            self.safe_call(delete_extracted)
-            
-            self.post_signal(False)
+            except:
+                # TODO: Remove: SQLite3 related
+                pass
+            extracted_email_signal.send(sender=self, application=self.instance, success=False)

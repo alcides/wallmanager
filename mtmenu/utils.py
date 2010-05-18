@@ -59,4 +59,3 @@ def bring_window_to_front(toApp = False):
         hwnd = self_hwnd
     
     w._handle = hwnd
-    w.set_foreground()

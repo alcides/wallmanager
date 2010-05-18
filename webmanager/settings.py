@@ -24,7 +24,6 @@ EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'no-reply@sensewall.dei.uc.pt'
-DEFAULT_TO_EMAIL = 'wallmanager@dei.uc.pt'
 
 SECRET_KEY = '%4)e8snda5-cewqsjx#%t$sg-j0txw)mb%leue1_^paa=(ft)e' # <------ Change this!
 
@@ -74,16 +73,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
-AUTHENTICATION_BACKENDS = (
-    'appman.backends.StudentPopBackend',
-    'django.contrib.auth.backends.ModelBackend',
-)
-
 LOGIN_REDIRECT_URL = '/applications/'
-
-AUTH_LDAP_SERVER = "ldap://ldap3.dei.uc.pt"
-AUTH_LDAP_USER_BASE = lambda email: "uid=%s,ou=%s,ou=People,dc=dei,dc=uc,dc=pt" % ( email.split("@")[0], 'student' in email and 'student' or 'eden' )
-
 
 WALL_APP_DIR = relative('../mtmenu/apps/')
 ZIP_FOLDER = "applications"
@@ -91,7 +81,3 @@ ZIP_TEMP_FOLDER = "app_temp"
 
 DEFAULT_CATEGORY = "Others"
 APPS_MAX_LOG_ENTRIES = 5
-
-LOG_FILENAME = relative('log.txt')
-
-PROJECTOR_IPS = ('192.168.1.254', '192.168.1.253')

@@ -9,8 +9,10 @@ sys.path.append('..')
 def relative(*x):
     return join(abspath(dirname(__file__)), *x)
 
+
 #SET TRUE ON WALL
 PRODUCTION = False
+
 
 APPS_REPOSITORY_PATH = relative('apps/')
 APPS_BOOT_FILENAME = 'boot.bat'

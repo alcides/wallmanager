@@ -2,8 +2,6 @@ from pymt import *
 from mtmenu.ui.apppopup import AppPopup
 from threading import Timer
 
-from mtmenu.models import ApplicationProxy
-
 
 class AppButton(MTKineticItem):
     """Widget representing an application on main window. 
@@ -26,6 +24,7 @@ class AppButton(MTKineticItem):
         self.app = app
         self.pop = None
       
+        
         super(AppButton, self).__init__(**kwargs)
         
 
@@ -51,6 +50,7 @@ class AppButton(MTKineticItem):
             
         self.get_root_window().add_widget(self.pop)
         self.pop = None
+
 
 
     def open_app(self):

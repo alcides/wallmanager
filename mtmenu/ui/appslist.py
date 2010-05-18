@@ -40,6 +40,7 @@ class AppsList(MTKineticList):
             chunk.reverse()
             for app in chunk:
                 item = AppButton(app)
+               
                 self.add_widget(item)
 
             
@@ -49,7 +50,6 @@ class AppsList(MTKineticList):
             return            
         self.current_category = category
         self.reorder()
-            
             
 
     def reorder(self, sort_criteria = None):

@@ -5,16 +5,3 @@
 {% block breadcrumb%}
 	<li>ScreenSaver</li>
 {% endblock %}
-
-{% block content %}
-
-	<blockquote>
-		Define how long does it take for the screensaver to appear.
-	</blockquote>
-    
-    <form action="/screensaver/" method="post">
-    {{ form.as_p }}
-    <input type="submit" value="Save" />
-    </form>
-    
-{% endblock %}

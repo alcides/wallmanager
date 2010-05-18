@@ -32,14 +32,6 @@
 	
 			<div class="content">
 				<div class="item">
-					{% if messages %}
-						<ul class="messages">
-					    {% for message in messages %}
-					    	<li>{{ message }}</li>
-					    {% endfor %}
-						</ul>
-					{% endif %}
-					
 					<h1>{% block title%}{% endblock %}</h1>
 					<div>{% block content%}{% endblock %}</div>
 				</div>
@@ -57,10 +49,10 @@
 				<ul>
 					{% if user.is_authenticated %}
 					<li><a href="{% url application-list %}">Applications</a></li>
-					<li><a href="{% url application-list 'mine' %}">My Applications</a></li>
 					<li><a href="{% url contact-admin %}">Contact Admin</a></li>
 					{% else %}
 					<li><a href="/accounts/login/">Login</a></li>
+					<li><a href="/accounts/register/">Register</a></li>
 					{% endif %}
 					<li><a href="/doc/">User Documentation</a></li>
 					<li><a href="/techdoc/">Technical Documentation</a></li>
@@ -71,18 +63,18 @@
 				<ul>
 					<li><a href="{% url projectors %}">Projectors</a></li>
 					<li><a href="{% url screensaver %}">ScreenSaver</a></li>
+					<li><a href="{% url suspension %}">Suspension</a></li>
 					<li><a href="{% url category-list %}">Categories</a></li>
 					<li><a href="{% url documentation-menu %}">Edit Documentation</a></li>
 					{% if user.is_superuser %}
 					<li><a href="{% url manage-admins %}">Manage Admins</a></li>
 					<li><a href="{% url define-admin %}">Define Contact Admin</a></li>
 					{% endif %} 
-					<li><a onclick="return confirm('Are you really sure you want to reboot?');"href="{% url reboot %}">Reboot</a></li>
 				</ul>
 				{% endif %} 
 			</div>
 	
-			<div class="clear"><span></span></div>
+			<div class="clearer"><span></span></div>
 	
 		</div>
 

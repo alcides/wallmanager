@@ -25,4 +25,4 @@ if __name__ == '__main__':
     # GESTURE
     main_window.add_widget(GestureScan())
     
-    runTouchApp();
+    runTouchApp()
