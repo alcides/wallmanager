@@ -1,3 +1,4 @@
+import os
 from os.path import join, dirname, abspath
 
 import sys
@@ -11,7 +12,7 @@ def relative(*x):
 
 
 #SET TRUE ON WALL
-PRODUCTION = False
+PRODUCTION = 'SENSEWALL' in os.environ
 
 
 APPS_REPOSITORY_PATH = relative('apps/')
