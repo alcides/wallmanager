@@ -96,7 +96,6 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 remove_app_running()
                 
                 cover_window.resume(self)
-                
                         
                 self.end_run()                
                 
