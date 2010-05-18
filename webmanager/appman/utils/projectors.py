@@ -17,6 +17,7 @@ class ProjectorManager():
     def __init__(self,projector_ip):
         self.projector = projector_ip
         self.url = lambda day: 'http://%s/admin/%s.html' % (self.projector, day)
+        self.url_main = 'http://%s/main.html' % (self.projector)
     
     #returns true if successfully authenticated
     def login(self):
@@ -60,16 +61,16 @@ class ProjectorManager():
         req = urllib2.Request(self.url(day), data)
         urllib2.urlopen(req)
         
-    def power_off():
+    def power_off(self):
         values = {'V2' : '1','D2' : '0'}
         data = urllib.urlencode(values)
-        req = urllib2.Request(self.url(day), data)
+        req = urllib2.Request(self.url_main, data)
         urllib2.urlopen(req)
 
-    def power_on():
+    def power_on(self):
         values = {'V1' : '1','D1' : '1'}
         data = urllib.urlencode(values)
-        req = urllib2.Request(self.url(day), data)
+        req = urllib2.Request(self.url_main, data)
         urllib2.urlopen(req)
 
 def set_projectors_time(week_on, week_off, 
