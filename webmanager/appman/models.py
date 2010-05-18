@@ -82,7 +82,7 @@ class Application(models.Model):
         return ("application-detail", [str(self.id)])
         
 class ProjectorControl(models.Model):
-    inactivity_time = models.IntegerField(default=2)
+    inactivity_time = models.TimeField(default=datetime.time(2,0))
     startup_week_time = models.TimeField(default=datetime.time(10,0))
     shutdown_week_time = models.TimeField(default=datetime.time(20,30))
     startup_weekend_time = models.TimeField(default=datetime.time(10,0))
@@ -94,7 +94,8 @@ class ProjectorControl(models.Model):
         super(ProjectorControl,self).save(*args, **kwargs)
         
 class ScreensaverControl(models.Model):
-    screensaver_inactivity_time = models.TimeField()
+    inactivity_time = models.TimeField(default=datetime.time(0,30))
+    application = models.ForeignKey(Application)
     
     def save(self, *args, **kwargs):
         """ There can be only one ScreensaverControl instance."""
