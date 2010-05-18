@@ -2,6 +2,8 @@ from django.conf import settings
 from django.conf.urls.defaults import *
 
 from django.contrib import admin
+from appman.admin import EmailAdmin
+admin.site = EmailAdmin()
 admin.autodiscover()
 
 urlpatterns = patterns('',

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %} Define Contact Admin {% endblock %}
+
+{% block breadcrumb%}
+	<li>Define Contact Admin</li>
+{% endblock %}
+
+{% block content %}
+
+    <blockquote>You can choose the admin that will be notified in case of report abuse.</blockquote>
+
+    {% if admin_list %}
+        <form action="" method="post"
+			onsubmit="if (this.contact_admin.value == '') { alert('Please select one contact.'); return false; }">
+		<ul>
+			<li><label for="contact_admin">Contact admin:</label>
+        <select name="contact_admin">
+		{% if not current_contact_admin %}
+			<option disabled="disabled" value="">Not defined yet.</option>
+		{% endif %}
+	
+        {% for admin in admin_list %}
+        	<option value="{{ admin.email }}"
+				{% ifequal current_contact_admin admin %}selected="selected"{% endifequal %}
+			>{{ admin.username }} ({{ admin.email }})</option>
+        {% endfor %}
+        </select></li>
+        <li><input type="submit" value="Set as contact admin" /></li>
+        
+
+        </form>
+    {% else %}
+        <em>No admins were found! Please create some admins and try again.</em>
+    {% endif %}
+{% endblock %}
