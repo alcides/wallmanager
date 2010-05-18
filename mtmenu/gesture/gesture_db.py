@@ -1,6 +1,6 @@
 from gesture_list import *
 from my_gesture import *
-from settings import KILLER_GESTURE
+from mtmenu.settings import KILLER_GESTURE
 
 class Gestures( GestureDatabase ):
     def __init__(self):

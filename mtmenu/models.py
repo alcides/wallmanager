@@ -1,23 +1,25 @@
 import sys
 from os import environ, path
 from subprocess import Popen, PIPE
-from settings import *
 from cStringIO import StringIO
 from threading import Thread
-from proxy import proxy
-from application_running import *
-from ui import scatter
-from mtmenu.ui import apps_grid
 from copy import deepcopy
 
 
+from mtmenu.settings import *
+from mtmenu.proxy import proxy
+from mtmenu.application_running import set_app_running, remove_app_running, get_app_running
+
+
 # Go back one directory and adds it to sys.path
-add_dir = lambda x: sys.path.append(join(abspath(dirname(__file__)), *x))
-add_dir(['..'])
-add_dir(['..', 'webmanager'])
+sys.path.append('..')
+sys.path.append('../webmanager')
 
 # Set needed environment variable
-environ['DJANGO_SETTINGS_MODULE'] = 'webmanager.settings'
+if PRODUCTION:
+    environ['DJANGO_SETTINGS_MODULE'] = 'webmanager.settings-prod'
+else:
+    environ['DJANGO_SETTINGS_MODULE'] = 'webmanager.settings'
 
 # webmanager models can now be imported
 from webmanager.appman import models
@@ -57,6 +59,11 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             An Exception is raised in case something goes wrong during
             process execution"""
             
+            
+        #hide scatter    
+        from mtmenu.ui import cover_window
+        cover_window.show()
+        
         app_boot_file = self.get_boot_file()
         success = False
         
@@ -71,20 +78,22 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 # Starts application process and waits for it to terminate
                 process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath())
                 
-                # hides the main menu and defines the application that is running
-                scatter.hide()
-                setAppRunning(process)
+                # defines the application that is running
+                set_app_running(process)
 
+                get_app_running()
+                
+                from utils import bring_window_to_front
+                bring_window_to_front(process._handle)
                 # Concatenate output
                 output = StringIO()
                 for line in process.communicate():
                     output.write(line)
 
+
+                remove_app_running()
+                cover_window.resume(self)            
                 
-                scatter.show()
-                removeAppRunning()
-                
-                        
                 self.end_run()                
                 
                 # Save output to database
@@ -92,9 +101,10 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                     
                 success = True
             except:
-                pass
+                raise
             
         return success
+        
         
     def get_extraction_fullpath(self):
         """Full path to application repository.

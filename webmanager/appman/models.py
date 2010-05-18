@@ -1,13 +1,15 @@
+import datetime
+
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.conf import settings
 
 class Category(models.Model):
     name = models.CharField(max_length=30, unique=True)
     
     class Meta:
         verbose_name_plural = "Categories"
+        ordering = ('name',)
 
     def __unicode__(self):
         return u"%s" % self.name
@@ -57,7 +59,7 @@ class Application(models.Model):
     
     def __unicode__(self):
         return u"%s" % self.name
-    
+            
     def save(self, force_insert=False, force_update=False):
         try:
             old_obj = Application.objects.get(pk=self.pk)
@@ -74,25 +76,43 @@ class Application(models.Model):
             pass
         
         super(Application, self).save(force_insert, force_update)
-    
+
     @models.permalink
     def get_absolute_url(self):
         return ("application-detail", [str(self.id)])
         
 class ProjectorControl(models.Model):
-    inactivity_time = models.IntegerField()
-    startup_time = models.TimeField()
-    shutdown_time = models.TimeField()
+    inactivity_time = models.IntegerField(default=2)
+    startup_week_time = models.TimeField(default=datetime.time(10,0))
+    shutdown_week_time = models.TimeField(default=datetime.time(20,30))
+    startup_weekend_time = models.TimeField(default=datetime.time(10,0))
+    shutdown_weekend_time = models.TimeField(default=datetime.time(20,30))
 
     def save(self, *args, **kwargs):
         """ There can be only one ProjectorControl instance."""
         ProjectorControl.objects.all().delete()
         super(ProjectorControl,self).save(*args, **kwargs)
         
+class ScreensaverControl(models.Model):
+    screensaver_inactivity_time = models.TimeField()
+    
+    def save(self, *args, **kwargs):
+        """ There can be only one ScreensaverControl instance."""
+        ScreensaverControl.objects.all().delete()
+        super(ScreensaverControl,self).save(*args, **kwargs)
+        
 class ApplicationLog(models.Model):
     application = models.ForeignKey(Application)
     datetime = models.DateTimeField(auto_now_add=True)
-    error_description = models.CharField(max_length=255)
+    error_description = models.TextField(blank=True)
     
     def __unicode__(self):
         return u"%s log at %s" % (self.application.name, self.datetime)
+        
+class WallManager(models.Model):
+    contact = models.EmailField(blank=True)
+    
+    def save(self, *args, **kwargs):
+        """ There can be only one WallManager instance."""
+        WallManager.objects.all().delete()
+        super(WallManager,self).save(*args, **kwargs)

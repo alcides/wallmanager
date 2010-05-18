@@ -1,9 +1,14 @@
 *.pyc
+**/log.txt
 clean.bat
+runserver.bat
 webmanager/db/dev.db
-webmanager/media/applications
-webmanager/media/icons
+webmanager/media/applications/*.zip
+webmanager/media/app_temp/*.zip
+webmanager/media/icons/*.png
+webmanager/appman/tests/temp/*
 mtmenu/apps
+mtmenu/out.txt
 .project
 .pydevproject
 .settings
