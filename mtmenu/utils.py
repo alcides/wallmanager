@@ -2,7 +2,7 @@ from time import sleep
 
 from models import *
 from window_manager import *
-from settings import MAX_ATTEMPTS, SLEEP_SECONDS_BETWEEN_ATTEMPTS
+from settings import MAX_ATTEMPTS, SLEEP_SECONDS_BETWEEN_ATTEMPTS, NATIVE_APP_NAMES
 
 def get_applications(cat=None, sort_by_value=False):
     if cat: 
@@ -45,14 +45,15 @@ def bring_window_to_front(toApp = False):
         for i in range(MAX_ATTEMPTS):
             # loop for the open windows on the desktop
             for handler, name in w.getWindows():
-                if handler != self_hwnd and name != ' Community Core Vision ' and name != 'Atalho para launcher':
+                if handler != self_hwnd and name not in NATIVE_APP_NAMES:
                     hwnd = handler
                     print 'Changing context to handler %d with name %s' % (handler, name)
                     break
             if hwnd != None:
                 break
             sleep(SLEEP_SECONDS_BETWEEN_ATTEMPTS)
-            
+        
+        print "Got handler", hwnd    
         if hwnd == None:
             hwnd = self_hwnd
     else:
