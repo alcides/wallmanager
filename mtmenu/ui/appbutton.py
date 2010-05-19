@@ -39,7 +39,7 @@ class AppButton(MTKineticItem):
                         
         #if single tap and popup not already open
         elif not self.pop:  
-            self.pop = AppPopup(self.app, pos = self.pos)
+            self.pop = AppPopup(self.app, touch)
             Timer(0.5, self.open_popup).start() #make sure is not a double tap
 
 
