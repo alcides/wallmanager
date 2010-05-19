@@ -1,6 +1,6 @@
 from pymt.ui.widgets.composed.modalpopup import MTModalPopup
 from pymt.ui.widgets.button import MTImageButton
-from settings import TOPBAR_POSITION, TOPBAR_SIZE
+from config import TOPBAR_POSITION, TOPBAR_SIZE
 
 
 class HelpButton(MTImageButton):

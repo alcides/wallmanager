@@ -36,5 +36,6 @@ self_hwnd = win32gui.GetForegroundWindow()
 
 
 # INACTIVITY CONTROL VARIABLES
+from datetime import datetime
 last_activity = datetime.now()
 projector_on = 1

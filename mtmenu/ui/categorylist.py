@@ -1,6 +1,6 @@
 from pymt import *
 from categorybutton import CategoryButton
-from settings import CATEGORYLIST_SIZE, CATEGORYLIST_POSITION, CATEGORYLIST_FRICTION
+from config import CATEGORYLIST_SIZE, CATEGORYLIST_POSITION, CATEGORYLIST_FRICTION
 from utils import get_all_categories
 
 class CategoryList (MTKineticList):

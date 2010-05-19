@@ -1,7 +1,7 @@
 import sys
 from os import environ, path
 from subprocess import Popen, PIPE
-from settings import APPS_REPOSITORY_PATH, APPS_BOOT_FILENAME, PRODUCTION
+from config import APPS_REPOSITORY_PATH, APPS_BOOT_FILENAME, PRODUCTION
 from cStringIO import StringIO
 from threading import Thread
 from mtmenu.application_running import set_app_running, remove_app_running, get_app_running, is_app_running
@@ -116,7 +116,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         """Full path to application repository.
         
         It considers the folder name as being the application's ID. The main path
-        is setted on settings.py
+        is setted on config.py
 
         Returns:
             Full path to application repository if exists otherwise
@@ -216,7 +216,7 @@ class ScreensaverControlProxy (models.ScreensaverControl, WallModelsProxy):
     pass
 
 
-class ProjectorControlProxy (models.ScreensaverControl, WallModelsProxy):
+class ProjectorControlProxy (models.ProjectorControl, WallModelsProxy):
     """Extension from ProjectorControl class used by webmanager.
     
     It allows the representation of an user through django models abling it to

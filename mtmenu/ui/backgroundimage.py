@@ -1,5 +1,5 @@
 from pymt import *
-from settings import MAINWINDOW_SIZE
+from config import MAINWINDOW_SIZE
 
 class BackgroundImage(MTScatterImage):
     

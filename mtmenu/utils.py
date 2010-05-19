@@ -1,13 +1,17 @@
+import sys
+sys.path.append('..')
+sys.path.append('../webmanager')
+
 from time import sleep
 
 from threading import Timer
 from models import ScreensaverControlProxy, ProjectorControlProxy
-from datetime import datetime
-from webmanager.appman.utils import projectors_power
+from datetime import datetime, time, timedelta
+from webmanager.appman.utils import projectors
 
 from models import *
 from window_manager import *
-from settings import MAX_ATTEMPTS, SLEEP_SECONDS_BETWEEN_ATTEMPTS, NATIVE_APP_NAMES
+from config import MAX_ATTEMPTS, SLEEP_SECONDS_BETWEEN_ATTEMPTS, NATIVE_APP_NAMES
 from mtmenu.application_running import is_app_running
 
 def get_applications(cat=None, sort_by_value=False):
@@ -71,30 +75,52 @@ def bring_window_to_front(toApp = False):
 
 ########## SCREENSAVER & PROJECTOR
 
-def last_activity_checker():    
+def get_first_item(list):
+    for item in list:
+        return item
+    return None
+
+def cast_time_to_timedelta(instant):
+    return timedelta( seconds = instant.hour*60*60 + instant.minute*60 + instant.second )
+
+def last_activity_checker():
+    from mtmenu import last_activity, projector_on    
     last_activity_timer = Timer(30, last_activity_checker)
        
     if last_activity == None:
         last_activity_timer.start()
-        print "entrei aqui"
         return
 
     diff_min = get_minutes(datetime.now() - last_activity)
-    screensaver_inactivity_time = get_minutes(ScreensaverControlProxy.objects.all()[0].inactivity_time)
-    projector_inactivity_time = get_minutes(ProjectorControlProxy.objects.all()[0].inactivity_time)
-    application = ScreensaverControlProxy.objects.all()[0].application
+    screensaver_control_list = ScreensaverControlProxy.objects.all()
+    screensaver_control = get_first_item(screensaver_control_list)
+    
+    projector_control_list = ProjectorControlProxy.objects.all()
+    projector_control = get_first_item(projector_control_list)
+    
+    print screensaver_control.inactivity_time
+    print projector_control.inactivity_time
+    
+    screensaver_inactivity_time = get_minutes( cast_time_to_timedelta( screensaver_control.inactivity_time ) )
+    projector_inactivity_time = get_minutes( cast_time_to_timedelta( projector_control.inactivity_time ) )
+    application = ApplicationProxy.objects.filter(id = screensaver_control.application.id)[0]
+    
+    print screensaver_inactivity_time
+    print projector_inactivity_time
     
     
     if diff_min > screensaver_inactivity_time and not is_app_running():
-        if applications:
-            application.execute(True)
+        print "screensaver #todo remove this print"
+        if application:
+            application.execute()
         
-    elif diff_min > projector_inactivity_time and projector_on:
-        projectors_power(1)
+    if diff_min > projector_inactivity_time and projector_on:
+        print "projector #todo remove this print"
+        projectors.projectors_power(0)
         projector_on = 0
     
     last_activity_timer.start()
     
 
 def get_minutes(time):
-    return (24*60*60*time.days + time.seconds + time.microseconds/1000000.0) / 60
+    return ( time.seconds + time.microseconds/1000000.0) / 60

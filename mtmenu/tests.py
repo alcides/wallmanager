@@ -4,7 +4,7 @@ from models import ApplicationLogProxy, ApplicationProxy, CategoryProxy, UserPro
 from django.test import TestCase
 from unittest import TestLoader, TextTestRunner
 
-from mtmenu.settings import relative
+from mtmenu.config import relative
 from mtmenu.application_running import get_app_running, kill_app_running, is_app_running
 
 # TODO Disabled for SQLite3

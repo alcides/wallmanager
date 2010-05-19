@@ -1,5 +1,5 @@
 from pymt import *
-from settings import MAINWINDOW_SIZE, MAINWINDOW_POSITION
+from config import MAINWINDOW_SIZE, MAINWINDOW_POSITION
 from ui.topbar import TopBar
 from gesture.gesture_scan import GestureScan
 

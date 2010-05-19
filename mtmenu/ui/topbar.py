@@ -1,5 +1,5 @@
 from pymt import *
-from settings import TOPBAR_SIZE, TOPBAR_POSITION
+from config import TOPBAR_SIZE, TOPBAR_POSITION
 from ui.helpbutton import HelpButton
 
 class TopBar(MTWidget):

@@ -1,18 +1,22 @@
 import os
 from os.path import join, dirname, abspath
 
+#SET TRUE ON WALL
+PRODUCTION = 'SENSEWALL' in os.environ
+
+if PRODUCTION:
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'settings-prod'
+else:
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+
 import sys
 sys.path.append('..')
-
+sys.path.append('../webmanager')
 
 # Returns the absolute path to this file directory joined
 # with whatever directories given as arguments
 def relative(*x):
     return join(abspath(dirname(__file__)), *x)
-
-
-#SET TRUE ON WALL
-PRODUCTION = 'SENSEWALL' in os.environ
 
 
 APPS_REPOSITORY_PATH = relative('apps/')

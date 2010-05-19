@@ -1,6 +1,6 @@
 from ui.popup import Popup
 from threading import Timer
-from settings import APPPOPUP_SIZE
+from config import APPPOPUP_SIZE
 
 class AppPopup( Popup ):
 

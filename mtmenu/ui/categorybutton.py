@@ -1,5 +1,5 @@
 from pymt import *
-from settings import CATEGORYLIST_SIZE
+from config import CATEGORYLIST_SIZE
 
 class CategoryButton(MTKineticItem):
 

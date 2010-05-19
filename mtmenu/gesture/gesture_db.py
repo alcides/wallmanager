@@ -1,6 +1,6 @@
 from gesture_list import *
 from my_gesture import *
-from settings import GESTURE_KILLER
+from config import GESTURE_KILLER
 
 class Gestures( GestureDatabase ):
     def __init__(self):
