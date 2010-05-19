@@ -12,9 +12,14 @@
 		Define how long does it take for the screensaver to appear.
 	</blockquote>
     
-    <form action="/screensaver/" method="post">
-    {{ form.as_p }}
-    <input type="submit" value="Save" />
+    {% if form.errors %}
+    <h2>Please correct the following error{{ form.errors|pluralize }}:</h2>
+    {% endif %}
+
+    <form action="" method="post" >
+        {{ form.as_ul }}
+        <div class="clear"></div>
+        <input type="submit" value="Update" />
     </form>
     
 {% endblock %}

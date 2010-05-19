@@ -41,7 +41,14 @@ class DocumentationForm(ModelForm):
 class ProjectorControlForm(ModelForm):
     class Meta:
         model = ProjectorControl
-
+        
+class ScreenSaverTimeForm(ModelForm):
+    inactivity_time = TimeField(input_formats=['%H:%M:%S'], help_text="Use the format (HH:MM:SS)")
+    application = ModelChoiceField(queryset=Application.objects.filter(category=Category.objects.get(name='Screensaver')))
+    
+    class Meta:
+        model = ScreensaverControl
+        fields = ('inactivity_time','application')
     
 class UserCreationForm(ModelForm):
     """
@@ -102,6 +109,3 @@ class ReportAbuseForm(Form):
 
 class MessageToAdminForm(Form):
     message = CharField(required=True, widget=widgets.Textarea())
-
-class ScreenSaverTimeForm(Form):        
-    screensaver_time = TimeField(input_formats=['%H:%M'], help_text="Use the format (HH:MM)")

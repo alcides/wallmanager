@@ -97,4 +97,11 @@
     "fields": {
         "name": "InfoViz"
     }
+},
+{
+    "pk": 6,
+    "model": "appman.category",
+    "fields": {
+        "name": "Screensaver"
+    }
 }]
