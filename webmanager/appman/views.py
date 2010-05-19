@@ -194,6 +194,10 @@ def application_edit(request, object_id):
     if request.method == 'POST' and 'hidFileID' in request.POST:
         filepath = fullpath(request.POST['hidFileID'].strip())
         app = get_app_or_error(request.user, object_id)
+        
+        if app.is_running:
+            request.user.message_set.create(message="Application %s is running on the Wall. Please finish it to remove." % app.name)
+            return HttpResponseRedirect(reverse('application-detail',args=[app.id]))
 
         if filepath and os.path.isfile(filepath):
             app.zipfile = File(open(filepath))
