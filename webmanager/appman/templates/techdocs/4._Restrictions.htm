@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" 
+lang="en">
+<body class="mediawiki ltr ns-0 ns-subject page-4_Restrictions 
+skin-monobook">
+	<div id="globalWrapper">
+		<div id="column-content">
+	<div id="content">
+		<a name="top" id="top"></a>
+<h1 id="firstHeading" class="firstHeading">4. Restrictions</h1>
+		There are some details that the developer needs to know, specific 
+to the wall, in order to make it run like it's supposed to. This 
+section's objective is minimize the amount of unpredicted behaviors 
+after the application is deployed, so that the end user experiences it 
+the way both the wallmanager team and the users planned it.
+<table id="toc" class="toc" summary="Contents"><tbody><tr><td><div 
+id="toctitle"><h2>Contents</h2>
+  </div>
+  <ul>
+  <li class="toclevel-1"><a href="#The_Exit_Gesture"><span 
+class="tocnumber">1</span> <span class="toctext">The Exit Gesture</span></a></li>
+  <li class="toclevel-1"><a href="#Gracefull_Exits"><span 
+class="tocnumber">2</span> <span class="toctext">Gracefull Exits</span></a></li>
+  <li class="toclevel-1"><a href="#FullScreen"><span class="tocnumber">3</span>
+    <span class="toctext">FullScreen</span></a></li>
+  <li class="toclevel-1"><a href="#ScreenSaver_Applications"><span 
+class="tocnumber">4</span> <span class="toctext">ScreenSaver 
+    Applications</span></a></li>
+  <li class="toclevel-1"><a href="#Folders"><span class="tocnumber">5</span>
+    <span class="toctext">Folders</span></a></li>
+  </ul>
+</td></tr></tbody></table><script type="text/javascript"> if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<a name="The_Exit_Gesture" id="The_Exit_Gesture"></a><h2><span 
+class="mw-headline">The Exit Gesture </span></h2>
+<p>One of the things you must not forget, is the "reserved" exit method 
+the SenseWall has implemented.
+</p><p>There are two ways to end an application running on the 
+SenseWall:
+</p>
+<ul><li>1. Each application is expected to have its own quit 
+functionality in the usual places: an option in the main menu or a 
+button near the screen corners.
+</li><li>2. The universal way to end an application is to perform a 
+special gesture (the Exit Method) anywhere in the SenseWall screen. This
+ gesture will quit the application in every situation, even on freezes 
+or crashes, overriding it completely. The quit gesture is: 
+</li></ul>
+<p><br>
+</p>
+<div class="center"><div class="thumb tnone"><div class="thumbinner" 
+style="width: 302px;"><img alt="" 
+src="4._Restrictions_ficheiros/300px-Exit_Gesture.png" 
+class="thumbimage" width="300" border="0" height="288">  <div 
+class="thumbcaption">
+  <div class="magnify"></div>
+  The Exit Gesture</div></div></div></div>
+<p><br>
+In this sense, <b>it is advised that the programmer doesn't make use of 
+this specific gesture (the Exit Method), or another too similar, in 
+their own applications.</b>
+</p>
+<a name="Gracefull_Exits" id="Gracefull_Exits"></a><h2><span 
+class="mw-headline">Gracefull Exits </span></h2>
+<p>The "Exit Method" has already been implemented and made available to 
+all running applications. All that's left to ask of developers is to 
+make their applications tolerant to failures with a "gracefull exit" so 
+as to avoid nasty application crashes.
+</p><p>Please read the following link to learn more about "Gracefull 
+Exits":
+<br>
+<a href="http://en.wikipedia.org/wiki/Graceful_exit" class="external 
+free" title="http://en.wikipedia.org/wiki/Graceful_exit" rel="nofollow">http://en.wikipedia.org/wiki/Graceful_exit</a>
+</p>
+<a name="FullScreen" id="FullScreen"></a><h2><span 
+class="mw-headline">FullScreen </span></h2>
+<p>An other thing to remind yourself, is that the wall applications will
+ probably run in fullscreen mode. 
+</p><p>That is why developers must bear that in mind and make their 
+applications ready for running in fullscreen mode on the SenseWall.
+</p>
+<a name="ScreenSaver_Applications" id="ScreenSaver_Applications"></a><h2><span 
+class="mw-headline"> ScreenSaver Applications </span></h2>
+<p>Know that, by submitting an application of the ScreenSaver category 
+type, it can be executed in a slightly different way than the usual 
+applications.
+</p><p>Ideally, by touching an screen saver application it should close.
+ However, the developer may want to add interactive elements, like 
+dragging or resizing, but the larger majority of the screen saver 
+applications should close after a single touch.
+</p><p>Who defines what's the current screensaver are the SenseWall 
+administrators. If you wish, you can contact him to ask to have your 
+screen saver running at the SenseWall for some time. If you're not sure 
+how to do it, please read section <strong>Contact Administrator</strong> of the User 
+Documentation.
+</p>
+<a name="Folders" id="Folders"></a><h2><span 
+class="mw-headline"> Folders </span></h2>
+<p>Finally, please make use of the correct folders in your application. 
+Namely, please respect the following directives:
+</p>
+<ul><li> Use the folder that the application will be running for 
+temporary files.
+</li><li> Use the&nbsp;%USERDATA% folder for permanent data, even after 
+application updates.
+</li></ul>
+
+</body></html>
