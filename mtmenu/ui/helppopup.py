@@ -1,5 +1,5 @@
 from pymt import *
-from settings import *
+from config import HELPPOPUP_POSITION, HELPPOPUP_SIZE, MAINWINDOW_SIZE
 
 class HelpPopup(MTModalWindow):
 
