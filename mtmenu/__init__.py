@@ -33,9 +33,3 @@ cover_window.add_widget(GestureScan())
 # SELF HANDLE
 import win32gui
 self_hwnd = win32gui.GetForegroundWindow()
-
-
-# INACTIVITY CONTROL VARIABLES
-from datetime import datetime
-last_activity = datetime.now()
-projector_on = 1

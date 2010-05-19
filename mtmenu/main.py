@@ -3,7 +3,7 @@ sys.path.append("..")
 
 from pymt import *
 from mtmenu import *
-from utils import last_activity_checker
+from projectors_interface import last_activity_checker
 from gesture.gesture_scan import GestureScan
 
 if __name__ == '__main__':

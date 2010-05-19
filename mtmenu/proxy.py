@@ -25,7 +25,7 @@ class Proxy( threading.Thread ):
         try:
             self.execute()
             print "PROXY STOPPED"
-        except e:
+        except Exception, e: #Pokemon
             print "EXCEPTION ON PROXY"
             print e 
 

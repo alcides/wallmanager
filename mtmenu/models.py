@@ -34,12 +34,12 @@ class ApplicationProxy(models.Application, WallModelsProxy):
     It allows the representation of an application through django models abling it to
     be extended with other locally-used functions like execute()"""
     
-    def execute (self):
+    def execute (self, is_screensaver=False):
         """Executes within a thread"""
-        t = Thread(target=self._execute, args=())
+        t = Thread(target=self._execute, args=(is_screensaver,))
         t.start()
         
-    def _execute(self):
+    def _execute(self, is_screensaver):
         """Tries to execute application's batch file.
         
         While is executing all process output (stdout/stderr) is catched 
@@ -95,7 +95,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
 
                 remove_app_running()
                 
-                cover_window.resume(self)
+                cover_window.resume(self, is_screensaver)
                         
                 self.end_run()                
                 
@@ -104,7 +104,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                     
                 success = True
                 print "Application terminated"
-            except e:
+            except Exception, e: #Pokemon
                 print "EXCEPTION RUNNING APPLICATION"
                 print e
         else:

@@ -4,15 +4,11 @@ sys.path.append('../webmanager')
 
 from time import sleep
 
-from threading import Timer
-from models import ScreensaverControlProxy, ProjectorControlProxy
-from datetime import datetime, time, timedelta
-from webmanager.appman.utils import projectors
-
 from models import *
 from window_manager import *
 from config import MAX_ATTEMPTS, SLEEP_SECONDS_BETWEEN_ATTEMPTS, NATIVE_APP_NAMES
-from mtmenu.application_running import is_app_running
+
+
 
 def get_applications(cat=None, sort_by_value=False):
     if cat: 
@@ -72,72 +68,4 @@ def bring_window_to_front(toApp = False):
     w._handle = hwnd
     w.set_foreground()
 
-
-########## SCREENSAVER & PROJECTOR
-
-def get_first_item(list):
-    for item in list:
-        return item
-    return None
-
-def cast_time_to_timedelta(instant):
-    return timedelta( seconds = instant.hour*60*60 + instant.minute*60 + instant.second )
-
-def last_activity_checker():
-    from mtmenu import last_activity, projector_on    
-    last_activity_timer = Timer(30, last_activity_checker)
-       
-    if last_activity == None:
-        last_activity_timer.start()
-        return
-
-    diff_min = get_minutes(datetime.now() - last_activity)
-    screensaver_control_list = ScreensaverControlProxy.objects.all()
-    screensaver_control = get_first_item(screensaver_control_list)
-    
-    projector_control_list = ProjectorControlProxy.objects.all()
-    projector_control = get_first_item(projector_control_list)
-    
-    if screensaver_control:
-        screensaver_inactivity_time = get_minutes( cast_time_to_timedelta( screensaver_control.inactivity_time ) )
-        application = ApplicationProxy.objects.filter(id = screensaver_control.application.id)[0]        
-        
-        if diff_min > screensaver_inactivity_time and not is_app_running():
-            print "screensaver #todo remove this print"
-            if application:
-                application.execute()
-    
-    if projector_control:
-        projector_inactivity_time = get_minutes( cast_time_to_timedelta( projector_control.inactivity_time ) )
-        
-        if diff_min > projector_inactivity_time and projector_on:
-            print "projector #todo remove this print"
-            projectors.projectors_power(0)
-            projector_on = 0
-    
-    last_activity_timer.start()
-    
-
-def get_minutes(time):
-    return ( time.seconds + time.microseconds/1000000.0) / 60
-
-def in_schedule():
-    from datetime import datetime
-    now = datetime.now()
-    day = now.weekday()
-    projector_control = get_first_item( ProjectorControlProxy.objects.all() )
-    if not projector_control:
-        return False
-     
-    if day < 5:
-        start = projector_control.startup_week_time
-        end = projector_control.shutdown_week_time
-    else:
-        start = projector_control.startup_weekend_time
-        end = projector_control.shutdown_weekend_time
-
-    if (now.hour > start.hour or ( now.hour == start.hour and now.minute > start.minute )) and \
-    (now.hour < end.hour or (now.hour == end.hour and now.minute < end.minute)):
-        return True
-    return False
 

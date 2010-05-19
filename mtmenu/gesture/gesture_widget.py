@@ -5,11 +5,11 @@ from pymt import *
 import subprocess
 from datetime import datetime
 
+from projectors_interface import is_projectors_on, set_projectors_on, in_schedule, set_last_activity
 from mtmenu.application_running import is_app_running, kill_app_running
 from gesture.gesture_db import *
 from config import GESTURE_ACCEPTANCE_MARGIN
 from webmanager.appman.utils import projectors
-from utils import in_schedule
 
 class GestureWidget( MTGestureWidget ):
     def __init__(self):
@@ -19,13 +19,17 @@ class GestureWidget( MTGestureWidget ):
         print 'Gesture loaded'
 
     def on_gesture(self, gesture, touch):
-        from mtmenu import projector_on, last_activity
-        if in_schedule() and not projector_on:
-            projector_on = 1
+        if not is_projectors_on() and in_schedule():
+            try:
+                projectors.projectors_power(1)
+                set_projectors_on(True)
+            except Exception, e: #Pokemon
+                print 'Error turning projectors on'
+                print e
+            set_projectors_on(True) # TODO remove this line
             print "projectors power on"
-            projectors.projectors_power(1)
         
-        last_activity = datetime.now()
+        set_last_activity()
             
         print 'gesture: %d' % self.counter
         self.counter += 1

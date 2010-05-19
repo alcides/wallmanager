@@ -78,7 +78,7 @@ class AppButton(MTKineticItem):
             x,y = list(self.center)
             self.image.pos = x - self.image.width /2, y - self.image.height /2      
             self.image.draw()
-        except e:
+        except Exception, e: #Pokemon
             print "EXCEPTION on appbutton"
             print e
             
