@@ -125,12 +125,16 @@ def in_schedule():
     from datetime import datetime
     now = datetime.now()
     day = now.weekday()
+    projector_control = get_first_item( ProjectorControlProxy.objects.all() )
+    if not projector_control:
+        return False
+     
     if day < 5:
-        start = get_first_item( ProjectorControlProxy.objects.all() ).startup_week_time
-        end = get_first_item( ProjectorControlProxy.objects.all() ).shutdown_week_time
+        start = projector_control.startup_week_time
+        end = projector_control.shutdown_week_time
     else:
-        start = get_first_item( ProjectorControlProxy.objects.all() ).startup_weekend_time
-        end = get_first_item( ProjectorControlProxy.objects.all() ).shutdown_weekend_time
+        start = projector_control.startup_weekend_time
+        end = projector_control.shutdown_weekend_time
 
     if (now.hour > start.hour or ( now.hour == start.hour and now.minute > start.minute )) and \
     (now.hour < end.hour or (now.hour == end.hour and now.minute < end.minute)):
