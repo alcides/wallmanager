@@ -175,17 +175,24 @@ def application_admin_remove(request,object_id):
 
     try:
         app = Application.objects.get(id=object_id)
-        request.user.message_set.create(message="Application %s removed successfully."%(app.name))
     except Application.DoesNotExist:
         request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
         return HttpResponseRedirect(reverse('application-list'))
     app = get_object_or_404(Application, pk=object_id)
-    email_from = settings.DEFAULT_FROM_EMAIL
-    email_to = app.owner.email
-    message = 'Your application, ' + app.name + ', has been removed from the wallmanager by the staff for not respecting the Terms of Service.'
-    send_mail('[WallManager] Application removed from the wall.', message, email_from, [email_to])
-
-    return application_delete(request, object_id)
+    
+    if app.is_running:
+        request.user.message_set.create(message="Application %s is running on the Wall. Please finish it to remove." % app.name)
+        return HttpResponseRedirect(reverse('application-detail',args=[app.id]))
+    else:
+        app.delete()
+        email_from = settings.DEFAULT_FROM_EMAIL
+        email_to = app.owner.email
+        message = 'Your application, ' + app.name + ', has been removed from the wallmanager by the staff for not respecting the Terms of Service.'
+        send_mail('[WallManager] Application removed from the wall.', message, email_from, [email_to])
+    
+        request.user.message_set.create(message="Application %s removed successfully."%(app.name))
+    
+    return HttpResponseRedirect(reverse('application-list'))
 
 
 @login_required
@@ -215,7 +222,13 @@ def application_delete(request, object_id):
         request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
         return HttpResponseRedirect(reverse('application-list'))
     app = get_object_or_404(Application, id=object_id)
-    app.delete()
+    if app.is_running:
+        request.user.message_set.create(message="Application %s is running on the Wall. Please finish it to remove." % app.name)
+        return HttpResponseRedirect(reverse('application-detail',args=[app.id]))
+    else:
+        app.delete()
+        request.user.message_set.create(message="Application %s removed successfully."%(app.name))
+    
     return HttpResponseRedirect(reverse('application-list'))
     
 @login_required    
