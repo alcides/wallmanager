@@ -39,6 +39,23 @@ class DocumentationForm(ModelForm):
         fields = ('title','content')
         
 class ProjectorControlForm(ModelForm):
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        
+        startup_week_time = cleaned_data['startup_week_time']
+        shutdown_week_time = cleaned_data['shutdown_week_time']
+        startup_weekend_time = cleaned_data['startup_weekend_time']
+        shutdown_weekend_time = cleaned_data['shutdown_weekend_time']
+
+        if startup_week_time >= shutdown_week_time:
+            raise ValidationError("The startup week time time must be lower than the shutdown week time.")
+            
+        if startup_weekend_time >= shutdown_weekend_time:
+            raise ValidationError("The startup weekend time must be lower than the shutdown weekend time.")
+            
+        return cleaned_data
+        
     class Meta:
         model = ProjectorControl
         
