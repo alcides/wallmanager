@@ -98,29 +98,44 @@ def last_activity_checker():
     projector_control_list = ProjectorControlProxy.objects.all()
     projector_control = get_first_item(projector_control_list)
     
-    print screensaver_control.inactivity_time
-    print projector_control.inactivity_time
-    
-    screensaver_inactivity_time = get_minutes( cast_time_to_timedelta( screensaver_control.inactivity_time ) )
-    projector_inactivity_time = get_minutes( cast_time_to_timedelta( projector_control.inactivity_time ) )
-    application = ApplicationProxy.objects.filter(id = screensaver_control.application.id)[0]
-    
-    print screensaver_inactivity_time
-    print projector_inactivity_time
-    
-    
-    if diff_min > screensaver_inactivity_time and not is_app_running():
-        print "screensaver #todo remove this print"
-        if application:
-            application.execute()
+    if screensaver_control and projector_control:
         
-    if diff_min > projector_inactivity_time and projector_on:
-        print "projector #todo remove this print"
-        projectors.projectors_power(0)
-        projector_on = 0
+        screensaver_inactivity_time = get_minutes( cast_time_to_timedelta( screensaver_control.inactivity_time ) )
+        
+        if diff_min > screensaver_inactivity_time and not is_app_running():
+            print "screensaver #todo remove this print"
+            if application:
+                application.execute()
+    
+    if projector_control:
+        projector_inactivity_time = get_minutes( cast_time_to_timedelta( projector_control.inactivity_time ) )
+        application = ApplicationProxy.objects.filter(id = screensaver_control.application.id)[0]
+    
+        
+        if diff_min > projector_inactivity_time and projector_on:
+            print "projector #todo remove this print"
+            projectors.projectors_power(0)
+            projector_on = 0
     
     last_activity_timer.start()
     
 
 def get_minutes(time):
     return ( time.seconds + time.microseconds/1000000.0) / 60
+
+def in_schedule(self):
+    from datetime import datetime
+    now = datetime.now()
+    day = now.weekday()
+    if day < 5:
+        start = get_first_item( ProjectorControlProxy.objects.all() ).startup_week_time
+        end = get_first_item( ProjectorControlProxy.objects.all() ).shutdown_week_time
+    else:
+        start = get_first_item( ProjectorControlProxy.objects.all() ).startup_weekend_time
+        end = get_first_item( ProjectorControlProxy.objects.all() ).shutdown_weekend_time
+
+    if (now.hours > start.hour or ( now.hours == start.hour and now.minutes > start.minute )) and \
+    (now.hours < end.hour or (now.hours == end.hour and now.minutes < end.minute)):
+        return True
+    return False
+

@@ -9,6 +9,7 @@ from mtmenu.application_running import is_app_running, kill_app_running
 from gesture.gesture_db import *
 from config import GESTURE_ACCEPTANCE_MARGIN
 from webmanager.appman.utils import projectors
+from utils import in_schedule
 
 class GestureWidget( MTGestureWidget ):
     def __init__(self):
@@ -19,7 +20,7 @@ class GestureWidget( MTGestureWidget ):
 
     def on_gesture(self, gesture, touch):
         from mtmenu import projector_on, last_activity
-        if not projector_on:
+        if in_schedule() and not projectors_on:
             projector_on = 1
             print "projectors power on"
             projectors.projectors_power(1)

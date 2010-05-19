@@ -72,6 +72,7 @@ class ProjectorManager():
         data = urllib.urlencode(values)
         req = urllib2.Request(self.url_main, data)
         urllib2.urlopen(req)
+        
 
 def set_projectors_time(week_on, week_off, 
         weekend_on=False, weekend_off=False, 
