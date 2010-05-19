@@ -176,11 +176,20 @@ class ApplicationTest(BaseTest):
         response = self.client.get('/applications/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Example App 2</a></td>")
+        
 
     def test_delete_app(self):
         """ Tests delete application page. """
         c = Application.objects.count()
         login = self.do_login()
+        
+        self.gps.is_running = True
+        self.gps.save()
+        response = self.client.get('/applications/%s/delete/' % self.gps.id)
+        self.assertEqual(response.status_code, 302) # Is running.
+        
+        self.gps.is_running = False
+        self.gps.save()
         response = self.client.get('/applications/%s/delete/' % self.gps.id)
         self.assertRedirects(response, '/applications/')
         self.assertEqual(c-1, Application.objects.count())

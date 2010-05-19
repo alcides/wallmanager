@@ -71,6 +71,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'appman.middleware.swfupload.SWFUploadMiddleware',
+    'appman.middleware.redirecter.Redirecter',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
