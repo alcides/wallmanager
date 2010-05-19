@@ -1,7 +1,7 @@
 MTMENU
 ------
 
-PyMT application for selecting and executing multi-touch applications. Belongs to the WallManager platform, designed to run on the SenseWall multi-touch device in the Departament of Informatics Engeneering of the University of Coimbra.
+PyMT application for selecting and executing multi-touch applications. Belongs to the WallManager platform, designed to run on the SenseWall multi-touch device in the Departament of Informatics Engineering of the University of Coimbra.
 
 
 REQUIREMENTS
