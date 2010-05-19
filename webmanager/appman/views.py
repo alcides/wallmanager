@@ -295,21 +295,15 @@ def screensaver(request):
 
 @superuser_required()
 def manage_administrators(request):
-    
     admins = User.objects.filter(is_staff = True)
     form_visible = False
-     
     if request.method == 'POST':
         form = AddAdminForm(request.POST)
         if form.is_valid():
-            
-            email = form.cleaned_data['email']
-            type = form.cleaned_data['type']
-            
             try:
-                new_admin = User.objects.get(email = email)
+                new_admin = User.objects.get(email = form.cleaned_data['email'])
                 new_admin.is_staff = True
-                new_admin.is_superuser = type == 'Power'
+                new_admin.is_superuser = (form.cleaned_data['type'] == 'Power')
                 new_admin.save()  
                 request.user.message_set.create(message="Administrator added.")
             except User.DoesNotExist:
@@ -323,6 +317,15 @@ def manage_administrators(request):
         'form': form,
         'form_visible': form_visible,
     })
+
+@superuser_required()
+def remove_administrator(request, object_id):
+    admin = get_object_or_404(User, id=object_id)
+    admin.is_superuser = False
+    admin.is_staff = False
+    admin.save()
+    request.user.message_set.create(message="Administrator removed.")
+    return HttpResponseRedirect(reverse('manage-admins'))
 
 @superuser_required()
 def define_contact_admin(request):

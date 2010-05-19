@@ -42,7 +42,12 @@
 			<td>{{ admin.username }}</a></td>
 			<td>{{ admin.email }}</td>
 			<td>{% if admin.is_superuser %}Power{% else %}Normal{% endif %}</td>
-			<td><a href="#" title="Remove administrator"><img src="{{ MEDIA_URL }}img/cross.png" alt="remove admin"/></a></td>
+			<td>
+				<a onclick="return confirm('Are you sure you want to remove {{admin.username}} as administrator?');" 
+				   href="{% url remove-admin admin.id %}" title="Remove administrator">
+					<img src="{{ MEDIA_URL }}img/cross.png" alt="remove admin"/>
+				</a>
+			</td>
 		</tr>
 		{% endfor %}
 	
