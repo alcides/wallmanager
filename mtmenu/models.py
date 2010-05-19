@@ -199,6 +199,7 @@ class ApplicationLogProxy(models.ApplicationLog, WallModelsProxy):
     be extended with other locally-used functions"""
     pass
         
+
 class UserProxy(User, WallModelsProxy):
     """Extension from User class used by webmanager.
     
@@ -206,4 +207,19 @@ class UserProxy(User, WallModelsProxy):
     be extended with other locally-used functions"""
     pass
 
+
+class ScreensaverControlProxy (models.ScreensaverControl, WallModelsProxy):
+    """Extension from ScreensaverControl class used by webmanager.
+    
+    It allows the representation of an user through django models abling it to
+    be extended with other locally-used functions"""
+    pass
+
+
+class ProjectorControlProxy (models.ScreensaverControl, WallModelsProxy):
+    """Extension from ProjectorControl class used by webmanager.
+    
+    It allows the representation of an user through django models abling it to
+    be extended with other locally-used functions"""
+    pass
 

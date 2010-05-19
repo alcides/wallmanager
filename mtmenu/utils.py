@@ -1,8 +1,14 @@
 from time import sleep
 
+from threading import Timer
+from models import ScreensaverControlProxy, ProjectorControlProxy
+from datetime import datetime
+from webmanager.appman.utils import projectors_power
+
 from models import *
 from window_manager import *
 from settings import MAX_ATTEMPTS, SLEEP_SECONDS_BETWEEN_ATTEMPTS, NATIVE_APP_NAMES
+from mtmenu.application_running import is_app_running
 
 def get_applications(cat=None, sort_by_value=False):
     if cat: 
@@ -61,3 +67,34 @@ def bring_window_to_front(toApp = False):
     
     w._handle = hwnd
     w.set_foreground()
+
+
+########## SCREENSAVER & PROJECTOR
+
+def last_activity_checker():    
+    last_activity_timer = Timer(30, last_activity_checker)
+       
+    if last_activity == None:
+        last_activity_timer.start()
+        print "entrei aqui"
+        return
+
+    diff_min = get_minutes(datetime.now() - last_activity)
+    screensaver_inactivity_time = get_minutes(ScreensaverControlProxy.objects.all()[0].inactivity_time)
+    projector_inactivity_time = get_minutes(ProjectorControlProxy.objects.all()[0].inactivity_time)
+    application = ScreensaverControlProxy.objects.all()[0].application
+    
+    
+    if diff_min > screensaver_inactivity_time and not is_app_running():
+        if applications:
+            application.execute(True)
+        
+    elif diff_min > projector_inactivity_time and projector_on:
+        projectors_power(1)
+        projector_on = 0
+    
+    last_activity_timer.start()
+    
+
+def get_minutes(time):
+    return (24*60*60*time.days + time.seconds + time.microseconds/1000000.0) / 60
