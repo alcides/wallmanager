@@ -1,6 +1,7 @@
-from pymt.ui.widgets.composed.modalpopup import MTModalPopup
-from pymt.ui.widgets.button import MTImageButton
+
+from pymt import *
 from config import TOPBAR_POSITION, TOPBAR_SIZE
+from ui.helppopup import HelpPopup
 
 
 class HelpButton(MTImageButton):
@@ -10,10 +11,10 @@ class HelpButton(MTImageButton):
         kwargs.setdefault('size', (68,68))
         kwargs.setdefault('pos', (TOPBAR_SIZE[0]-90, TOPBAR_POSITION[1]+43))
         
-        self.pop = MTModalPopup(title='Need help?', content='I wont help you')
+        self.pop = HelpPopup()
         super(HelpButton, self).__init__(**kwargs)
         
         
     def on_press(self, touch):
-        self.get_root_window().add_widget( self.pop )    
+        self.get_root_window().add_widget(self.pop)    
 
