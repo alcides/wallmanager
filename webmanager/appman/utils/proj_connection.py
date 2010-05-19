@@ -17,6 +17,9 @@ class ProjectorsThread(threading.Thread):
 		
 	def run(self):
 		lock.acquire()
-		set_projectors_time(self.week_on, self.week_off, self.weekend_on, self.weekend_off)
+		try:
+			set_projectors_time(self.week_on, self.week_off, self.weekend_on, self.weekend_off)
+		except Exception,e:
+			print e
 		lock.release()
 
