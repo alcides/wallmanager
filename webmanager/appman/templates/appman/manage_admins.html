@@ -12,9 +12,14 @@
 
 <a href="javascript:toggle('admin_add')">Add administrator</a>
 
-<div id="admin_add" style="display: none">
-    <form action="/admins" method="post" >
-
+<div id="admin_add" style="display: {% if form_visible %}inline{% else %}none{% endif %}">
+	
+	{% if form.errors %}
+		<p><b>Please correct the following error{{ form.errors|pluralize }}:</b></p>
+	{% endif %}
+	
+    <form action="" method="post" >
+		{{ form.as_ul }}
         <input type="submit" value="Add" />
     </form>
 </div>

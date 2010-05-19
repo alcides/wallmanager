@@ -105,3 +105,9 @@ class MessageToAdminForm(Form):
 
 class ScreenSaverTimeForm(Form):        
     screensaver_time = TimeField(input_formats=['%H:%M'], help_text="Use the format (HH:MM)")
+
+class AddAdminForm(Form):
+    email = EmailField(required=True)
+    type = ChoiceField(choices=(('Normal','Normal'),('Power','Power')))
+    
+    
