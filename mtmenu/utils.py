@@ -98,8 +98,7 @@ def last_activity_checker():
     projector_control_list = ProjectorControlProxy.objects.all()
     projector_control = get_first_item(projector_control_list)
     
-    if screensaver_control and projector_control:
-        
+    if screensaver_control:
         screensaver_inactivity_time = get_minutes( cast_time_to_timedelta( screensaver_control.inactivity_time ) )
         
         if diff_min > screensaver_inactivity_time and not is_app_running():
@@ -109,8 +108,6 @@ def last_activity_checker():
     
     if projector_control:
         projector_inactivity_time = get_minutes( cast_time_to_timedelta( projector_control.inactivity_time ) )
-        application = ApplicationProxy.objects.filter(id = screensaver_control.application.id)[0]
-    
         
         if diff_min > projector_inactivity_time and projector_on:
             print "projector #todo remove this print"
