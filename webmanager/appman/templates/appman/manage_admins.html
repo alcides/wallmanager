@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %} Manage Administrators {% endblock %}
+
+{% block javascript %}<script src="/media/js/applications.js"></script>{% endblock %}
+
+{% block breadcrumb%}
+	<li><a href="{% url manage-admins %}">Manage Administrators</a></li>
+{% endblock %}
+
+{% block content %}
+
+<a href="javascript:toggle('admin_add')">Add administrator</a>
+
+<div id="admin_add" style="display: none">
+    <form action="/admins" method="post" >
+
+        <input type="submit" value="Add" />
+    </form>
+</div>
+
+<div id="applist">
+	<table class="gradient-style">
+		<thead>
+			<tr>
+				<th>Name</th>	
+				<th>Email</th>
+				<th>Type</th>
+				<th>Remove</th>
+			</tr>
+		</thead>
+	
+		<tbody>
+	
+		{% for admin in admins %}
+		<tr>
+			<td>{{ admin.username }}</a></td>
+			<td>{{ admin.email }}</td>
+			<td>{% if admin.is_superuser %}Power{% else %}Normal{% endif %}</td>
+			<td><a href="#" title="Remove administrator"><img src="{{ MEDIA_URL }}img/cross.png" alt="remove admin"/></a></td>
+		</tr>
+		{% endfor %}
+	
+		</tbody>
+	</table>
+</div>
+{% endblock %}

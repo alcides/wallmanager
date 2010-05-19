@@ -294,8 +294,11 @@ def screensaver(request):
     return render(request,'appman/screensaver.html', {'current_screensaver_time': current_screensaver_time, 'form': form})
 
 @superuser_required()
-def manage_admins(request):
-    return render(request,'appman/admins.html')
+def manage_administrators(request):
+    admins = User.objects.filter(is_staff = True)
+    return render(request,'appman/manage_admins.html', {
+        'admins': admins,
+    })
 
 @superuser_required()
 def define_contact_admin(request):
@@ -372,3 +375,5 @@ def reboot(request):
     reboot_os()
     request.user.message_set.create(message="SenseWall will reboot shortly.")
     return HttpResponseRedirect(reverse('home'))
+    
+    
