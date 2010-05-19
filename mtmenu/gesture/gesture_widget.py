@@ -20,7 +20,7 @@ class GestureWidget( MTGestureWidget ):
 
     def on_gesture(self, gesture, touch):
         from mtmenu import projector_on, last_activity
-        if in_schedule() and not projectors_on:
+        if in_schedule() and not projector_on:
             projector_on = 1
             print "projectors power on"
             projectors.projectors_power(1)

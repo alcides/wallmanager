@@ -132,8 +132,8 @@ def in_schedule():
         start = get_first_item( ProjectorControlProxy.objects.all() ).startup_weekend_time
         end = get_first_item( ProjectorControlProxy.objects.all() ).shutdown_weekend_time
 
-    if (now.hours > start.hour or ( now.hours == start.hour and now.minutes > start.minute )) and \
-    (now.hours < end.hour or (now.hours == end.hour and now.minutes < end.minute)):
+    if (now.hour > start.hour or ( now.hour == start.hour and now.minute > start.minute )) and \
+    (now.hour < end.hour or (now.hour == end.hour and now.minute < end.minute)):
         return True
     return False
 
