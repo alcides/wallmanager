@@ -15,5 +15,5 @@ class HelpButton(MTImageButton):
         
         
     def on_press(self, touch):
-        self.get_root_window().add_widget( self.pop )    
+        self.get_root_window().add_widget(self.pop)    
 
