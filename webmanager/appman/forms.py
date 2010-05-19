@@ -46,6 +46,12 @@ class ScreenSaverTimeForm(ModelForm):
     inactivity_time = TimeField(input_formats=['%H:%M:%S'], help_text="Use the format (HH:MM:SS)")
     application = ModelChoiceField(queryset=Application.objects.filter(category=Category.objects.get(name='Screensaver')))
     
+    def clean_inactivity_time(self):
+        inactivity_time = self.cleaned_data['inactivity_time']
+        if str(inactivity_time) == '00:00:00':
+            raise forms.ValidationError('Time must be at least 00:01 (one minute).')
+        return inactivity_time
+    
     class Meta:
         model = ScreensaverControl
         fields = ('inactivity_time','application')
