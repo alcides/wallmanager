@@ -100,7 +100,7 @@ def remove_extra_logs(sender, **kwargs):
 def check_if_contact_admin(sender, instance, signal, *args, **kwargs):
     """ Checks if the removed user is the contact admin (and if so, sets the contact admin to null) """
     contact_admin_email = get_contact_admin_email()
-    if (instance.email == contact_admin_email):
+    if instance.email == contact_admin_email:
         try:
             wallmanager_instance = WallManager.objects.all()[0]
             wallmanager_instance.contact = ""

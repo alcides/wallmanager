@@ -20,11 +20,20 @@ from appman.decorators import *
 from appman.utils.fileutils import *
 from appman.utils import get_contact_admin_email, reboot_os
 from appman.utils.proj_connection import ProjectorsThread
+from appman.utils.response import HttpRedirectException
 
 # Helper
 
 def render(request, template, opts = {}):
     return render_to_response(template, opts, context_instance=RequestContext(request))
+
+def get_app_or_error(user, id):
+    try:
+        app = Application.objects.get(id=id)
+    except Application.DoesNotExist:
+        user.message_set.create(message="Invalid application's ID: %s." % id)
+        raise HttpRedirectException(reverse('application-list'))
+    return app
     
 #Non-Authenticated User Views
 def home(request):
@@ -89,12 +98,7 @@ def application_search(request):
 @login_required
 def application_log(request, object_id):
     cs = ApplicationLog.objects.filter(application = object_id)
-    try:
-        app = Application.objects.get(id=object_id)
-    except Application.DoesNotExist:
-        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
-        return HttpResponseRedirect(reverse('application-list'))
-        
+    app = get_app_or_error(request.user, object_id)
     return render(request,'appman/application_log.html', {'logs': cs,'identifier':object_id, 'appname':app.name})
 
 @login_required
@@ -162,42 +166,38 @@ def application_upload(request):
 
 def application_detail(request,object_id,form=ReportAbuseForm()):
     cs = Application.objects.all()
-    try:
-        app = Application.objects.get(id=object_id)
-    except Application.DoesNotExist:
-        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
-        return HttpResponseRedirect(reverse('application-list'))
+    app = get_app_or_error(request.user, object_id)
     return object_detail(request, extra_context={'form': form}, object_id=object_id, queryset=cs, template_object_name="application")
 
 @staff_login_required
 def application_admin_remove(request,object_id):
     """This function requires that the user is part of the staff"""
-
-    try:
-        app = Application.objects.get(id=object_id)
+    app = get_app_or_error(request.user, object_id)
+    
+    if app.is_running:
+        request.user.message_set.create(message="Application %s is running on the Wall. Please finish it to remove." % app.name)
+        return HttpResponseRedirect(reverse('application-detail',args=[app.id]))
+    else:
+        app.delete()
+        email_from = settings.DEFAULT_FROM_EMAIL
+        email_to = app.owner.email
+        message = 'Your application, ' + app.name + ', has been removed from the wallmanager by the staff for not respecting the Terms of Service.'
+        send_mail('[WallManager] Application removed from the wall.', message, email_from, [email_to])
+    
         request.user.message_set.create(message="Application %s removed successfully."%(app.name))
-    except Application.DoesNotExist:
-        request.user.message_set.create(message="Invalid application's ID: %s."%object_id)
-        return HttpResponseRedirect(reverse('application-list'))
-    app = get_object_or_404(Application, pk=object_id)
-    email_from = settings.DEFAULT_FROM_EMAIL
-    email_to = app.owner.email
-    message = 'Your application, ' + app.name + ', has been removed from the wallmanager by the staff for not respecting the Terms of Service.'
-    send_mail('[WallManager] Application removed from the wall.', message, email_from, [email_to])
-
-    return application_delete(request, object_id)
+    
+    return HttpResponseRedirect(reverse('application-list'))
 
 
 @login_required
 def application_edit(request, object_id):
     if request.method == 'POST' and 'hidFileID' in request.POST:
         filepath = fullpath(request.POST['hidFileID'].strip())
-        try:
-            app = Application.objects.get(id=object_id)
-
-        except Application.DoesNotExist:
-            request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
-            return HttpResponseRedirect(reverse('application-list'))
+        app = get_app_or_error(request.user, object_id)
+        
+        if app.is_running:
+            request.user.message_set.create(message="Application %s is running on the Wall. Please finish it to remove." % app.name)
+            return HttpResponseRedirect(reverse('application-detail',args=[app.id]))
 
         if filepath and os.path.isfile(filepath):
             app.zipfile = File(open(filepath))
@@ -208,26 +208,22 @@ def application_edit(request, object_id):
             
 @login_required
 def application_delete(request, object_id):
-    try:
-        app = Application.objects.get(id=object_id)
-        request.user.message_set.create(message="Application %s deleted successfully."%app.name)
-    except Application.DoesNotExist:
-        request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
-        return HttpResponseRedirect(reverse('application-list'))
-    app = get_object_or_404(Application, id=object_id)
-    app.delete()
+    app = get_app_or_error(request.user, object_id)
+
+    if app.is_running:
+        request.user.message_set.create(message="Application %s is running on the Wall. Please finish it to remove." % app.name)
+        return HttpResponseRedirect(reverse('application-detail',args=[app.id]))
+    else:
+        app.delete()
+        request.user.message_set.create(message="Application %s deleted successfully." % app.name )
+    
     return HttpResponseRedirect(reverse('application-list'))
     
 @login_required    
 def report_abuse(request, object_id):
-    try:
-        app = Application.objects.get(id=object_id)
-        request.user.message_set.create(message="Application %s reported successfully."%app.name)
-    except Application.DoesNotExist:
-        request.user.message_set.create(message="Invalid application's ID: %d."%object_id)
-        cs = Application.objects.all()
-        return object_list(request, queryset=cs, template_object_name="application")
-    app = get_object_or_404(Application, id=object_id)
+    app = get_app_or_error(request.user, object_id)
+    request.user.message_set.create(message="Application %s reported successfully."%app.name)
+    
     if request.method == 'POST':
         form = ReportAbuseForm(request.POST)
         if form.is_valid():
