@@ -300,10 +300,12 @@ def manage_administrators(request):
     if request.method == 'POST':
         form = AddAdminForm(request.POST)
         if form.is_valid():
+            email = form.cleaned_data['email']
+            type = form.cleaned_data['type']
             try:
-                new_admin = User.objects.get(email = form.cleaned_data['email'])
+                new_admin = User.objects.get(email = email)
                 new_admin.is_staff = True
-                new_admin.is_superuser = (form.cleaned_data['type'] == 'Power')
+                new_admin.is_superuser = (type == 'Power')
                 new_admin.save()  
                 request.user.message_set.create(message="Administrator added.")
             except User.DoesNotExist:
