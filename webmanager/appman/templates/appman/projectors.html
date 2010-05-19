@@ -8,10 +8,14 @@
 
 {% block content %}
 
+	<blockquote>
+		Define the projectors settings. Use the format (HH:MM:SS).
+	</blockquote>
+
 	{% if form.errors %}
 	<h2>Please correct the following error{{ form.errors|pluralize }}:</h2>
 	{% endif %}
-
+	
 	<form action="" method="post" >
 		{{ form.as_ul }}
 		<div class="clear"></div>
