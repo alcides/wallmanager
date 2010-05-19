@@ -205,14 +205,13 @@ def application_edit(request, object_id):
 @login_required
 def application_delete(request, object_id):
     app = get_app_or_error(request.user, object_id)
-    request.user.message_set.create(message="Application %s deleted successfully." % app.name )
 
     if app.is_running:
         request.user.message_set.create(message="Application %s is running on the Wall. Please finish it to remove." % app.name)
         return HttpResponseRedirect(reverse('application-detail',args=[app.id]))
     else:
         app.delete()
-        request.user.message_set.create(message="Application %s removed successfully."%(app.name))
+        request.user.message_set.create(message="Application %s deleted successfully." % app.name )
     
     return HttpResponseRedirect(reverse('application-list'))
     
