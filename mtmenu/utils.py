@@ -100,6 +100,7 @@ def last_activity_checker():
     
     if screensaver_control:
         screensaver_inactivity_time = get_minutes( cast_time_to_timedelta( screensaver_control.inactivity_time ) )
+        application = ApplicationProxy.objects.filter(id = screensaver_control.application.id)[0]        
         
         if diff_min > screensaver_inactivity_time and not is_app_running():
             print "screensaver #todo remove this print"
@@ -120,7 +121,7 @@ def last_activity_checker():
 def get_minutes(time):
     return ( time.seconds + time.microseconds/1000000.0) / 60
 
-def in_schedule(self):
+def in_schedule():
     from datetime import datetime
     now = datetime.now()
     day = now.weekday()
