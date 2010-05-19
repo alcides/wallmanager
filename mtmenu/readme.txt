@@ -9,7 +9,7 @@ REQUIREMENTS
 
 - Windows only (tested in XP, Vista, Windows 7)
 - Python 2.6
-- PyMT 0.4 (and respectived dependencies)
+- PyMT 0.4 (and respective dependencies)
 - TUIO Server, configured to the port 6000, or a TUIO Simulator (http://tuio.org/?software)
 - Win32 API para Python
 
