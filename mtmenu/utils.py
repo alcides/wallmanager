@@ -6,7 +6,7 @@ from time import sleep
 
 from models import *
 from window_manager import *
-from config import MAX_ATTEMPTS, SLEEP_SECONDS_BETWEEN_ATTEMPTS, NATIVE_APP_NAMES
+from config import MAX_ATTEMPTS, SLEEP_SECONDS_BETWEEN_ATTEMPTS, NATIVE_APP_NAMES, PRODUCTION
 
 
 
@@ -64,7 +64,15 @@ def bring_window_to_front(toApp = False):
             hwnd = self_hwnd
     else:
         hwnd = self_hwnd
-    
+        for handler, name in w.getWindows():
+                if handler != self_hwnd and name not in NATIVE_APP_NAMES:
+                    print name
+                    tid, pid = win32process.GetWindowThreadProcessId(handler)
+                    if PRODUCTION:
+                        Popen("taskkill /F /T /PID %i" % pid, shell=True)
+                    
+                    print 'killing %s with PID %d' % (name, pid)
+        
     w._handle = hwnd
     w.set_foreground()
 
