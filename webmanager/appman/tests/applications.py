@@ -281,20 +281,5 @@ class ApplicationTest(BaseTest):
         #confirm that the dropdown menu is correct
         response = self.client.get('/applications/%s/' % self.app.name)
         self.assertEqual(response.status_code, 200)
-
-    def test_manage_admin(self):
-        login = self.do_admin_login()
-        #add an administrator
-        c = User.objects.count()
-        post_data = {
-            'email':'aglour@dei.uc.pt',
-            'type': 'Normal'
-        }
-        response = self.client.post('/admins/',post_data)
-        self.assertEqual(User.objects.count(), c+1)
-
-        #remove him
-        response = self.client.get('/admins/1/remove')
-        self.assertEqual(User.objects.count(), c)
         
         

@@ -123,3 +123,43 @@ class AdminTest(BaseTest):
             response = self.client.post('/documentation/%d/edit/' % page.id, post_data)
             f = FlatPage.objects.get(title=title)
             self.assertEqual(f.content, 'This is a new content.')    
+
+    def test_manage_admin(self):
+        def add_admin(email, type, expected_response):
+            post_data = {
+                'email': email,
+                'type':  type,
+            }
+            response = self.client.post('/admins/',post_data)
+            self.assertContains(response, expected_response)
+        
+        # Power administrator login
+        self.do_admin_login()
+        
+        # Using alfredo since he is a normal user
+        self.assertEqual(self.alfredo.is_staff, False)
+        self.assertEqual(self.alfredo.is_superuser, False)
+        
+        # Add him as a normal administrator
+        add_admin(self.alfredo.email, 'Normal', 'Administrator added.')
+        self.alfredo = User.objects.get(id=self.alfredo.id)
+        self.assertEqual(self.alfredo.is_staff, True)
+        self.assertEqual(self.alfredo.is_superuser, False)
+        
+        # Add him as a power administrator
+        add_admin(self.alfredo.email, 'Power', 'Administrator added.')
+        self.alfredo = User.objects.get(id=self.alfredo.id)
+        self.assertEqual(self.alfredo.is_staff, True)
+        self.assertEqual(self.alfredo.is_superuser, True)
+        
+        # Remove him from being an administrator
+        response = self.client.get('/admins/%d/remove/' % self.alfredo.id)
+        self.assertRedirects(response, '/admins/')
+        self.alfredo = User.objects.get(id=self.alfredo.id)
+        self.assertEqual(self.alfredo.is_staff, False)
+        self.assertEqual(self.alfredo.is_superuser, False)
+        
+        # Test adding a non-user as admin
+        add_admin('lololololol@student.dei.uc.pt', 'Normal', 'is not registered')
+
+
