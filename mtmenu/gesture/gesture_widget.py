@@ -8,7 +8,7 @@ from datetime import datetime
 from projectors_interface import is_projectors_on, set_projectors_on, in_schedule, set_last_activity
 from mtmenu.application_running import is_app_running, kill_app_running
 from gesture.gesture_db import *
-from config import GESTURE_ACCEPTANCE_MARGIN
+from config import GESTURE_ACCEPTANCE_MARGIN, PRODUCTION
 from webmanager.appman.utils import projectors
 
 class GestureWidget( MTGestureWidget ):
@@ -23,11 +23,13 @@ class GestureWidget( MTGestureWidget ):
             try:
                 projectors.projectors_power(1)
                 set_projectors_on(True)
+                print "projectors power on"
+                
             except Exception, e: #Pokemon
                 print 'Error turning projectors on'
                 print e
-            set_projectors_on(True) # TODO remove this line
-            print "projectors power on"
+                if not PRODUCTION: 
+                    set_projectors_on(True) 
         
         set_last_activity()
             

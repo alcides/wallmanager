@@ -5,12 +5,9 @@ from threading import Timer
 from webmanager.appman.utils import projectors
 from models import ScreensaverControlProxy, ProjectorControlProxy, ApplicationProxy
 from mtmenu.application_running import is_app_running
-
+from config import PRODUCTION
 
 from datetime import datetime
-last_activity = datetime.now()
-projectors_on = True
-
 
 def is_projectors_on():
     global projectors_on
@@ -65,7 +62,7 @@ def last_activity_checker():
         application = ApplicationProxy.objects.filter(id = screensaver_control.application.id)[0]        
         
         if diff_min > screensaver_inactivity_time and not is_app_running():
-            print "screensaver #todo remove this print"
+            print "screensaver inactivity time reached"
             if application:
                 application.execute(True)
     
@@ -73,15 +70,16 @@ def last_activity_checker():
         projector_inactivity_time = get_minutes( cast_time_to_timedelta( projector_control.inactivity_time ) )
         
         if diff_min > projector_inactivity_time and is_projectors_on():
-            print "projector #todo remove this print"
+            print "projector inactivity time reached"
             try:
                 projectors.projectors_power(0)
                 set_projectors_on(False)
+                print 'projectors turned off'
             except Exception, e:
                 print 'Error turning projectors off'
                 print e
-    
-            set_projectors_on(False) #TODO: remove this line
+                if not PRODUCTION: 
+                    set_projectors_on(False)
     last_activity_timer.start()
     
 
@@ -107,4 +105,9 @@ def in_schedule():
     (now.hour < end.hour or (now.hour == end.hour and now.minute < end.minute)):
         return True
     return False
+
+
+#CONTROL VARIABLES
+last_activity = datetime.now()
+projectors_on = in_schedule()
 
