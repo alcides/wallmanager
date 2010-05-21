@@ -226,7 +226,7 @@ def report_abuse(request, object_id):
     
     if request.method == 'POST':
         form = ReportAbuseForm(request.POST)
-        if (form.is_valid()):
+        if form.is_valid():
             abuse_description = form.cleaned_data['abuse_description']
             email_from = settings.DEFAULT_FROM_EMAIL
             email_to = get_contact_admin_email()
@@ -285,8 +285,40 @@ def screensaver(request):
     
     
 @superuser_required()
-def manage_admins(request):
-    return render(request,'appman/admins.html')
+def manage_administrators(request):
+    admins = User.objects.filter(is_staff = True)
+    form_visible = False
+    if request.method == 'POST':
+        form = AddAdminForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            type = form.cleaned_data['type']
+            try:
+                new_admin = User.objects.get(email = email)
+                new_admin.is_staff = True
+                new_admin.is_superuser = (type == 'Power')
+                new_admin.save()  
+                request.user.message_set.create(message="Administrator added.")
+            except User.DoesNotExist:
+                request.user.message_set.create(message="%s is not registered on the application." % email)
+        else:
+            form_visible = True
+    else:
+        form = AddAdminForm()
+    return render(request,'appman/manage_admins.html', {
+        'admins': admins,
+        'form': form,
+        'form_visible': form_visible,
+    })
+
+@superuser_required()
+def remove_administrator(request, object_id):
+    admin = get_object_or_404(User, id=object_id)
+    admin.is_superuser = False
+    admin.is_staff = False
+    admin.save()
+    request.user.message_set.create(message="Administrator removed.")
+    return HttpResponseRedirect(reverse('manage-admins'))
 
 @superuser_required()
 def define_contact_admin(request):
@@ -363,3 +395,5 @@ def reboot(request):
     reboot_os()
     request.user.message_set.create(message="SenseWall will reboot shortly.")
     return HttpResponseRedirect(reverse('home'))
+    
+    

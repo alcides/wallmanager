@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" 
+lang="en">
+<body class="mediawiki ltr ns-0 ns-subject 
+page-2_Libraries_Supported skin-monobook">
+	<div id="globalWrapper">
+		<div id="column-content">
+	<div id="content">
+		<a name="top" id="top"></a>
+				<h1 id="firstHeading" class="firstHeading">2. Libraries Supported</h1>
+<div id="contentSub"></div>
+<!-- start content -->The default standard libraries of <a href="http://www.java.com/" 
+class="external text" title="http://www.java.com" rel="nofollow">Java</a>,
+ <a href="http://www.python.org/" class="external text" 
+title="http://www.python.org" rel="nofollow">Python</a> and <a 
+href="http://www.cplusplus.com/" class="external text" 
+title="http://www.cplusplus.com" rel="nofollow">C++</a> are supported. 
+Besides the multi-touch related libraries, Python also includes the <a 
+href="http://www.pythonware.com/products/pil/" class="external text" 
+title="http://www.pythonware.com/products/pil/" rel="nofollow">PIL</a> 
+library (Python Imaging Library) for image processing. 
+<p>Nonetheless, <b>the user may contact the administrator to request
+ the installation of new libraries.</b>
+</p><p>This chapter is a summary of the major protocols and application 
+libraries that can be used in the SenseWall.
+</p>
+<table id="toc" class="toc" summary="Contents"><tbody><tr><td><div 
+id="toctitle"><h2>Contents</h2>
+</div>
+<ul>
+<li class="toclevel-1"><a href="#Libraries"><span class="tocnumber">1</span>
+ <span class="toctext">Libraries</span></a>
+<ul>
+<li class="toclevel-2"><a href="#PyMT"><span class="tocnumber">1.1</span>
+ <span class="toctext">PyMT</span></a></li>
+<li class="toclevel-2"><a href="#MT4j"><span class="tocnumber">1.2</span>
+ <span class="toctext">MT4j</span></a></li>
+<li class="toclevel-2"><a href="#Processing"><span class="tocnumber">1.3</span>
+ <span class="toctext">Processing</span></a></li>
+<li class="toclevel-2"><a href="#Open_Frameworks"><span 
+class="tocnumber">1.4</span> <span class="toctext">Open Frameworks</span></a></li>
+<li class="toclevel-2"><a href="#Community_Core_Vision"><span 
+class="tocnumber">1.5</span> <span class="toctext">Community Core Vision</span></a></li>
+<li class="toclevel-2"><a href="#Touchlib"><span class="tocnumber">1.6</span>
+ <span class="toctext">Touchlib</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#Protocols"><span class="tocnumber">2</span>
+ <span class="toctext">Protocols</span></a>
+<ul>
+<li class="toclevel-2"><a href="#TUIO"><span class="tocnumber">2.1</span>
+ <span class="toctext">TUIO</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></tbody></table><script type="text/javascript"> if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<a name="Libraries" id="Libraries"></a><h2><span 
+class="mw-headline">Libraries </span></h2>
+<a name="PyMT" id="PyMT"></a><h3><span class="mw-headline">PyMT </span></h3>
+<p>PyMT is a somewhat complete and well documented library. It is also 
+the library supported by the wall hardware.
+</p><p>It is designed to rapidly build a prototype application from 
+scratch, without thinking about UI, by using the concept of <b>Widgets</b>.
+ Widgets aren't more than drawable controls (Buttons, Sliders, Labels, 
+Scatters...) that have a state, can be updated and their input can be 
+controlled. PyMT uses CSS stylesheets to let you customize the widgets 
+appearance. This way you can completely customize the look and feel of 
+your applications. Developing new widgets by extension is an easy 
+process too. 
+</p><p>Touch <b>events</b> are simple to handle as you can see on image 
+below:
+</p>
+<div class="center"><div class="floatnone"><img alt="Event demonstration"
+ src="2._Libraries_Supported_ficheiros/Eventtouchok.png" width="742" 
+border="0" height="260"></div></div>
+<p>In this  case three events will be called:
+</p>
+<ol><li> on_touch_down()
+</li><li> on_touch_move() (can be multiple times)
+</li><li> on_touch_up()
+</li></ol>
+<p>Other widget-touch-event concepts such as <i>drag and drop</i> are 
+also available. Event messages are based on the TUIO protocol.
+</p><p>PyMT supports varied widgets <b>animations</b>, from simple to 
+complex. Developing sequenced or parallel animations is just as easy as <b>anim1
+ +  anim2 + anim3</b> or <b>anim1 &amp; anim2 &amp; anim3</b>, 
+respectively.
+</p><p>For <b>rendering</b> PyMT implements OpenGL functions for most 
+needs. For advanced features it can be used OpenGL itself. Textures and 
+video are also available.
+</p><p><b>Installation</b> on a WindowsXP machine is a straightforward 
+process using the provided installer that includes all required 
+dependencies. It requires <b>Python 2.6.x</b>.
+</p><p>For more information on this library, please visit: <a 
+href="http://pymt.txzone.net/wiki/index.php/Devel/FeaturesByLibraries" 
+class="external free" 
+title="http://pymt.txzone.net/wiki/index.php/Devel/FeaturesByLibraries" 
+rel="nofollow">http://pymt.txzone.net/wiki/index.php/Devel/FeaturesByLibraries</a>
+</p>
+<a name="MT4j" id="MT4j"></a><h3><span class="mw-headline">MT4j </span></h3>
+<p><img alt="File:MT4j.gif" 
+src="2._Libraries_Supported_ficheiros/MT4j.gif" width="130" border="0" 
+height="105">
+</p><p>Probably the most complete and documented library available, MT4J
+ seems a very good alternative for programming using Java.
+</p><p>As PyMT, MT4j has the notion of widgets, now called <b>components</b>.
+ It already provides a bunch of UI components like buttons, text, lists,
+ sliders and a even a multitouch enabled keyboard. They are also 
+extensible and use scene graph structure (similar to Java's Swing 
+framework).
+</p><p>All components can have event handling support. With its flexible
+ multi-touch gesture system it's possible to define your own multi-touch
+ gestures. Event messages are also based on <b>TUIO</b>  protocol.
+</p><p>Rendering also uses OpenGL with a bunch of graphical objects 
+already provided such as rectangles, round rectangles, ellipses,  
+polygons, lines, triangle meshes, spheres, cubes, etc. with support for 
+textures, gradients, fill and outline color.
+</p><p>Installation requires, of course, Java JDK for developing.
+</p><p>Other useful features:
+</p>
+<ol><li> Support for loading and fast rendering of vector graphics from 
+Scalable Vector Graphics SVG files
+</li><li> Supports bitmap and vector fonts (SVG and True Type Fonts)
+</li><li> Importing 3D objects from .3ds and .obj files with textures 
+and creates normals for smooth shading
+</li><li> Built on top of Processing  which allows us to use its many 
+features and libraries
+</li><li> It's possible to test multi-touch applications using one or 
+even multiple mice connected to the PC
+</li></ol>
+<p>For a full specification on this library, please visit: <a 
+href="http://www.mt4j.org/mediawiki/index.php/Architecture" 
+class="external free" 
+title="http://www.mt4j.org/mediawiki/index.php/Architecture" 
+rel="nofollow">http://www.mt4j.org/mediawiki/index.php/Architecture</a>
+</p>
+<a name="Processing" id="Processing"></a><h3><span 
+class="mw-headline"> Processing </span></h3>
+<p>Processing is a programming language, development environment, and 
+online community that since 2001 has promoted software literacy within 
+the visual arts. Initially created to serve as a software sketchbook and
+ to teach fundamentals of computer programming within a visual context, 
+Processing quickly developed into a tool for creating finished 
+professional work as well.
+</p><p>Processing Development Environment (PDE): 
+</p><p><img alt="File:ide.gif" 
+src="2._Libraries_Supported_ficheiros/Ide.gif" width="650" border="0" 
+height="294">
+</p><p>Processing is a free, open source alternative to proprietary 
+software tools with expensive licenses, making it accessible to schools 
+and individual students. Its open source status encourages the community
+ participation and collaboration that is vital to Processing's growth. 
+Contributors share programs, contribute code, answer questions in the 
+discussion forum, and build libraries to extend the possibilities of the
+ software. The Processing community has written over seventy libraries 
+to facilitate computer vision, data visualization, music, networking, 
+and electronics. 
+</p><p>To learn more about this library, please visit: <a 
+href="http://processing.org/about/" class="external free" 
+title="http://processing.org/about/" rel="nofollow">http://processing.org/about/</a>
+</p><p>And for a full comprehension of this library, please visit: <a 
+href="http://processing.org/learning/libraries/" class="external free" 
+title="http://processing.org/learning/libraries/" rel="nofollow">http://processing.org/learning/libraries/</a>
+</p>
+<a name="Open_Frameworks" id="Open_Frameworks"></a><h3><span 
+class="mw-headline"> Open Frameworks </span></h3>
+<p><img alt="File:Ofw-logo.gif" 
+src="2._Libraries_Supported_ficheiros/Ofw-logo.gif" width="114" 
+border="0" height="60">
+</p><p>Openframeworks is a C++ library designed to assist the creative 
+process by providing a simple and intuitive framework for 
+experimentation.
+</p><p>The library is designed to work as a general purpose glue, and 
+wraps together several commonly used libraries under a tidy interface: 
+OpenGL for graphics, rtAudio for audio input and output, freeType for 
+fonts, freeImage for image input and output, quicktime for video playing
+ and sequence grabbing.
+</p><p>The code is written to be both cross platform (PC, Mac, Linux, 
+iPhone) and cross compiler. The API is designed to be minimal and easy 
+to grasp. There are very few classes, and inside of those classes, there
+ are very few functions. The code has been implemented so that within 
+the classes there are minimal cross-referening, making it quite easy to 
+rip out and reuse, if you need, or to extend.
+</p><p>Simply put, openFrameworks is a tool that makes it much easier to
+ make things via code. We find it super useful, and we hope you do too.
+</p><p>To learn more about this library, please visit: <a 
+href="http://wiki.openframeworks.cc/index.php?title=Main_Page" 
+class="external free" 
+title="http://wiki.openframeworks.cc/index.php?title=Main_Page" 
+rel="nofollow">http://wiki.openframeworks.cc/index.php?title=Main_Page</a>
+</p><p>Remember to visit their site at: <a 
+href="http://www.openframeworks.cc/about" class="external free" 
+title="http://www.openframeworks.cc/about" rel="nofollow">http://www.openframeworks.cc/about</a>
+</p>
+<a name="Community_Core_Vision" id="Community_Core_Vision"></a><h3><span 
+class="mw-headline">Community Core Vision </span></h3>
+<p><img alt="File:Header_bg.png" 
+src="2._Libraries_Supported_ficheiros/Header_bg.png" width="800" 
+border="0" height="250">
+</p><p>Community Core Vision, CCV for short (aka tbeta), is a open 
+source/cross-platform solution for computer vision and machine sensing. 
+It takes a video input stream and outputs tracking data (e.g. 
+coordinates and blob size) and events (e.g. finger down, moved and 
+released) that are used in building multi-touch applications. CCV can 
+interface with various web cameras and video devices as well as connect 
+to various TUIO/OSC/XML enabled applications and supports many 
+multi-touch lighting techniques including: FTIR, DI, DSI, and LLP with 
+expansion planned for the future vision applications (custom 
+modules/filters).
+</p><p>To learn more about this library, please visit: <a 
+href="http://ccv.nuigroup.com/" class="external free" 
+title="http://ccv.nuigroup.com" rel="nofollow">http://ccv.nuigroup.com</a>
+</p>
+<a name="Touchlib" id="Touchlib"></a><h3><span 
+class="mw-headline"> Touchlib </span></h3>
+<p>This is the lowest level and poorest library in terms of out of the 
+box features. It's just an event handling library to send event-driven  
+messages from tracker to graphical application. It handles tracking 
+blobs of infrared light for you and sends your programs multitouch 
+events, such as 'finger down', 'finger  moved', and 'finger released'. 
+Touchlib does not provide any graphical or front end abilities. As said 
+before it simply passes touch events. There are some examples of 
+applications build using OpenGL.
+</p><p><img alt="File:Touchlib.PNG" 
+src="2._Libraries_Supported_ficheiros/Touchlib.PNG" width="805" 
+border="0" height="185">
+</p><p>Documentation for this library is somehow limited with some 
+content scattered across blog posts and some articles.
+</p><p>For more information on this library, please visit: <a 
+href="http://nuigroup.com/touchlib/" class="external free" 
+title="http://nuigroup.com/touchlib/" rel="nofollow">http://nuigroup.com/touchlib/</a>
+</p>
+<a name="Protocols" id="Protocols"></a><h2><span 
+class="mw-headline">Protocols </span></h2>
+<a name="TUIO" id="TUIO"></a><h3><span class="mw-headline">TUIO </span></h3>
+<p>TUIO is an open framework/protocol common to every major library 
+implementation. It allows the transmission of an abstract  description 
+of interactive surfaces, including touch events and tangible object 
+states. This protocol encodes control data from a tracker application 
+(e.g. based on computer vision) and sends it to any client application 
+that is capable of decoding the protocol. All data messages between 
+tracker and application are event-based.
+</p><p><img alt="File:Diagram.png" 
+src="2._Libraries_Supported_ficheiros/Diagram.png" width="674" 
+border="0" height="337">
+</p><p>Due to it's widespread use it is safe to say that this protocol 
+and API are a <i>community standard</i> with good documentation and 
+discussion groups.
+</p><p>For more information, please visit: <a 
+href="http://www.tuio.org/" class="external free" 
+title="http://www.tuio.org" rel="nofollow">http://www.tuio.org</a>
+</p>
+</body></html>

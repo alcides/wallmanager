@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" 
+lang="en"><body class="mediawiki ltr ns-0 ns-subject 
+page-6_Format_of_the_File_to_Upload skin-monobook">
+	<div id="globalWrapper">
+		<div id="column-content">
+	<div id="content">
+		<a name="top" id="top"></a>
+<h1 id="firstHeading" class="firstHeading">6. Format of the File to 
+Upload			<!-- start content -->
+</h1>
+<p>The Wall Manager allows users to upload their applications, which 
+  can use different platforms, and make them run on the Wall. Since each 
+  platform has its own way of launching applications, there is are some 
+  specifications you need to be aware of.
+</p><h1><span 
+class="mw-headline">Specifications </span></h1>
+<a name="Zip_Bundle" id="Zip_Bundle"></a><h2><span 
+class="mw-headline"> Zip Bundle </span></h2>
+<p>The application should be packed as one zip (application/zip 
+mime-type) with all the files inside. This allows a much more simple 
+upload and the zip compression makes it fast to do so.
+</p>
+<a name="Initializer" id="Initializer"></a><h2><span 
+class="mw-headline">Initializer </span></h2>
+<p>The multi-touch computer is running a Windows XP as its operative 
+system. A simple way of allowing developers to customize the way their 
+application is launched is through a Batch File: a text file with a 
+sequence of commands that is executed by the command prompt and a .bat 
+extension.
+</p><p>This solution has the flexibility of allowing users to write 
+their own initialization scripts in other language supported by the wall
+ (Python, for instance) by just writing a one-line batch file.
+</p>
+<a name="Contents" id="Contents"></a><h2><span 
+class="mw-headline">Contents </span></h2>
+<p>You should add your application files to the zip. This includes the 
+binaries (C, C++, Java) or the source code (Python) and resources used 
+by them (Images, etc...)
+</p>
+<a name="Structure" id="Structure"></a><h2><span 
+class="mw-headline">Structure </span></h2>
+<p>YourApplication.zip should contain the following files:
+</p>
+<ul><li> boot.bat (the mandatory initializer)
+</li><li> Other files your application requires. 
+</li></ul>
+<a name="Restrictions" id="Restrictions"></a><h2><span 
+class="mw-headline">Restrictions </span></h2>
+<p>Your application should be self-contained. Except for system 
+libraries or provided platforms (such as JDK and MT4J, OpenFrameworks, 
+Python and PyMT) all the dependencies of your application should be 
+inside your zip file. 
+After the zip file is unpacked, your application should only need to 
+write in that directory. This makes the uninstall process more 
+efficient.
+</p>
+<a name="Security" id="Security"></a><h2><span 
+class="mw-headline">Security </span></h2>
+<p>Each application is connected to a student's account, and the 
+information of what application is being launched is logged and WILL be 
+used.
+</p>
+</body></html>

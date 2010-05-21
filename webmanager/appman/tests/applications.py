@@ -281,3 +281,5 @@ class ApplicationTest(BaseTest):
         #confirm that the dropdown menu is correct
         response = self.client.get('/applications/%s/' % self.app.name)
         self.assertEqual(response.status_code, 200)
+        
+        
