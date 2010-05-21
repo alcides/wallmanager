@@ -9,16 +9,16 @@ class AppPopup(MTWidget):
         
         # Calculate popup position relative to touch
         # Up-left corner on touch position
-        pos = (touch.pos[0], touch.pos[1] - APPPOPUP_SIZE[1])
+        pos_x, pos_y = touch.pos[0], touch.pos[1] - APPPOPUP_SIZE[1]
         
         # Avoid popup from being partially hidden
-        if pos[0]+APPPOPUP_SIZE[0] > MAINWINDOW_SIZE[0]: # check right
-            pos[0] = MAINWINDOW_SIZE[0] - APPPOPUP_SIZE[0] - 10
+        if pos_x+APPPOPUP_SIZE[0] > MAINWINDOW_SIZE[0]: # check right
+            pos_x = MAINWINDOW_SIZE[0] - APPPOPUP_SIZE[0] - 10
         
-        if pos[1] < 0: # check bottom
-            pos[1] = APPPOPUP_SIZE[1] + 10  
+        if pos_y < 0: # check bottom
+            pos_y = 10
             
-        kwargs.setdefault('pos', pos)
+        kwargs.setdefault('pos', (pos_x, pos_y))
         super(AppPopup, self).__init__(**kwargs)
 
         self.app = app        
