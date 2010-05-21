@@ -3,10 +3,12 @@ This module keeps the running application object and provides an interface to ki
 """
 
 from subprocess import Popen
+from mutex import mutex
 
-__all__ = ['get_app_running', 'set_app_running', 'remove_app_running', 'is_app_running', 'kill_app_running']
+__all__ = ['get_app_running', 'set_app_running', 'remove_app_running', 'is_app_running', 'kill_app_running', 'get_app_mutex']
 
 app_running = None
+app_mutex = mutex()
 
 def get_app_running():
     ''' Returns the running application object '''
@@ -38,3 +40,8 @@ def kill_app_running():
             Popen("taskkill /F /T /PID %i" % pid, shell=True)
         else:
             app_running.kill()
+            
+def get_app_mutex():
+    ''' Returns the mutex object '''
+    global app_mutex
+    return app_mutex

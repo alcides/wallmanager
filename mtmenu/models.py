@@ -4,7 +4,9 @@ from subprocess import Popen, PIPE
 from config import APPS_REPOSITORY_PATH, APPS_BOOT_FILENAME, PRODUCTION
 from cStringIO import StringIO
 from threading import Thread
-from mtmenu.application_running import set_app_running, remove_app_running, get_app_running, is_app_running
+from mtmenu.application_running import set_app_running, remove_app_running, get_app_running, is_app_running, get_app_mutex
+
+
 
 
 # Go back one directory and adds it to sys.path
@@ -21,6 +23,7 @@ else:
 from webmanager.appman import models
 from django.contrib.auth.models import User
 
+
 class WallModelsProxy ():
     """This is an abstraction to be used by all models extended from appman"""
     class Meta:
@@ -36,8 +39,12 @@ class ApplicationProxy(models.Application, WallModelsProxy):
     
     def execute (self, is_screensaver=False):
         """Executes within a thread"""
-        t = Thread(target=self._execute, args=(is_screensaver,))
-        t.start()
+        app_mutex = get_app_mutex()
+        if app_mutex.testandset():
+            t = Thread( target=self._execute, args=( is_screensaver, ) )
+            t.start()
+        else:
+            print "some application is already running"
         
     def _execute(self, is_screensaver):
         """Tries to execute application's batch file.
@@ -56,8 +63,12 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             process execution"""
             
             
-        #hide scatter  
-        if is_app_running():
+        #hide scatter
+        
+        print 'i am in %s' % self.name
+        
+        if (is_app_running()):
+            get_app_mutex().unlock()
             return False
         
         set_app_running(True)
@@ -109,6 +120,9 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 print e
         else:
             print "Could not run app because no boot file"
+        print 'i am unlocking %s' % self.name
+        get_app_mutex().unlock()
+        
         return success
         
         
@@ -223,3 +237,25 @@ class ProjectorControlProxy (models.ProjectorControl, WallModelsProxy):
     be extended with other locally-used functions"""
     pass
 
+
+def _execute(name):
+      
+    print 'i am in %s' % name
+
+    from time import sleep
+    sleep(5)
+    print 'i am unlocking %s' % name
+    
+    app_mutex.unlock()
+    
+    
+
+
+if __name__ == "__main__":
+    
+    t = Thread(target=app_mutex.lock, args=(_execute, ("1",) ) )
+    t.start()
+    
+    t2 = Thread(target=app_mutex.lock, args=(_execute,("2",)))
+    t2.start()
+    
