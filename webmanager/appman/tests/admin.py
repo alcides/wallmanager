@@ -12,8 +12,8 @@ from base import *
 class AdminTest(BaseTest):
     def test_uniqueness_control(self):
         """ Tests uniqueness of the Projector Control object. """
-        c1 = ProjectorControl.objects.create(inactivity_time=1, startup_week_time=time(1), shutdown_week_time=time(2), startup_weekend_time=time(2), shutdown_weekend_time=time(2))
-        c2 = ProjectorControl.objects.create(inactivity_time=1, startup_week_time=time(1), shutdown_week_time=time(2), startup_weekend_time=time(2), shutdown_weekend_time=time(2))
+        c1 = ProjectorControl.objects.create(inactivity_time=time(1), startup_week_time=time(1), shutdown_week_time=time(2), startup_weekend_time=time(2), shutdown_weekend_time=time(2))
+        c2 = ProjectorControl.objects.create(inactivity_time=time(1), startup_week_time=time(1), shutdown_week_time=time(2), startup_weekend_time=time(2), shutdown_weekend_time=time(2))
         self.assertEqual( ProjectorControl.objects.count(), 1)
     
     def test_requires_superuser_to_define_contact_admin(self):
@@ -80,12 +80,21 @@ class AdminTest(BaseTest):
 
     def test_screensaver_time(self):
         def test_response(input, expected_content):
+            application = Application.objects.all()[0]
+            old_category = application.category
+            application.category = Category.objects.get(name='Screensaver')
+            application.save()
+            
             post_data = {
-                'screensaver_time': input,
+                'inactivity_time': input,
+                'application': application.id,
             }
+            
             response = self.client.post('/screensaver/', post_data)
             self.assertContains(response, expected_content)
-
+            
+            application.category = old_category
+            application.save()
 
         """ Tests the screensaver time setting. """
         login = self.do_admin_login()
@@ -95,18 +104,18 @@ class AdminTest(BaseTest):
         self.assertContains(response, "<form", 1)
         self.assertContains(response, "submit")
 
-        correct_time = "01:05"
+        correct_time = "01:05:00"
         #The following tests use several incorrect formats for submitting time, followed by one final, correct format
         test_response("abcd", 'Enter a valid time.')
         test_response("1234", 'Enter a valid time.')
         test_response("12 34", 'Enter a valid time.') #Missing one colon
-        test_response("00:00", 'Time must be at least 00:01 (one minute).') #Must be larger than 00:00
-        test_response("00:60", 'Enter a valid time.') #More than 59 minutes
-        test_response("24:00", 'Enter a valid time.') #More than 23 hours (maximum is 23:59)
+        test_response("00:00:00", 'Time must be at least 00:01 (one minute).') #Must be larger than 00:00
+        test_response("00:60:00", 'Enter a valid time.') #More than 59 minutes
+        test_response("24:00:00", 'Enter a valid time.') #More than 23 hours (maximum is 23:59)
         test_response(correct_time, 'Screensaver inactivity time was set successfully.')
 
-        time_in_database = ScreensaverControl.objects.all()[0].screensaver_inactivity_time
-        self.assertEqual(str(time_in_database), correct_time + ":00")
+        time_in_database = ScreensaverControl.objects.all()[0].inactivity_time
+        self.assertEqual(str(time_in_database), correct_time)
 
     def test_documentation_edit(self):
         """ Tests edition of documentation """

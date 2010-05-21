@@ -273,22 +273,15 @@ def screensaver(request):
     if request.method == 'POST':
         form = ScreenSaverTimeForm(request.POST)
         if form.is_valid():
-            time = form.cleaned_data['inactivity_time']
-            if str(time) == "00:00:00":
-                request.user.message_set.create(message="Time must be at least 00:01 (one minute).")
-            else:
-                form.save()
-                request.user.message_set.create(message="Screensaver inactivity time was set successfully.")
-        else:
-            request.user.message_set.create(message="The form is not valid.")
-        return HttpResponseRedirect(reverse('screensaver'))
+            form.save()
+            request.user.message_set.create(message="Screensaver inactivity time was set successfully.")
     else:
         try:
             form =  ScreenSaverTimeForm(instance=ScreensaverControl.objects.all()[0])
         except IndexError:
             form = ScreenSaverTimeForm(initial = {'inactivity_time':'00:30:00'} )
 
-        return render(request,'appman/screensaver.html', {'form': form})
+    return render(request,'appman/screensaver.html', {'form': form})
     
     
 @superuser_required()
