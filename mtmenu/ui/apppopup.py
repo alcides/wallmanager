@@ -113,7 +113,7 @@ class AppPopup(MTWidget):
                   pos = (button_close_pos[0] + (buttons_size[0]/2), button_close_pos[1] + (buttons_size[1]/2)),
                   font_size = 22,
                   center = True)
-    
+
     def on_touch_up(self, touch):
         x,y = list(touch.pos)
         a,b = list(self.btns_size)
@@ -125,6 +125,9 @@ class AppPopup(MTWidget):
         # click on close button
         elif x > self.close_btn_pos[0] and x < self.close_btn_pos[0]+a and y > self.close_btn_pos[1] and y < self.close_btn_pos[1]+b:
             self.close()
+
+    def on_touch_down(self, touch):
+        return True
         
     def close(self):
         self.timer.cancel()
