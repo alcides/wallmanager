@@ -11,11 +11,13 @@ from datetime import datetime
 
 def is_projectors_on():
     global projectors_on
+    global projectors_down_time
     if projectors_down_time == time(0,0,0):
         projectors_on = in_schedule()
     return projectors_on
 
 def set_projectors_on(bool):
+    global projectors_down_time
     global projectors_on
     if (bool):
         projectors_down_time = time(0,0,0)
