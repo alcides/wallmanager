@@ -38,7 +38,7 @@ class WindowMgr:
         #print list_apps
         
 
-    def set_foreground(handler):
+    def set_foreground(self, handler):
         """put the window in the foreground"""
         
         if handler != None:
