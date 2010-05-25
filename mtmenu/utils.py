@@ -65,8 +65,9 @@ def bring_window_to_front(toApp = False):
     else:
         hwnd = self_hwnd
         for handler, name in w.getWindows():
+            print name
             if handler != self_hwnd and name not in NATIVE_APP_NAMES:
-                print name
+                
                 tid, pid = win32process.GetWindowThreadProcessId(handler)
                 if PRODUCTION:
                     Popen("taskkill /F /T /PID %i" % pid, shell=True)
