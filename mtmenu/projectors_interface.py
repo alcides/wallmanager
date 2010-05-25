@@ -93,8 +93,13 @@ def last_activity_checker():
 def get_minutes(time):
     return ( time.seconds + time.microseconds/1000000.0) / 60
 
+def is_between(start, end):
+    now = datetime.now()
+    return (now.hour > start.hour or ( now.hour == start.hour and now.minute > start.minute )) and \
+    (now.hour < end.hour or (now.hour == end.hour and now.minute < end.minute))
+
 def in_schedule():
-    from datetime import datetime
+    from datetime import datetime, time
     now = datetime.now()
     day = now.weekday()
     projector_control = get_first_item( ProjectorControlProxy.objects.all() )
@@ -108,10 +113,14 @@ def in_schedule():
         start = projector_control.startup_weekend_time
         end = projector_control.shutdown_weekend_time
 
-    if (now.hour > start.hour or ( now.hour == start.hour and now.minute > start.minute )) and \
-    (now.hour < end.hour or (now.hour == end.hour and now.minute < end.minute)):
-        return True
-    return False
+    # Considering ending before start
+    if start.hour > end.hour:
+        tmp_end = time(23,59,59)
+        tmp_start = time(0,0,0)
+        
+        return is_between(start, tmp_end) or is_between(tmp_start, end)
+    else:
+        return is_between(start, end)
 
 
 #CONTROL VARIABLES
