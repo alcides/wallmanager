@@ -38,12 +38,13 @@ class WindowMgr:
         #print list_apps
         
 
-    def set_foreground(self):
+    def set_foreground(handler):
         """put the window in the foreground"""
         
-        if self._handle != None:
-            win32gui.ShowWindow(self._handle, 3)
-            win32gui.SetForegroundWindow(self._handle)
+        if handler != None:
+            win32gui.ShowWindow(handler, 3)
+            win32gui.SetForegroundWindow(handler)
+            print "changed to window with handler %d" % int(handler)
     
     
     def isRealWindow(self, hWnd):

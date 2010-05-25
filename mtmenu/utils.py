@@ -76,7 +76,6 @@ def bring_window_to_front(toApp = False):
                 
                 print 'killing %s with PID %d' % (name, pid)
         
-    w._handle = hwnd
-    w.set_foreground()
+    w.set_foreground(hwnd)
 
 
