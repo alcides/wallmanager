@@ -5,10 +5,10 @@ from pymt import *
 import subprocess
 from datetime import datetime
 
-from projectors_interface import is_projectors_on, set_projectors_on, in_schedule, set_last_activity
+from projectors_interface import is_projectors_on, set_projectors_on, in_schedule, set_last_activity, get_projectors_down_duration
 from mtmenu.application_running import is_app_running, kill_app_running
 from gesture.gesture_db import *
-from config import GESTURE_ACCEPTANCE_MARGIN, PRODUCTION
+from config import GESTURE_ACCEPTANCE_MARGIN, PRODUCTION, UNAVAILABLE_PROJECTORS_TIME
 from webmanager.appman.utils import projectors
 
 class GestureWidget( MTGestureWidget ):
@@ -21,11 +21,14 @@ class GestureWidget( MTGestureWidget ):
     def on_gesture(self, gesture, touch):
         if not is_projectors_on() and in_schedule():
             try:
-                projectors.projectors_power(1)
-                set_projectors_on(True)
-                print "projectors power on"
+                if get_projectors_down_duration() > UNAVAILABLE_PROJECTORS_TIME:
+                    projectors.projectors_power(1)
+                    set_projectors_on(True)
+                    print "projectors power on"
+                else:
+                    print "projectors cannot be turned on because their down for few time"
                 
-            except Exception, e: #Pokemon
+            except Exception as e: #Pokemon
                 print 'Error turning projectors on'
                 print e
                 if not PRODUCTION: 

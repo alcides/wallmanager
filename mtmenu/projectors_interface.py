@@ -31,6 +31,10 @@ def set_last_activity(time = None):
         last_activity = datetime.now()
         
 
+def get_projectors_down_duration():
+    global projectors_down_time
+    return get_minutes( cast_time_to_timedelta( datetime.now() ) ) - get_minutes( cast_time_to_timedelta(projectors_down_time ) )
+
 ########## SCREENSAVER & PROJECTOR
 
 def get_first_item(list):
@@ -78,6 +82,7 @@ def last_activity_checker():
             try:
                 projectors.projectors_power(0)
                 set_projectors_on(False)
+                projectors_down_time = datetime.now()
                 print 'projectors turned off'
             except Exception, e:
                 print 'Error turning projectors off'
@@ -127,3 +132,4 @@ def in_schedule():
 last_activity = datetime.now()
 projectors_on = in_schedule()
 
+projectors_down_time = time(0,0,0)
