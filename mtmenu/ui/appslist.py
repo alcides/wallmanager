@@ -1,6 +1,6 @@
 from pymt import *
 from appbutton import AppButton
-from config import APPSLIST_NUMBER_OF_LINES, APPSLIST_SIZE, APPSLIST_POSITION, APPSLIST_FRICTION
+from config import APPSLIST_NUMBER_OF_LINES, APPSLIST_SIZE, APPSLIST_POSITION, APPSLIST_FRICTION, APPSLIST_PADDING_X, APPSLIST_PADDING_Y
 from utils import get_applications
 
 class AppsList(MTKineticList):
@@ -18,8 +18,8 @@ class AppsList(MTKineticList):
         kwargs.setdefault('h_limit', APPSLIST_NUMBER_OF_LINES)
         kwargs.setdefault('w_limit',0)
         kwargs.setdefault('font_size', 12)
-        kwargs.setdefault('padding_x', 100)
-        kwargs.setdefault('padding_y', 50)
+        kwargs.setdefault('padding_x', APPSLIST_PADDING_X)
+        kwargs.setdefault('padding_y', APPSLIST_PADDING_Y)
         kwargs.setdefault('friction', APPSLIST_FRICTION)
         kwargs.setdefault('style', {'bg-color':(0,0,0,0)})
         super(AppsList, self).__init__(**kwargs)

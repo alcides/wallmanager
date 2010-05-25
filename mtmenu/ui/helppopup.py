@@ -41,7 +41,7 @@ class HelpPopup(MTModalWindow):
                              color = (0, 0, 0, 1))
         
         # Text
-        drawLabel(label = 'You are using SenseWall, the multi-touch wall developed by SenseBloom and the Departament of Informatics Engeneering of the University of Coimbra.',
+        drawLabel(label = 'You are using SenseWall, the multi-touch wall developed by SenseBloom and the Departament of Informatics Engineering of the University of Coimbra.',
                   pos = (text_pos_x, y+self.size[1]-20),
                   font_size = 13,
                   center = False,
@@ -94,7 +94,7 @@ class HelpPopup(MTModalWindow):
                              color = (1, 1, 1, 1))
         
         # Application's tooltip text
-        drawLabel(label = 'To know more about an application on the SenseWall, just do a single touch on it\'s icon. To launch it press \'Play\' or double touch the icon.',
+        drawLabel(label = 'To know more about an application on the SenseWall, just do a single touch on its icon. To launch it press \'Play\' or double touch the icon.',
                   pos = (text_pos_x, y+self.size[1]-355),
                   font_size = 13,
                   center = False,

@@ -1,5 +1,5 @@
 from pymt import *
-from config import CATEGORYLIST_SIZE
+from config import CATEGORYLIST_SIZE, CATEGORYLIST_LABEL_SIDES_MARGIN, CATEGORYLIST_LABEL_FONT_SIZE
 
 class CategoryButton(MTKineticItem):
 
@@ -41,7 +41,24 @@ class CategoryButton(MTKineticItem):
         drawLine(points, 10, colors)
         
         # Label
-        drawLabel(label = self.label,
-                  pos = (x+20, y + 8),
-                  font_size = 15,
-                  center = False)
+        label_margin = CATEGORYLIST_LABEL_SIDES_MARGIN
+        label_changed = False
+        label_obj = MTLabel(label = self.label,
+                            pos = (x+label_margin, y+8),
+                            font_size = CATEGORYLIST_LABEL_FONT_SIZE,
+                            autowidth = True)
+        label_max_width = self.size[0] - label_margin*2
+        
+        while label_obj.width > label_max_width:
+
+            self.label = self.label[:-1]
+            
+            label_changed = True
+            label_obj = MTLabel(label = "%s..." % self.label,
+                                pos = (x+label_margin, y+8),
+                                font_size = CATEGORYLIST_LABEL_FONT_SIZE,
+                                autowidth = True)
+        
+        if label_changed:
+            self.label = "%s..." % self.label
+        label_obj.draw()
