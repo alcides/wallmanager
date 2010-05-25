@@ -64,6 +64,8 @@ def bring_window_to_front(toApp = False):
             hwnd = self_hwnd
     else:
         hwnd = self_hwnd
+        print "Going back to the main application"
+        
         for handler, name in w.getWindows():
             print name
             if handler != self_hwnd and name not in NATIVE_APP_NAMES:
