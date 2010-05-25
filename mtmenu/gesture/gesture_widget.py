@@ -21,6 +21,7 @@ class GestureWidget( MTGestureWidget ):
     def on_gesture(self, gesture, touch):
         if not is_projectors_on() and in_schedule():
             try:
+                print "duration since inactivity = %s" % get_projectors_down_duration()
                 if get_projectors_down_duration() > UNAVAILABLE_PROJECTORS_TIME:
                     projectors.projectors_power(1)
                     set_projectors_on(True)
