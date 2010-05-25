@@ -5,7 +5,7 @@ from threading import Timer
 from webmanager.appman.utils import projectors
 from models import ScreensaverControlProxy, ProjectorControlProxy, ApplicationProxy
 from mtmenu.application_running import is_app_running
-from config import PRODUCTION
+from config import PRODUCTION, INACTIVITY_POOL_INTERVAL
 
 from datetime import datetime
 
@@ -42,7 +42,7 @@ def cast_time_to_timedelta(instant):
     return timedelta( seconds = instant.hour*60*60 + instant.minute*60 + instant.second )
 
 def last_activity_checker():
-    last_activity_timer = Timer(30, last_activity_checker)
+    last_activity_timer = Timer(INACTIVITY_POOL_INTERVAL, last_activity_checker)
     
     last_active = get_last_activity()
        
@@ -65,9 +65,13 @@ def last_activity_checker():
             print "screensaver inactivity time reached"
             if application:
                 application.execute(True)
+    else:
+        print "screensaver time not defined"
     
     if projector_control:
         projector_inactivity_time = get_minutes( cast_time_to_timedelta( projector_control.inactivity_time ) )
+        
+        print "Projector inactivity time = %s\ndiff time = %s\nis_projectors_on = %s" % (projector_inactivity_time, diff_min, is_projectors_on())
         
         if diff_min > projector_inactivity_time and is_projectors_on():
             print "projector inactivity time reached"
@@ -80,6 +84,9 @@ def last_activity_checker():
                 print e
                 if not PRODUCTION: 
                     set_projectors_on(False)
+    else:
+        print "projectors inactivity time not defined"
+        
     last_activity_timer.start()
     
 
