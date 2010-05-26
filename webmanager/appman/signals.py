@@ -32,10 +32,10 @@ def remove_dir(path):
         except:
             pass
         
-def remove_file(file):
+def remove_file(file, save=True):
     """ Deletes a file held by a FileField from the filesystem. """
     try:
-        file.delete(save=True)
+        file.delete(save)
     except:
         pass
         
@@ -62,8 +62,8 @@ def remove_app(sender, instance, signal, *args, **kwargs):
     
     if instance.is_extracted and not instance.is_running:
         remove_dir(get_app_dir(instance))
-    remove_file(instance.zipfile)
-    remove_file(instance.icon)
+    remove_file(instance.zipfile, False)
+    remove_file(instance.icon, False)
     logger.log_app_event(instance, 'removed from filesystem')
 
 def send_mail_when_app_available(sender, **kwargs):
