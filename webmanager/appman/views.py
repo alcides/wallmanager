@@ -222,7 +222,6 @@ def application_delete(request, object_id):
 @login_required    
 def report_abuse(request, object_id):
     app = get_app_or_error(request.user, object_id)
-    request.user.message_set.create(message="Application %s reported successfully."%app.name)
     
     if request.method == 'POST':
         form = ReportAbuseForm(request.POST)
@@ -237,7 +236,7 @@ def report_abuse(request, object_id):
 
             try:
                 send_mail('[WallManager] Application ' + app.name + ' received an abuse report.', message, email_from, [email_to])
-                request.user.message_set.create(message="Your report was sent successfully.")
+                request.user.message_set.create(message="Application %s reported successfully." % app.name)
             except:
                 request.user.message_set.create(message="Failure while sending e-mail message containing the report. Please try again later.")
         else:
