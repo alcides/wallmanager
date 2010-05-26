@@ -16,5 +16,6 @@ DATABASE_PASSWORD='a23f155165'         # Not used with sqlite3.
 DATABASE_HOST=''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT='3306'             # Set to empty string for default. Not used with sqlite3.
 
+AUTH_LDAP_CERT = "C:\Documents and Settings\walluser\cacert.pem"
 
 SESSION_COOKIE_SECURE = True

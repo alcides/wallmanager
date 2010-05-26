@@ -10,11 +10,15 @@ class StudentPopBackend:
         username = ''
         if email_re.search(email):
             dn = settings.AUTH_LDAP_USER_BASE(email)
-            
+
             try:
+                ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+                ldap.set_option(ldap.OPT_X_TLS_CACERTFILE,settings.AUTH_LDAP_CERT)
+
                 l = ldap.initialize(settings.AUTH_LDAP_SERVER)
+                l.start_tls_s()
                 l.simple_bind_s(dn, password)
-                
+
                 # Builds real name to fill in register, and force auth check.
                 me = l.search_s(l.whoami_s()[3:],ldap.SCOPE_SUBTREE)
                 ln = me[0][1]['sn'][0]

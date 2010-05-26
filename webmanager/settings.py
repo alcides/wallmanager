@@ -84,7 +84,7 @@ LOGIN_REDIRECT_URL = '/applications/'
 
 AUTH_LDAP_SERVER = "ldap://ldap3.dei.uc.pt"
 AUTH_LDAP_USER_BASE = lambda email: "uid=%s,ou=%s,ou=People,dc=dei,dc=uc,dc=pt" % ( email.split("@")[0], 'student' in email and 'student' or 'eden' )
-
+AUTH_LDAP_CERT = ""
 
 WALL_APP_DIR = relative('../mtmenu/apps/')
 ZIP_FOLDER = "applications"
