@@ -1,14 +1,12 @@
 import sys
 from os import environ, path
 from subprocess import Popen, PIPE
+from config import APPS_REPOSITORY_PATH, APPS_BOOT_FILENAME, PRODUCTION
 from cStringIO import StringIO
 from threading import Thread
-from copy import deepcopy
+from mtmenu.application_running import set_app_running, remove_app_running, get_app_running, is_app_running, get_app_mutex
 
 
-from mtmenu.settings import *
-from mtmenu.proxy import proxy
-from mtmenu.application_running import set_app_running, remove_app_running, get_app_running
 
 
 # Go back one directory and adds it to sys.path
@@ -25,6 +23,7 @@ else:
 from webmanager.appman import models
 from django.contrib.auth.models import User
 
+
 class WallModelsProxy ():
     """This is an abstraction to be used by all models extended from appman"""
     class Meta:
@@ -38,12 +37,16 @@ class ApplicationProxy(models.Application, WallModelsProxy):
     It allows the representation of an application through django models abling it to
     be extended with other locally-used functions like execute()"""
     
-    def execute (self):
+    def execute (self, is_screensaver=False):
         """Executes within a thread"""
-        t = Thread(target=self._execute, args=())
-        t.start()
+        app_mutex = get_app_mutex()
+        if app_mutex.testandset():
+            t = Thread( target=self._execute, args=( is_screensaver, ) )
+            t.start()
+        else:
+            print "some application is already running"
         
-    def _execute(self):
+    def _execute(self, is_screensaver):
         """Tries to execute application's batch file.
         
         While is executing all process output (stdout/stderr) is catched 
@@ -60,8 +63,17 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             process execution"""
             
             
-        #hide scatter    
-        from mtmenu.ui import cover_window
+        #hide scatter
+        
+        print 'i am in %s' % self.name
+        
+        if (is_app_running()):
+            get_app_mutex().unlock()
+            return False
+        
+        set_app_running(True)
+          
+        from mtmenu import cover_window
         cover_window.show()
         
         app_boot_file = self.get_boot_file()
@@ -76,15 +88,16 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 command = self.build_command(app_boot_file)
                 
                 # Starts application process and waits for it to terminate
-                process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath())
+                process = Popen(command, stdout = PIPE, stderr = PIPE, cwd = self.get_extraction_fullpath(), shell = False)
                 
                 # defines the application that is running
                 set_app_running(process)
-
-                get_app_running()
+                
+                print "Running application: %s" % self.name
                 
                 from utils import bring_window_to_front
-                bring_window_to_front(process._handle)
+                bring_window_to_front(True)
+                
                 # Concatenate output
                 output = StringIO()
                 for line in process.communicate():
@@ -92,17 +105,24 @@ class ApplicationProxy(models.Application, WallModelsProxy):
 
 
                 remove_app_running()
-                cover_window.resume(self)            
                 
+                cover_window.resume(self, is_screensaver)
+                        
                 self.end_run()                
                 
                 # Save output to database
                 self.add_log_entry(output.getvalue())    
                     
                 success = True
-            except:
-                raise
-            
+                print "Application terminated"
+            except Exception, e: #Pokemon
+                print "EXCEPTION RUNNING APPLICATION"
+                print e
+        else:
+            print "Could not run app because no boot file"
+        print 'i am unlocking %s' % self.name
+        get_app_mutex().unlock()
+        
         return success
         
         
@@ -110,7 +130,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         """Full path to application repository.
         
         It considers the folder name as being the application's ID. The main path
-        is setted on settings.py
+        is setted on config.py
 
         Returns:
             Full path to application repository if exists otherwise
@@ -193,6 +213,7 @@ class ApplicationLogProxy(models.ApplicationLog, WallModelsProxy):
     be extended with other locally-used functions"""
     pass
         
+
 class UserProxy(User, WallModelsProxy):
     """Extension from User class used by webmanager.
     
@@ -201,3 +222,40 @@ class UserProxy(User, WallModelsProxy):
     pass
 
 
+class ScreensaverControlProxy (models.ScreensaverControl, WallModelsProxy):
+    """Extension from ScreensaverControl class used by webmanager.
+    
+    It allows the representation of an user through django models abling it to
+    be extended with other locally-used functions"""
+    pass
+
+
+class ProjectorControlProxy (models.ProjectorControl, WallModelsProxy):
+    """Extension from ProjectorControl class used by webmanager.
+    
+    It allows the representation of an user through django models abling it to
+    be extended with other locally-used functions"""
+    pass
+
+
+def _execute(name):
+      
+    print 'i am in %s' % name
+
+    from time import sleep
+    sleep(5)
+    print 'i am unlocking %s' % name
+    
+    app_mutex.unlock()
+    
+    
+
+
+if __name__ == "__main__":
+    
+    t = Thread(target=app_mutex.lock, args=(_execute, ("1",) ) )
+    t.start()
+    
+    t2 = Thread(target=app_mutex.lock, args=(_execute,("2",)))
+    t2.start()
+    

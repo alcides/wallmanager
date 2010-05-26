@@ -1,11 +1,13 @@
 from pymt import *
-from mtmenu.settings import WALL_DEFAULT_WIDTH, WALL_DEFAULT_HEIGHT
+from config import MAINWINDOW_SIZE, MAINWINDOW_POSITION
+from ui.topbar import TopBar
+from gesture.gesture_scan import GestureScan
 
-__all__ = ['MainWindow']
 
-class MainWindow (MTWindow):
+class MainWindow(MTWindow):
     """Menu main window"""
     def __init__(self, **kwargs):
-        kwargs.setdefault('width', WALL_DEFAULT_WIDTH)
-        kwargs.setdefault('height', WALL_DEFAULT_HEIGHT)
-        super(kwargs)
+        kwargs.setdefault('size', MAINWINDOW_SIZE)
+        kwargs.setdefault('pos', MAINWINDOW_POSITION)
+        
+        super(MainWindow, self).__init__(**kwargs)

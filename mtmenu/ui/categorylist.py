@@ -1,12 +1,13 @@
 from pymt import *
 from categorybutton import CategoryButton
-from utils import *
+from config import CATEGORYLIST_SIZE, CATEGORYLIST_POSITION, CATEGORYLIST_FRICTION
+from utils import get_all_categories
 
 class CategoryList (MTKineticList):
     
     """Widget to handle applications list"""
 
-    def __init__(self, **kwargs):
+    def __init__(self, apps_list, categories, **kwargs):
         kwargs.setdefault('title', None)
         kwargs.setdefault('deletable', False)
         kwargs.setdefault('searchable', False)
@@ -15,26 +16,34 @@ class CategoryList (MTKineticList):
         kwargs.setdefault('h_limit', 0)
         kwargs.setdefault('w_limit', 1)
         kwargs.setdefault('font_size', 14)
-        self.categories = None
-        self.current = None
+        kwargs.setdefault('size', CATEGORYLIST_SIZE)
+        kwargs.setdefault('pos', CATEGORYLIST_POSITION)
+        kwargs.setdefault('friction', CATEGORYLIST_FRICTION)
+        kwargs.setdefault('style', {'bg-color':(0,0,0,0)})
         super(CategoryList, self).__init__(**kwargs)
+        
+        self.apps_list = apps_list
+        self.add(categories)
+        self.current = None
         
         
     def add(self, categories):
         self.categories = categories
-        style = {'bg-color': (0, 1, 0, 1), 'draw-background': 1, 'draw-border': True, 'border-radius': 5}
         for category in categories:
-            self.add_widget( CategoryButton(category, style = style) )        
-        self.add_widget( CategoryButton(None, style=style) )
+            self.add_widget( CategoryButton(category) )        
+        self.add_widget( CategoryButton(None) )
         
        
     def refresh(self): 
         self.clear()
         self.add( get_all_categories() )
         if not self.is_current_valid():
-            from mtmenu.ui import apps_grid
-            apps_grid.refresh(None)
+            from mtmenu import apps_list
+            apps_list.refresh(None)
 
+    def is_current_valid(self):
+        return self.current == None or any( map(lambda x: x.name==self.current.name, self.categories) )
+        
 
     def is_current_valid(self):
         return self.current == None or any( map(lambda x: x.name==self.current.name, self.categories) )

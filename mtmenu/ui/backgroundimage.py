@@ -1,13 +1,13 @@
-from pymt.ui.widgets.scatter import MTScatterImage
+from pymt import *
+from config import MAINWINDOW_SIZE
 
-
-class ScatterImage( MTScatterImage ):
+class BackgroundImage(MTScatterImage):
     
     def __init__(self, **kwargs):
-        kwargs.setdefault('size', (1000,1000))
+        kwargs.setdefault('size', MAINWINDOW_SIZE)
         kwargs.setdefault('do_rotation', False)
         kwargs.setdefault('do_translation', False)
         kwargs.setdefault('do_scale', False)
         kwargs.setdefault('auto_bring_to_front', False)
-        super(ScatterImage, self).__init__(**kwargs)
+        super(BackgroundImage, self).__init__(**kwargs)
 

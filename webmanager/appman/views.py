@@ -253,8 +253,9 @@ def superuser_required(login_url=None):
 #Admin Views
 @staff_required()
 def projectors(request):
+    obj, flag = ProjectorControl.objects.get_or_create(id=1)
     if request.method == 'POST':
-        form = ProjectorControlForm(request.POST)
+        form = ProjectorControlForm(request.POST, instance=obj)
         if form.is_valid():
             new_proj = form.save()
             thread = ProjectorsThread(new_proj)	
@@ -262,7 +263,6 @@ def projectors(request):
             request.user.message_set.create(message="Projector settings will be modified. This operation may take up to 10 minutes.")
             return HttpResponseRedirect(reverse('projectors'))
     else:
-        obj, flag = ProjectorControl.objects.get_or_create(id=1)
         form = ProjectorControlForm(instance=obj)
             
     return render(request,'appman/projectors.html', {'form': form})
