@@ -22,7 +22,7 @@
 	
         {% for admin in admin_list %}
         	<option value="{{ admin.email }}"
-				{% ifequal current_contact_admin admin %}selected="selected"{% endifequal %}
+				{% ifequal current_contact_admin admin.email %}selected="selected"{% endifequal %}
 			>{{ admin.username }} ({{ admin.email }})</option>
         {% endfor %}
         </select></li>
