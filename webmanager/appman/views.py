@@ -352,7 +352,7 @@ def category_add(request):
     else:
         form = form_class()
 
-    return render(request,'appman/application_form.html', {
+    return render(request,'appman/category_form.html', {
         'form': form,
     })
 
