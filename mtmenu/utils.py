@@ -18,7 +18,7 @@ def get_applications(cat=None, sort_by_value=False):
 
 
 def get_all_categories():
-    return CategoryProxy.objects.all()    
+    return CategoryProxy.objects.all().order_by('-name') 
 
     
 def get_all_applications(sort_by_value=False):
