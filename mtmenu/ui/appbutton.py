@@ -57,7 +57,7 @@ class AppButton(MTKineticItem):
         #refresh cstegory in main thread
         from mtmenu import categories_list
         categories_list.refresh()
-        self.parent.refresh(self.app.category)
+        self.parent.refresh(categories_list.current)
         
         
     def draw(self):

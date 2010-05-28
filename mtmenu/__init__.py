@@ -13,7 +13,7 @@ top_bar = TopBar()
 # CATEGORIES LIST
 from ui.categorylist import CategoryList
 from utils import get_all_categories
-categories_list = CategoryList(apps_list, get_all_categories())
+categories_list = CategoryList(get_all_categories())
 
 # PROXY
 from proxy import Proxy
