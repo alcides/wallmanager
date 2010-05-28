@@ -1,15 +1,15 @@
 from pymt import *
 from threading import Timer
-from config import APPPOPUP_SIZE, MAINWINDOW_SIZE
+from config import APPPOPUP_SIZE, MAINWINDOW_SIZE, APPSLIST_POPUP_DURATION
 
 class AppPopup(MTWidget):
 
-    def __init__(self, app, touch, **kwargs):
+    def __init__(self, app, touch_pos, app_button, **kwargs):
         kwargs.setdefault('size', APPPOPUP_SIZE)
         
         # Calculate popup position relative to touch
         # Up-left corner on touch position
-        pos_x, pos_y = touch.pos[0], touch.pos[1] - APPPOPUP_SIZE[1]
+        pos_x, pos_y = touch_pos[0], touch_pos[1] - APPPOPUP_SIZE[1]
         
         # Avoid popup from being partially hidden
         if pos_x+APPPOPUP_SIZE[0] > MAINWINDOW_SIZE[0]: # check right
@@ -21,8 +21,9 @@ class AppPopup(MTWidget):
         kwargs.setdefault('pos', (pos_x, pos_y))
         super(AppPopup, self).__init__(**kwargs)
 
-        self.app = app        
-        self.timer = Timer(5.0, self.close)
+        self.app = app
+        self.app_button = app_button     
+        self.timer = Timer(APPSLIST_POPUP_DURATION, self.close)
         self.timer.start()
         
         self.play_btn_pos = ()
@@ -128,6 +129,8 @@ class AppPopup(MTWidget):
         
     def close(self):
         self.timer.cancel()
+        if self.app_button:
+            self.app_button.popup_closed()
         if self.get_root_window():
             self.get_root_window().remove_widget(self)
             
