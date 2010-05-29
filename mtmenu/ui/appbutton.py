@@ -1,7 +1,7 @@
 from pymt import *
 from mtmenu.ui.apppopup import AppPopup
 from threading import Timer
-from config import APPSLIST_BTN_SIZE, APPSLIST_BTN_IMAGE_SIZE, APPSLIST_BTN_FONT_SIZE
+from config import APPSLIST_BTN_SIZE, APPSLIST_BTN_IMAGE_SIZE, APPSLIST_BTN_FONT_SIZE, APPSLIST_BTN_POPUPS_PER_BTN
 
 
 class AppButton(MTKineticItem):
@@ -17,35 +17,35 @@ class AppButton(MTKineticItem):
         kwargs.setdefault('deletable', False)
         kwargs.setdefault('size', APPSLIST_BTN_SIZE)        
         
-        self.double_tap_detected = False
         self.app = app
-        self.pop = None
+        self.popups_currently_open = 0
+        self.double_tap_detected = False
         
         super(AppButton, self).__init__(**kwargs)
         
 
-
     """Execute application on double click
        Open popup on single click"""
-    def on_press( self, touch ):  
+    def on_press(self, touch):  
         self.double_tap_detected = touch.is_double_tap
         if touch.is_double_tap:
-            self.pop = None
+            self.double_tap_detected = False
             self.open_app()
-                        
-        #if single tap and popup not already open
-        elif not self.pop:  
-            self.pop = AppPopup(self.app, touch)
-            Timer(0.5, self.open_popup).start() #make sure is not a double tap
+        else:
+            # Give it time before open popup because it can be a double-click
+            Timer(0.5, self.open_popup, args=[touch.pos]).start()
 
+    def open_popup(self, touch_pos):
+        # If max number of popups allowed reached, don't open one more
+        # If double click, don't open one more
+        if self.popups_currently_open == APPSLIST_BTN_POPUPS_PER_BTN or self.double_tap_detected:
+            return
+        
+        self.popups_currently_open += 1
+        self.get_root_window().add_widget(AppPopup(self.app, touch_pos, self))
 
-    def open_popup(self):
-        if self.double_tap_detected:
-            return  
-            
-        self.get_root_window().add_widget(self.pop)
-        self.pop = None
-
+    def popup_closed(self):
+        self.popups_currently_open -= 1
 
     def open_app(self):
         print '\nLoading %s...\n' % unicode(self.app)
