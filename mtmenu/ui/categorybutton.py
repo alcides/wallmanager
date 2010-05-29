@@ -13,12 +13,14 @@ class CategoryButton(MTKineticItem):
         kwargs.setdefault('size', (CATEGORYLIST_SIZE[0],40))
         kwargs.setdefault('deletable', False)
         
+        self.selected = False
+        
         super(CategoryButton, self).__init__(**kwargs)
 
-    def on_press( self, touch ):
+    def on_press(self, touch):
         from mtmenu import apps_list
         apps_list.refresh(self.category)
-        self.parent.current = self.category
+        self.parent.select_category(self.category)
         
 
     def on_release( self, touch ):
@@ -28,11 +30,16 @@ class CategoryButton(MTKineticItem):
         x,y = list(self.pos)
         
         # Background
+        if self.selected:
+            bg_color = (0.965, 0.573, 0.118, 1) # Laranja do logotipo
+        else:
+            bg_color = (0.447,0.447,0.447,1) # Cinzento
+        
         drawRoundedRectangle(pos = self.pos,
                              radius = 5,
                              precision = 0.3,
                              size = (self.size[0]-10, self.size[1]), 
-                             color=(0.447,0.447,0.447,1),
+                             color = bg_color,
                              corners=(False,True,True,False))
         
         # Bottom Line
