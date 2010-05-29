@@ -5,10 +5,6 @@ from config import APPS_REPOSITORY_PATH, APPS_BOOT_FILENAME, PRODUCTION
 from cStringIO import StringIO
 from threading import Thread
 from mtmenu.application_running import set_app_running, remove_app_running, get_app_running, is_app_running, get_app_mutex
-
-
-
-
 # Go back one directory and adds it to sys.path
 sys.path.append('..')
 sys.path.append('../webmanager')
@@ -22,7 +18,6 @@ else:
 # webmanager models can now be imported
 from webmanager.appman import models
 from django.contrib.auth.models import User
-
 
 class WallModelsProxy ():
     """This is an abstraction to be used by all models extended from appman"""
@@ -172,11 +167,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             - app_log_text: Debug text to be added"""
             
         # Adds entry to database
-        ApplicationLogProxy.objects.create(application = self, error_description = app_log_text)
-            
-        # Get all entries associated with this application
-        entries = ApplicationLogProxy.objects.filter(application = self).order_by('-datetime')
-        
+        log = ApplicationLogProxy.objects.create(application = self, error_description = app_log_text)
         
     def vote(self, like):
         if like:
@@ -212,7 +203,13 @@ class ApplicationLogProxy(models.ApplicationLog, WallModelsProxy):
     It allows the representation of an application log through django models abling it to
     be extended with other locally-used functions"""
     pass
-        
+
+
+# Connect post_save signal to web-side signals
+from django.db.models import signals
+from webmanager.appman.signals import remove_extra_logs
+signals.post_save.connect(remove_extra_logs, sender=ApplicationLogProxy)
+
 
 class UserProxy(User, WallModelsProxy):
     """Extension from User class used by webmanager.
