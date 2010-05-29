@@ -102,6 +102,21 @@ class AppButton(MTKineticItem):
             self.label = "%s..." % self.label
             
         label_obj.draw()
+        
+        # Star
+        star_size = (48,48)
+        star_pos_x = self.pos[0] + self.size[0] - star_size[0]/3*2
+        star_pos_y = self.pos[1] + self.size[1] - star_size[1]/3*2
+        
+        image = Image("images/star.png")
+        image.pos = (star_pos_x, star_pos_y)
+        image.draw()
+        
+        # Star number
+        drawLabel(label = int(self.app.stars()),
+                  pos = (star_pos_x + star_size[0]/2, star_pos_y + star_size[1]/2),
+                  font_size = 25,
+                  center = True)
     
     @staticmethod
     def get_resized_size (image):

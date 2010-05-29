@@ -68,19 +68,6 @@ class AppPopup(MTWidget):
                   font_size = 15,
                   center = False)
         
-        # Star
-        star_pos = x + a - margin - star_size[0], y + b - margin - star_size[1]
-        
-        image = Image("images/star.png")
-        image.pos = star_pos
-        image.draw()
-        
-        # Star number
-        drawLabel(label = int(self.app.stars()),
-                  pos = (star_pos[0] + star_size[0]/2, star_pos[1] + star_size[1]/2),
-                  font_size = 25,
-                  center = True)
-        
         # Buttons
         buttons_size = (self.size[0]/2 - margin - 2, 45)
         button_play_pos = (x+margin, y+margin)
