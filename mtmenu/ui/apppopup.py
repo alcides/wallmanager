@@ -1,6 +1,7 @@
 from pymt import *
 from threading import Timer
 from config import APPPOPUP_SIZE, MAINWINDOW_SIZE
+from utils import get_trimmed_label_widget
 
 class AppPopup(MTWidget):
 
@@ -28,6 +29,12 @@ class AppPopup(MTWidget):
         self.play_btn_pos = ()
         self.cancel_btn_pos = ()
         self.btns_size = ()
+        
+        self.label_app_name_text = self.app.name
+        self.label_app_category_text = 'Category: %s' % self.app.category
+        self.label_app_owner_text = 'Owner: %s' % self.app.owner
+        self.label_app_runs_text = 'Runs: %s' % self.app.runs
+        self.label_app_updated_text = 'Last Updated: %s' % self.app.date_updated
 
 
     def draw(self):
@@ -35,7 +42,7 @@ class AppPopup(MTWidget):
         x,y = list(self.pos)
         a,b = list(self.size)
         margin = 20
-        star_size = (48,48)
+        max_label_width = a - margin*2
         
         # Background
         drawRoundedRectangle(pos = self.pos,
@@ -45,28 +52,39 @@ class AppPopup(MTWidget):
                      color = (0,0,0,0.9))
         
         # Title
-        drawLabel(label = self.app.name,
-                  pos = (x + margin, y + b - 50),
-                  font_size = 20,
-                  center = False)
+        label_obj, self.label_app_name_text = get_trimmed_label_widget(text = self.label_app_name_text,
+                                                                       position = (x + margin, y + b - 50),
+                                                                       font_size = 20,
+                                                                       max_width = max_label_width)
+        label_obj.draw()
         
         # Category
-        drawLabel(label = 'Category: %s' % self.app.category,
-                  pos = (x + margin, y + b - 90),
-                  font_size = 15,
-                  center = False)
+        label_obj, self.label_app_category_text = get_trimmed_label_widget(text = self.label_app_category_text,
+                                                                           position = (x + margin, y + b - 90),
+                                                                           font_size = 15,
+                                                                           max_width = max_label_width)
+        label_obj.draw()
         
         # Owner
-        drawLabel(label = 'Owner: %s' % self.app.owner,
-                  pos = (x + margin, y + b - 115),
-                  font_size = 15,
-                  center = False)
+        label_obj, self.label_app_owner_text = get_trimmed_label_widget(text = self.label_app_owner_text,
+                                                                        position = (x + margin, y + b - 115),
+                                                                        font_size = 15,
+                                                                        max_width = max_label_width)
+        label_obj.draw()
         
         # Runs
-        drawLabel(label = 'Runs: %s' % self.app.runs,
-                  pos = (x + margin, y + b - 140),
-                  font_size = 15,
-                  center = False)
+        label_obj, self.label_app_runs_text = get_trimmed_label_widget(text = self.label_app_runs_text,
+                                                                       position = (x + margin, y + b - 140),
+                                                                       font_size = 15,
+                                                                       max_width = max_label_width)
+        label_obj.draw()
+        
+        # Last Updated
+        label_obj, self.label_app_updated_text = get_trimmed_label_widget(text = self.label_app_updated_text,
+                                                                          position = (x + margin, y + b - 165),
+                                                                          font_size = 15,
+                                                                          max_width = max_label_width)
+        label_obj.draw()
         
         # Buttons
         buttons_size = (self.size[0]/2 - margin - 2, 45)

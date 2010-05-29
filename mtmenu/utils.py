@@ -4,6 +4,7 @@ sys.path.append('../webmanager')
 
 from time import sleep
 
+from pymt import *
 from models import *
 from window_manager import *
 from config import MAX_ATTEMPTS, SLEEP_SECONDS_BETWEEN_ATTEMPTS, NATIVE_APP_NAMES, PRODUCTION
@@ -79,4 +80,29 @@ def bring_window_to_front(toApp = False):
         
     w.set_foreground(hwnd)
 
-
+def get_trimmed_label_widget(text, position, font_size, max_width):
+    """ Constructs an MTLabel with a max_width. If needed label text is trimmed 
+    and '...' is added for the user to known that more text exists.
+    
+    Return: list(label_object, label_text_after_trim) """
+    
+    text_changed = False
+    label_obj = MTLabel(label = text,
+                        pos = position,
+                        font_size = font_size,
+                        autowidth = True)
+    
+    while label_obj.width > max_width:
+    
+        text = text[:-1]
+        
+        text_changed = True
+        label_obj = MTLabel(label = "%s..." % text,
+                            pos = position,
+                            font_size = font_size,
+                            autowidth = True)
+    
+    if text_changed:
+        text = "%s..." % text
+    
+    return (label_obj, text)

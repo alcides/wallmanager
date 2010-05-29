@@ -1,5 +1,6 @@
 from pymt import *
 from config import CATEGORYLIST_SIZE, CATEGORYLIST_LABEL_SIDES_MARGIN, CATEGORYLIST_LABEL_FONT_SIZE
+from utils import get_trimmed_label_widget
 
 class CategoryButton(MTKineticItem):
 
@@ -42,23 +43,9 @@ class CategoryButton(MTKineticItem):
         
         # Label
         label_margin = CATEGORYLIST_LABEL_SIDES_MARGIN
-        label_changed = False
-        label_obj = MTLabel(label = self.label,
-                            pos = (x+label_margin, y+8),
-                            font_size = CATEGORYLIST_LABEL_FONT_SIZE,
-                            autowidth = True)
         label_max_width = self.size[0] - label_margin*2
-        
-        while label_obj.width > label_max_width:
-
-            self.label = self.label[:-1]
-            
-            label_changed = True
-            label_obj = MTLabel(label = "%s..." % self.label,
-                                pos = (x+label_margin, y+8),
-                                font_size = CATEGORYLIST_LABEL_FONT_SIZE,
-                                autowidth = True)
-        
-        if label_changed:
-            self.label = "%s..." % self.label
+        label_obj, self.label = get_trimmed_label_widget(text = self.label,
+                                                         position = (x+label_margin, y+8),
+                                                         font_size = CATEGORYLIST_LABEL_FONT_SIZE,
+                                                         max_width = label_max_width)
         label_obj.draw()
