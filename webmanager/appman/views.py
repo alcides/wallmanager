@@ -323,8 +323,8 @@ def remove_administrator(request, object_id):
 def define_contact_admin(request):
     admin_list = User.objects.filter(is_staff = True)
     try:
-        current_contact_admin = WallManager.objects.all()[0].contact
-    except IndexError:
+        current_contact_admin = WallManager.objects.get().contact
+    except WallManager.DoesNotExist:
         current_contact_admin = None
     if request.method == 'POST':
         contact_admin = request.POST['contact_admin']
