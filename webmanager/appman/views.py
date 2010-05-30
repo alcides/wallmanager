@@ -37,7 +37,8 @@ def get_app_or_error(user, id):
     
 #Non-Authenticated User Views
 def home(request):
-	return render(request,'appman/home.html')
+    cs = FlatPage.objects.filter(title='Home Page')
+    return render(request,'flatpages/default.html',{'flatpage' : cs[0]})
 
 #Authenticated User Views
 @login_required
