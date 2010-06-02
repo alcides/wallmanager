@@ -63,7 +63,8 @@ def last_activity_checker():
         dic = projectors.projectors_status()
         
         lag = datetime.now() - initial
-        print "Projectors status lag: %s" % lag 
+        print "Projectors status lag: %s" % lag
+        print dic 
         for key, value in dic:
             print "Projectors status: %s is %s" % (key, value)
     except Exception as e:
