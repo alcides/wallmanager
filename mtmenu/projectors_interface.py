@@ -52,37 +52,40 @@ class ActivityChecker():
     def last_activity_checker(self):
         print 'in last activity checker'
         self.update_projectors_status()
-
-        diff_min = self.get_minutes(datetime.now() - self.last_activity())
+        print 'done with updating'
+        print 'calculating diff min'
+        print self.get_minutes(datetime.now() - self.last_activity)
+        diff_min = self.get_minutes(datetime.now() - self.last_activity)
+        print 'get control'
         screensaver_control = self.get_first_item(ScreensaverControlProxy.objects.all())        
         projector_control = self.get_first_item(ProjectorControlProxy.objects.all())
-              
+        print 'done with controls'
         if screensaver_control:
             self.manage_screensaver(screensaver_control, diff_min)
         else:
             print "screensaver time not defined"
-        
+        print 'done with screensaver'
         if projector_control:
             self.manage_projectors(projector_control, diff_min)           
         else:
             print "projectors inactivity time not defined"
-            
+        print 'restart'  
         self.last_activity_checker()
 
 
     def manage_screensaver(self, control, minutes):
-        inactivity_time = self.get_minutes( self.cast_time_to_timedelta( screensaver_control.inactivity_time ) )
-        application = ApplicationProxy.objects.filter(id = screensaver_control.application.id)[0]    
+        inactivity_time = self.get_minutes( self.cast_time_to_timedelta( control.inactivity_time ) )
+        application = ApplicationProxy.objects.filter(id = control.application.id)[0]    
         if minutes > inactivity_time and not is_app_running() and application:
             print 'Launching Screensaver'
             application.execute(True)
 
 
-    def manage_projector(self, control, minutes):
-        inactivity_time = self.get_minutes( cast_time_to_timedelta( projector_control.inactivity_time ) )            
-        print "Projector inactivity time = %s\ndiff time = %s\nis_projectors_on = %s" % (inactivity_time, diff_min, projectors_on())
+    def manage_projectors(self, control, minutes):
+        inactivity_time = self.get_minutes( self.cast_time_to_timedelta( control.inactivity_time ) ) 
+        print "Projector inactivity time = %s\ndiff time = %s\nis_projectors_on = %s" % (inactivity_time, minutes, self.projectors_on)
         
-        if minutes > inactivity_time and self.projectors_on():
+        if minutes > inactivity_time and self.projectors_on:
             print "Turning Projectors Off"   
             self.turn_projectors_power(0)     
 
