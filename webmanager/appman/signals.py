@@ -113,11 +113,17 @@ def check_if_no_longer_staff(sender, instance, signal, *args, **kwargs):
     from contact if no longer marked as staff """
     if get_contact_admin_email() == instance.email and instance.is_staff == False:
         WallManager.objects.all().delete()
+
+def check_unique_poweruser(sender, instance, signal, *args, **kwargs):
+    if instance.is_superuser:
+        sender.objects.exclude(pk=instance.pk).update(is_superuser=False)
+
         
 signals.post_save.connect(uncompress_file, sender=Application)
 signals.post_save.connect(remove_extra_logs, sender=ApplicationLog)
 signals.post_delete.connect(remove_app, sender=Application)
 signals.post_delete.connect(check_if_contact_admin, sender=User)
+signals.post_save.connect(check_unique_poweruser, sender=User)
 signals.post_save.connect(check_if_no_longer_staff, sender=User)
 
 extracted_email_signal.connect(send_mail_when_app_available)
