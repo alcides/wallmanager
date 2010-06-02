@@ -65,8 +65,6 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         if (is_app_running()):
             get_app_mutex().unlock()
             return False
-        
-        set_app_running(True)
           
         from mtmenu import cover_window
         cover_window.show()
