@@ -50,6 +50,7 @@ class ActivityChecker():
     
     
     def last_activity_checker(self):
+        print 'in last activity checker'
         self.update_projectors_status()
 
         diff_min = self.get_minutes(datetime.now() - self.last_activity())
@@ -66,22 +67,22 @@ class ActivityChecker():
         else:
             print "projectors inactivity time not defined"
             
-        last_activity_checker()
+        self.last_activity_checker()
 
 
     def manage_screensaver(self, control, minutes):
         inactivity_time = self.get_minutes( self.cast_time_to_timedelta( screensaver_control.inactivity_time ) )
         application = ApplicationProxy.objects.filter(id = screensaver_control.application.id)[0]    
-        if diff_min > inactivity_time and not is_app_running() and application:
+        if minutes > inactivity_time and not is_app_running() and application:
             print 'Launching Screensaver'
             application.execute(True)
 
 
     def manage_projector(self, control, minutes):
         inactivity_time = self.get_minutes( cast_time_to_timedelta( projector_control.inactivity_time ) )            
-        #print "Projector inactivity time = %s\ndiff time = %s\nis_projectors_on = %s" % (projector_inactivity_time, diff_min, is_projectors_on())
+        print "Projector inactivity time = %s\ndiff time = %s\nis_projectors_on = %s" % (inactivity_time, diff_min, projectors_on())
         
-        if diff_min > inactivity_time and self.projectors_on():
+        if minutes > inactivity_time and self.projectors_on():
             print "Turning Projectors Off"   
             self.turn_projectors_power(0)     
 
