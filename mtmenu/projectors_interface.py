@@ -66,7 +66,7 @@ def last_activity_checker():
         print "Projectors status lag: %s" % lag 
         for key, value in dic:
             print "Projectors status: %s is %s" % (key, value)
-    except e as Exception:
+    except Exception as e:
         print "Projectors status error: %s" % e
     
     
