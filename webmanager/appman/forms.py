@@ -20,7 +20,7 @@ class ApplicationForm(ModelForm):
 
 
 class ApplicationAddForm(ApplicationForm):
-    tos = BooleanField(label='I agree to the<b> terms of</b> service.',
+    tos = BooleanField(label='I agree to the terms of service.',
             required=False) # it is required, but handled below for a custom error message.
 
     def clean_tos(self):
