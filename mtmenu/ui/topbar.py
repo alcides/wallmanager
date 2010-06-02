@@ -64,10 +64,10 @@ class TopBar(MTWidget):
         
         if self.selected_order == 'name':
             name_image = "images/order_by_name_selected.png"
-            vote_image = "images/order_by_votes.png"
+            vote_image = "images/order_by_rating.png"
         else:
             name_image = "images/order_by_name.png"
-            vote_image = "images/order_by_votes_selected.png"
+            vote_image = "images/order_by_rating_selected.png"
         
         # Order by Name button
         image = Image(name_image)
