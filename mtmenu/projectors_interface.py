@@ -54,6 +54,22 @@ def cast_time_to_timedelta(instant):
     return timedelta( seconds = instant.hour*60*60 + instant.minute*60 + instant.second )
 
 def last_activity_checker():
+    
+    # TEST ON PROJECTORS STATUS LAG
+    # TODO: Remove this
+    try:
+        initial = datetime.now()
+        
+        dic = projectors.projectors_status()
+        
+        lag = datetime.now() - initial
+        print "Projectors status lag: %s" % lag 
+        for key, value in dic:
+            print "Projectors status: %s is %s" % (key, value)
+    except e as Exception:
+        print "Projectors status error: %s" % e
+    
+    
     last_activity_timer = Timer(INACTIVITY_POOL_INTERVAL, last_activity_checker)
     
     last_active = get_last_activity()
@@ -83,7 +99,7 @@ def last_activity_checker():
     if projector_control:
         projector_inactivity_time = get_minutes( cast_time_to_timedelta( projector_control.inactivity_time ) )
         
-        print "Projector inactivity time = %s\ndiff time = %s\nis_projectors_on = %s" % (projector_inactivity_time, diff_min, is_projectors_on())
+        #print "Projector inactivity time = %s\ndiff time = %s\nis_projectors_on = %s" % (projector_inactivity_time, diff_min, is_projectors_on())
         
         if diff_min > projector_inactivity_time and is_projectors_on():
             print "projector inactivity time reached"
