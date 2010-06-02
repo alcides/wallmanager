@@ -1,8 +1,7 @@
 from pymt import *
 from mtmenu.ui.apppopup import AppPopup
 from threading import Timer
-from config import APPSLIST_BTN_SIZE, APPSLIST_BTN_IMAGE_SIZE,
-APPSLIST_BTN_FONT_SIZE, APPSLIST_BTN_POPUPS_PER_BTN, APPSLIST_STAR_ONLY_WHEN_ORDER_BY_RATING
+from config import APPSLIST_BTN_SIZE, APPSLIST_BTN_IMAGE_SIZE, APPSLIST_BTN_FONT_SIZE, APPSLIST_BTN_POPUPS_PER_BTN, APPSLIST_STAR_ONLY_WHEN_ORDER_BY_RATING
 from utils import get_trimmed_label_widget
 
 class AppButton(MTKineticItem):
