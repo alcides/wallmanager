@@ -33,3 +33,9 @@ cover_window.add_widget(GestureScan())
 # SELF HANDLE
 import win32gui
 self_hwnd = win32gui.GetForegroundWindow()
+
+
+# PROJECTORS CHECKER
+from projectors_interface import ActivityChecker 
+activity_checker = ActivityChecker()
+
