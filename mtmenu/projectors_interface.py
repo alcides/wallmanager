@@ -115,8 +115,8 @@ class ActivityChecker():
         return self.is_between(start, end)
 
 
-    def get_first_item(self, list):
-        for item in list:
+    def get_first_item(self, items):
+        for item in items:
             return item
         return None
     
