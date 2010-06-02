@@ -23,6 +23,6 @@ if __name__ == '__main__':
     main_window.add_widget(categories_list)
     
     # GESTURE
-    main_window.add_widget(GestureScan())
+    main_window.add_widget(GestureScan(activity_checker))
     
     runTouchApp()
