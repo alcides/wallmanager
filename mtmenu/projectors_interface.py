@@ -41,35 +41,33 @@ class ActivityChecker():
             dic = projectors.projectors_status()
             for key, value in dic.items():
                 if not value == 'OFF':
-                    self.set_projectors_status(1)
+                    self.set_projectors_status(True)
+                    print "Projector status updated to TRUE"
                     return
 
-            self.set_projectors_status(0)                
+            self.set_projectors_status(False)
+            print "Projector status updated to FALSE"                
         except Exception as e:
             print "Projectors status error: %s" % e
     
     
     def last_activity_checker(self):
-        print 'in last activity checker'
         self.update_projectors_status()
-        print 'done with updating'
-        print 'calculating diff min'
-        print self.get_minutes(datetime.now() - self.last_activity)
+
         diff_min = self.get_minutes(datetime.now() - self.last_activity)
-        print 'get control'
         screensaver_control = self.get_first_item(ScreensaverControlProxy.objects.all())        
         projector_control = self.get_first_item(ProjectorControlProxy.objects.all())
-        print 'done with controls'
+
         if screensaver_control:
             self.manage_screensaver(screensaver_control, diff_min)
         else:
             print "screensaver time not defined"
-        print 'done with screensaver'
+
         if projector_control:
             self.manage_projectors(projector_control, diff_min)           
         else:
             print "projectors inactivity time not defined"
-        print 'restart'  
+
         self.last_activity_checker()
 
 

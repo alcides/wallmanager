@@ -22,6 +22,7 @@ class GestureWidget( MTGestureWidget ):
     def on_gesture(self, gesture, touch):
         from mtmenu import activity_checker
 
+        print "PROJECTORS STATE: %d" % activity_checker.projectors_on
         if not activity_checker.projectors_on:
             print 'Turning Projectors On'
             activity_checker.turn_projectors_power(1)
