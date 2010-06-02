@@ -66,8 +66,6 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             get_app_mutex().unlock()
             return False
           
-        from mtmenu import cover_window
-        cover_window.show()
         
         app_boot_file = self.get_boot_file()
         success = False
@@ -75,6 +73,8 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         if app_boot_file:
             
             try:
+                from mtmenu import cover_window
+                cover_window.show()
                 
                 self.start_run()
                 
