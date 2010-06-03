@@ -3,6 +3,8 @@ from mtmenu.ui.apppopup import AppPopup
 from threading import Timer
 from config import APPSLIST_BTN_SIZE, APPSLIST_BTN_IMAGE_SIZE, APPSLIST_BTN_FONT_SIZE, APPSLIST_BTN_POPUPS_PER_BTN
 
+from utils import remove_application_by_id
+
 
 class AppButton(MTKineticItem):
     """Widget representing an application on main window. 
@@ -75,8 +77,9 @@ class AppButton(MTKineticItem):
             image.pos = x - image.width /2, y - image.height /2      
             image.draw()
         except Exception as e:
-            print "EXCEPTION on appbutton"
+            print "EXCEPTION on appbutton :: now refreshing application list"
             print e
+            self.parent.reorder()
         
         # Label
         label_changed = False
