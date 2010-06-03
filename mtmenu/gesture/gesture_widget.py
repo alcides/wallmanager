@@ -25,7 +25,7 @@ class GestureWidget( MTGestureWidget ):
         print "PROJECTORS STATE: %d" % self.activity_checker.projectors_on
         if not self.activity_checker.projectors_on:
             print 'Turning Projectors On'
-            activity_checker.turn_projectors_power(1)
+            self.activity_checker.turn_projectors_power(1)
         self.activity_checker.set_last_activity()
             
         print 'gesture: %d' % self.counter
