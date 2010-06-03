@@ -24,6 +24,7 @@ class GestureWidget( MTGestureWidget ):
     def on_gesture(self, gesture, touch):
 
         logger.debug("PROJECTORS STATE: %d" % self.activity_checker.projectors_on)
+
         if not self.activity_checker.projectors_on:
             logger.info('Turning Projectors On')
             self.activity_checker.turn_projectors_power(1)

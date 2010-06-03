@@ -2,13 +2,13 @@ from pymt.ui.widgets.modalwindow import MTModalWindow
 from ui.votepopup import VotePopup
 from threading import Timer
 from utils import bring_window_to_front
+from config import COVER_WINDOW_RESUME_TIME
 
 
 class CoverWindow(MTModalWindow):
 
     def __init__(self, **kwargs):
         self.vote = VotePopup()
-        self.TIME = 10.0
         self.timer = None
         super(CoverWindow, self).__init__(**kwargs)
         
@@ -22,7 +22,7 @@ class CoverWindow(MTModalWindow):
         if not is_screensaver:
             self.vote.app = app
             self.add_widget( self.vote )
-            self.timer = Timer(self.TIME, self.hide)
+            self.timer = Timer(COVER_WINDOW_RESUME_TIME, self.hide)
             self.timer.start()
         else:
             self.hide()
