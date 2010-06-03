@@ -88,12 +88,14 @@ class ActivityChecker():
         
     def turn_projectors_power(self, status):
         if not self.in_schedule():
+            print "NOT IN SCHEDULE. Projectors will remain with the previous state"
             return
         
         try:
             projectors.projectors_power(status)
+            print "Projectors status changed to %d" % status
         except Exception, e:
-            print 'Error changing projectors status'
+            print 'Error changing projectors status: \n%s' % e
     
     
     def in_schedule(self):
