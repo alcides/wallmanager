@@ -52,6 +52,7 @@ def bring_window_to_front(toApp = False):
         for i in range(MAX_ATTEMPTS):
             # loop for the open windows on the desktop
             for handler, name in w.getWindows():
+                print "Window opened with name %s" % name
                 if handler != self_hwnd and name not in NATIVE_APP_NAMES:
                     hwnd = handler
                     print 'Changing context to handler %d with name %s' % (handler, name)
@@ -69,12 +70,12 @@ def bring_window_to_front(toApp = False):
         print "Going back to the main application"
         
         for handler, name in w.getWindows():
-            print name
+            print "Window opened with name %s" % name
             if handler != self_hwnd and name not in NATIVE_APP_NAMES:
                 
                 tid, pid = win32process.GetWindowThreadProcessId(handler)
-                if PRODUCTION:
-                    Popen("taskkill /F /T /PID %i" % pid, shell=True)
+                #if PRODUCTION:
+                #    Popen("taskkill /F /T /PID %i" % pid, shell=True)
                 
                 print 'killing %s with PID %d' % (name, pid)
         

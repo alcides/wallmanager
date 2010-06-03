@@ -79,7 +79,7 @@ UNAVAILABLE_PROJECTORS_TIME = 2
 MAX_ATTEMPTS = 3
 SLEEP_SECONDS_BETWEEN_ATTEMPTS = 2
 
-NATIVE_APP_NAMES = [' Community Core Vision ','Atalho para launcher']
+NATIVE_APP_NAMES = [' Community Core Vision ','Atalho para launcher.py']
 
 ## GESTURE
 GESTURE_ACCEPTANCE_MARGIN = 0.80
