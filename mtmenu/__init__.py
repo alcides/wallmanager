@@ -1,3 +1,9 @@
+import logging, logging.config
+
+logging.config.fileConfig("logging.conf")
+logger = logging.getLogger("wallLogger")
+logger.info("logger stated")
+
 from ui.mainwindow import MainWindow
 main_window = MainWindow()
 
