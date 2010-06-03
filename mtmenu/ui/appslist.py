@@ -28,6 +28,9 @@ class AppsList(MTKineticList):
         self.current_category = None
         self.criteria = 'name'
         
+        for a in applications:
+            a.is_running = False
+            a.save(False, True)
         self.add(applications)
         
         
