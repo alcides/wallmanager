@@ -23,8 +23,7 @@ class AppButton(MTKineticItem):
         self.double_tap_detected = False
         
         super(AppButton, self).__init__(**kwargs)
-        *
-
+        
     """Execute application on double click
        Open popup on single click"""
     def on_press(self, touch):  

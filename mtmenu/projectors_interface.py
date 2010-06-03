@@ -10,7 +10,7 @@ from config import PRODUCTION, INACTIVITY_POOL_INTERVAL
 from datetime import datetime
 from threading import Thread
 from config import SATURDAY
-from mtmeny import logger
+from mtmenu import logger
 
 
 class ActivityChecker():
