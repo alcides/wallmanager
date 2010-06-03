@@ -9,6 +9,7 @@ from config import PRODUCTION, INACTIVITY_POOL_INTERVAL
 
 from datetime import datetime
 from threading import Thread
+from config import SATURDAY
 
 
 class ActivityChecker():
@@ -104,7 +105,7 @@ class ActivityChecker():
         if not projector_control:
             return False
          
-        if day < 5:
+        if day < SATURDAY:
             start = projector_control.startup_week_time
             end = projector_control.shutdown_week_time
         else:

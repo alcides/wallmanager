@@ -50,8 +50,8 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         This method blocks until the application exits. Use run() instead.
 
         Returns:
-            True if application is successfuly executed. If no boot file
-            is available False is returned
+            True if application is successfuly executed. 
+            False is returned whether there is no boot file or another application is already running.
             
         Raises:
             An Exception is raised in case something goes wrong during
