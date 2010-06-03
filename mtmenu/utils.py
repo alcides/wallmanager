@@ -27,10 +27,6 @@ def get_all_applications(sort_by_value=False):
 
 def get_applications_of_category(cat, sort_by_value=False):
     return sort_apps( ApplicationProxy.objects.filter(category = cat), sort_by_value )
-        
-
-def remove_application_by_id(i):
-    ApplicationProxy.objects.get(id=i).delete()
     
 
 def exists_category(category_name):

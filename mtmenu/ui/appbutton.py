@@ -3,8 +3,6 @@ from mtmenu.ui.apppopup import AppPopup
 from threading import Timer
 from config import APPSLIST_BTN_SIZE, APPSLIST_BTN_IMAGE_SIZE, APPSLIST_BTN_FONT_SIZE, APPSLIST_BTN_POPUPS_PER_BTN
 
-from utils import remove_application_by_id
-
 
 class AppButton(MTKineticItem):
     """Widget representing an application on main window. 
