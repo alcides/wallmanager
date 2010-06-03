@@ -4,7 +4,7 @@ from appman.models import *
 
 urlpatterns = patterns('appman.views',
 
-	url(r'^$', 'home', name="home"),
+	url(r'^$','home', name="home"),
 	url(r'^contact/$', 'contact', name="contact-admin"),
 
 	url(r'^applications/$', 'application_list', name="application-list"),

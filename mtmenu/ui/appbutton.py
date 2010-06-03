@@ -1,8 +1,8 @@
 from pymt import *
 from mtmenu.ui.apppopup import AppPopup
 from threading import Timer
-from config import APPSLIST_BTN_SIZE, APPSLIST_BTN_IMAGE_SIZE, APPSLIST_BTN_FONT_SIZE, APPSLIST_BTN_POPUPS_PER_BTN
-
+from config import APPSLIST_BTN_SIZE, APPSLIST_BTN_IMAGE_SIZE, APPSLIST_BTN_FONT_SIZE, APPSLIST_BTN_POPUPS_PER_BTN, APPSLIST_STAR_ONLY_WHEN_ORDER_BY_RATING
+from utils import get_trimmed_label_widget
 
 class AppButton(MTKineticItem):
     """Widget representing an application on main window. 
@@ -79,29 +79,32 @@ class AppButton(MTKineticItem):
             self.parent.reorder()
         
         # Label
-        label_changed = False
-        label_obj = MTLabel(label = self.label,
-                            font_size = APPSLIST_BTN_FONT_SIZE,
-                            autowidth = True)
-        label_max_width = self.size[0] - 5
-        
-        while label_obj.width > label_max_width:
-
-            self.label = self.label[:-1]
-            
-            label_changed = True
-            label_obj = MTLabel(label = "%s..." % self.label,
-                                pos = (self.pos[0] / 2, self.size[1]-50),
-                                font_size = APPSLIST_BTN_FONT_SIZE,
-                                autowidth = True)
-            
+        label_obj, self.label = get_trimmed_label_widget(text = self.label,
+                                                         position = (self.pos[0] / 2, self.size[1]-50),
+                                                         font_size = APPSLIST_BTN_FONT_SIZE,
+                                                         max_width = self.size[0] - 5)
         label_obj.pos = (self.pos[0] + ((self.size[0] - label_obj.width) / 2),
                          self.pos[1] - APPSLIST_BTN_FONT_SIZE - 6)
-        
-        if label_changed:
-            self.label = "%s..." % self.label
-            
         label_obj.draw()
+        
+        # Show star only if is configured to always appears or if order by 'Rating' is selected
+        from mtmenu import apps_list
+        
+        if not APPSLIST_STAR_ONLY_WHEN_ORDER_BY_RATING or (APPSLIST_STAR_ONLY_WHEN_ORDER_BY_RATING and apps_list.criteria == 'value'):
+        # Star
+            star_size = (48,48)
+            star_pos_x = self.pos[0] + self.size[0] - star_size[0]/3*2
+            star_pos_y = self.pos[1] + self.size[1] - star_size[1]/3*2
+            
+            image = Image("images/star.png")
+            image.pos = (star_pos_x, star_pos_y)
+            image.draw()
+            
+            # Star number
+            drawLabel(label = int(self.app.stars()),
+                      pos = (star_pos_x + star_size[0]/2, star_pos_y + star_size[1]/2),
+                      font_size = 25,
+                      center = True)
     
     @staticmethod
     def get_resized_size (image):

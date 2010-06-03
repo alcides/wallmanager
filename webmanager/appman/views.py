@@ -37,7 +37,7 @@ def get_app_or_error(user, id):
     
 #Non-Authenticated User Views
 def home(request):
-	return render(request,'appman/home.html')
+    return HttpResponseRedirect('/home')
 
 #Authenticated User Views
 @login_required
