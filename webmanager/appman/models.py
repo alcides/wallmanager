@@ -109,7 +109,11 @@ class ApplicationLog(models.Model):
     
     def __unicode__(self):
         return u"%s log at %s" % (self.application.name, self.datetime)
-        
+
+
+    class Meta:
+        ordering = ['-datetime']
+
 class WallManager(models.Model):
     contact = models.EmailField(blank=True)
     
