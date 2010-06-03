@@ -4,6 +4,7 @@ from subprocess import Popen, PIPE
 from config import APPS_REPOSITORY_PATH, APPS_BOOT_FILENAME, PRODUCTION
 from cStringIO import StringIO
 from threading import Thread
+from mtmenu import logger
 from mtmenu.application_running import set_app_running, remove_app_running, get_app_running, is_app_running, get_app_mutex
 # Go back one directory and adds it to sys.path
 sys.path.append('..')
@@ -39,7 +40,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             t = Thread( target=self._execute, args=( is_screensaver, ) )
             t.start()
         else:
-            print "some application is already running"
+            logger.info("NOT RUNNING %s: some application is already running" % self.name)
         
     def _execute(self, is_screensaver):
         """Tries to execute application's batch file.
@@ -60,7 +61,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
             
         #hide scatter
         
-        print 'i am in %s' % self.name
+        logger.info('running application: %s' % self.name)
         
         if (is_app_running()):
             get_app_mutex().unlock()
@@ -86,7 +87,6 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 # defines the application that is running
                 set_app_running(process)
                 
-                print "Running application: %s" % self.name
                 
                 from utils import bring_window_to_front
                 bring_window_to_front(True)
@@ -107,13 +107,11 @@ class ApplicationProxy(models.Application, WallModelsProxy):
                 self.add_log_entry(output.getvalue())    
                     
                 success = True
-                print "Application terminated"
+                logger.info("Application %s terminated" % self.name)
             except Exception, e: #Pokemon
-                print "EXCEPTION RUNNING APPLICATION"
-                print e
+                logger.error("EXCEPTION RUNNING APPLICATION:\n%s" % e)
         else:
-            print "Could not run app because no boot file"
-        print 'i am unlocking %s' % self.name
+            logger.error("Could not run app %s because no boot file" % self.name)
         get_app_mutex().unlock()
         
         return success

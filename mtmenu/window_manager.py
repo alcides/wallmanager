@@ -4,6 +4,7 @@ import win32con
 import re
 
 from config import SET_FULLSCREEN
+from mtmenu import logger
 
 
 class WindowMgr:
@@ -30,8 +31,6 @@ class WindowMgr:
         list_apps.append((t, pid, win32gui.GetWindowText(hwnd)))
 
         if pid == self.pid and win32gui.GetWindowText(hwnd) == 'pymt':
-            print "HANDLE:"
-            print hwnd
             self._handle = hwnd
 
   
@@ -41,7 +40,7 @@ class WindowMgr:
         if handler != None:
             win32gui.ShowWindow(handler, SET_FULLSCREEN)
             win32gui.SetForegroundWindow(handler)
-            print "changed to window with handler %d" % int(handler)
+            logger.info("changed to window with handler %d" % int(handler))
     
     
     def isRealWindow(self, hWnd):

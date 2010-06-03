@@ -10,6 +10,7 @@ from config import PRODUCTION, INACTIVITY_POOL_INTERVAL
 from datetime import datetime
 from threading import Thread
 from config import SATURDAY
+from mtmeny import logger
 
 
 class ActivityChecker():
@@ -47,7 +48,7 @@ class ActivityChecker():
 
             self.set_projectors_status(False)
         except Exception as e:
-            print "Projectors status error: %s" % e
+            logger.error("Projectors status error:\n%s" % e)
     
     
     def last_activity_checker(self):
@@ -60,12 +61,12 @@ class ActivityChecker():
         if screensaver_control:
             self.manage_screensaver(screensaver_control, diff_min)
         else:
-            print "screensaver time not defined"
+            logger.error("screensaver time not defined")
 
         if projector_control:
             self.manage_projectors(projector_control, diff_min)           
         else:
-            print "projectors inactivity time not defined"
+            logger.error("projectors inactivity time not defined")
 
         self.last_activity_checker()
 
@@ -74,29 +75,29 @@ class ActivityChecker():
         inactivity_time = self.get_minutes( self.cast_time_to_timedelta( control.inactivity_time ) )
         application = ApplicationProxy.objects.filter(id = control.application.id)[0]    
         if minutes > inactivity_time and not is_app_running() and application:
-            print 'Launching Screensaver'
+            logger.info('Launching Screensaver')
             application.execute(True)
 
 
     def manage_projectors(self, control, minutes):
         inactivity_time = self.get_minutes( self.cast_time_to_timedelta( control.inactivity_time ) ) 
-        print "Projector inactivity time = %s\ndiff time = %s\nis_projectors_on = %s" % (inactivity_time, minutes, self.projectors_on)
+        logger.debug("Projector inactivity time = %s\ndiff time = %s\nis_projectors_on = %s" % (inactivity_time, minutes, self.projectors_on))
         
         if minutes > inactivity_time and self.projectors_on:
-            print "Turning Projectors Off"   
+            logger.info("Turning Projectors Off")   
             self.turn_projectors_power(0)     
 
         
     def turn_projectors_power(self, status):
         if not self.in_schedule():
-            print "NOT IN SCHEDULE. Projectors will remain with the previous state"
+            logger.info("NOT IN SCHEDULE. Projectors will remain with the previous state")
             return
         
         try:
             projectors.projectors_power(status)
-            print "Projectors status changed to %d" % status
+            logger.info("Projectors status changed to %d" % status)
         except Exception, e:
-            print 'Error changing projectors status: \n%s' % e
+            logger.error('Error changing projectors status:\n%s' % e)
     
     
     def in_schedule(self):
