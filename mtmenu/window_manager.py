@@ -55,7 +55,7 @@ class WindowMgr:
         if (((lExStyle & win32con.WS_EX_TOOLWINDOW) == 0 and hasNoOwner)
           or ((lExStyle & win32con.WS_EX_APPWINDOW != 0) and not hasNoOwner)):
             if win32gui.GetWindowText(hWnd):
-            return True
+                return True
         return False
     
     def getWindows(self):
