@@ -42,11 +42,9 @@ class ActivityChecker():
             for key, value in dic.items():
                 if not value == 'OFF':
                     self.set_projectors_status(True)
-                    print "Projector status updated to TRUE"
                     return
 
             self.set_projectors_status(False)
-            print "Projector status updated to FALSE"                
         except Exception as e:
             print "Projectors status error: %s" % e
     
@@ -94,9 +92,8 @@ class ActivityChecker():
         
         try:
             projectors.projectors_power(status)
-            print 'projectors turned off'
         except Exception, e:
-            print 'Error turning projectors off'
+            print 'Error changing projectors status'
     
     
     def in_schedule(self):
