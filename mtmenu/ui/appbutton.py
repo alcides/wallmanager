@@ -60,8 +60,7 @@ class AppButton(MTKineticItem):
         self.parent.refresh(categories_list.current)
         
         
-    def draw(self):
-        
+    def draw(self): 
         # Outside line
         style = {'bg-color': (1, 1, 1, 1), 'draw-background': 0, 'draw-border': True, 'border-radius': 10}
         set_color(*style.get('bg-color'))
