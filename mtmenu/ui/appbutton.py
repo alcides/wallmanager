@@ -73,7 +73,7 @@ class AppButton(MTKineticItem):
             image.size = self.get_resized_size(image)
             image.pos = x - image.width /2, y - image.height /2      
             image.draw()
-        except Exception as e:
+        except Exception, e:
             print "EXCEPTION on appbutton :: now refreshing application list"
             print e
             self.parent.reorder()
