@@ -77,6 +77,7 @@ class AppButton(MTKineticItem):
             print "EXCEPTION on appbutton :: now refreshing application list"
             print e
             self.parent.reorder()
+            return
         
         # Label
         label_obj, self.label = get_trimmed_label_widget(text = self.label,
