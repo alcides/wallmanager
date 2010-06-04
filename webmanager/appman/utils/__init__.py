@@ -11,6 +11,6 @@ def get_contact_admin_email():
     
 def reboot_os():
     if platform.system()[:3].lower() == "win":
-        os.system("shutdown -r -t 1")
+        os.system("shutdown -r -f -t 1")
     else:
         print "Reboot in Windows"
