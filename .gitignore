@@ -6,7 +6,7 @@ webmanager/media/app_temp/*.zip
 webmanager/media/icons/*.png
 webmanager/log.txt
 mtmenu/apps
-mtmenu/out.txt
+mtmenu/logs
 .project
 .pydevproject
 .settings
