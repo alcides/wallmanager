@@ -18,6 +18,7 @@ class ProjectorManager():
         self.projector = projector_ip
         self.url = lambda day: 'http://%s/admin/%s.html' % (self.projector, day)
         self.url_main = 'http://%s/main.html' % (self.projector)
+        self.url_status = 'http://%s/status.html' % (self.projector)
     
     #returns true if successfully authenticated
     def login(self):
@@ -73,6 +74,17 @@ class ProjectorManager():
         req = urllib2.Request(self.url_main, data)
         urllib2.urlopen(req)
         
+    def projector_status(self):
+        dic = {0:"OFF" , 1:"ON", 2:"COOL_DOWN"}
+        status = lambda n: 'Power Status</th><td nowrap class="item_oparation_area"><script language="JavaScript"><!--sts = "%s";' % (str(n))
+        req = urllib2.Request(self.url_status)
+        response = urllib2.urlopen(req)
+        page = response.read()
+        clean_page = page.replace("\n",'').replace("\t",'').replace("\r",'')
+        for i in range(3):
+            if status(i) in clean_page:
+                return dic[i]
+        return "REQUEST_ERROR"
 
 def set_projectors_time(week_on, week_off, 
         weekend_on=False, weekend_off=False, 
@@ -106,3 +118,12 @@ def projectors_power(power, klass=ProjectorManager, projector_ips=PROJECTOR_IPS)
                 projector.power_on()
             else:
                 projector.power_off()
+
+#Returns a dictionary with the status of each projector
+def projectors_status(klass=ProjectorManager, projector_ips=PROJECTOR_IPS):
+    controllers = map(klass, projector_ips)
+    dic = {}
+    for projector in controllers:
+        if projector.login():
+            dic[projector.projector] = projector.projector_status()
+    return dic

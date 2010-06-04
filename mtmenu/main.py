@@ -3,7 +3,6 @@ sys.path.append("..")
 
 from pymt import *
 from mtmenu import *
-from projectors_interface import last_activity_checker
 from gesture.gesture_scan import GestureScan
 
 if __name__ == '__main__':
@@ -24,10 +23,6 @@ if __name__ == '__main__':
     main_window.add_widget(categories_list)
     
     # GESTURE
-    main_window.add_widget(GestureScan())
-    
-    # Call inactivity checker
-    last_activity_checker()
-    
+    main_window.add_widget(GestureScan(activity_checker))
     
     runTouchApp()

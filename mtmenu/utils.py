@@ -8,6 +8,7 @@ from pymt import *
 from models import *
 from window_manager import *
 from config import MAX_ATTEMPTS, SLEEP_SECONDS_BETWEEN_ATTEMPTS, NATIVE_APP_NAMES, PRODUCTION
+from mtmenu import logger
 
 
 
@@ -27,7 +28,7 @@ def get_all_applications(sort_by_value=False):
 
 
 def get_applications_of_category(cat, sort_by_value=False):
-        return sort_apps( ApplicationProxy.objects.filter(category = cat), sort_by_value )
+    return sort_apps( ApplicationProxy.objects.filter(category = cat), sort_by_value )
     
 
 def exists_category(category_name):
@@ -52,31 +53,32 @@ def bring_window_to_front(toApp = False):
         for i in range(MAX_ATTEMPTS):
             # loop for the open windows on the desktop
             for handler, name in w.getWindows():
+                logger.debug("Window opened with name %s" % name)
                 if handler != self_hwnd and name not in NATIVE_APP_NAMES:
                     hwnd = handler
-                    print 'Changing context to handler %d with name %s' % (handler, name)
+                    logger.info('Changing context to handler %d with name %s' % (handler, name))
                     break
             if hwnd != None:
                 break
             sleep(SLEEP_SECONDS_BETWEEN_ATTEMPTS)
         
-        print "Got handler", hwnd    
+        logger.debug("Got handler %d" % hwnd)    
         if hwnd == None:
             hwnd = self_hwnd
             
     else:
         hwnd = self_hwnd
-        print "Going back to the main application"
+        logger.info("Going back to the main application")
         
         for handler, name in w.getWindows():
-            print name
+            logger.debug("Window opened with name %s" % name)
             if handler != self_hwnd and name not in NATIVE_APP_NAMES:
                 
                 tid, pid = win32process.GetWindowThreadProcessId(handler)
                 if PRODUCTION:
                     Popen("taskkill /F /T /PID %i" % pid, shell=True)
                 
-                print 'killing %s with PID %d' % (name, pid)
+                logger.debug('killing %s with PID %d' % (name, pid))
         
     w.set_foreground(hwnd)
 

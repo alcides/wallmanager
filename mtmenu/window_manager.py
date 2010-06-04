@@ -3,6 +3,9 @@ import win32process
 import win32con
 import re
 
+from config import SET_FULLSCREEN
+from mtmenu import logger
+
 
 class WindowMgr:
     """Encapsulates some calls to the winapi for window management"""
@@ -28,27 +31,20 @@ class WindowMgr:
         list_apps.append((t, pid, win32gui.GetWindowText(hwnd)))
 
         if pid == self.pid and win32gui.GetWindowText(hwnd) == 'pymt':
-            print "HANDLE:"
-            print hwnd
             self._handle = hwnd
 
-    def find_window_wildcard(self):
-        list_apps = []
-        win32gui.EnumWindows(self._window_enum_callback, list_apps)
-        #print list_apps
-        
-
+  
     def set_foreground(self, handler):
         """put the window in the foreground"""
         
         if handler != None:
-            win32gui.ShowWindow(handler, 3)
+            win32gui.ShowWindow(handler, SET_FULLSCREEN)
             win32gui.SetForegroundWindow(handler)
-            print "changed to window with handler %d" % int(handler)
+            logger.info("changed to window with handler %d" % int(handler))
     
     
     def isRealWindow(self, hWnd):
-        '''Return True iff given window is a real Windows application window.'''
+        '''Return True iff given handler corespond to a real visible window on the desktop.'''
         if not win32gui.IsWindowVisible(hWnd):
             return False
         if win32gui.GetParent(hWnd) != 0:

@@ -8,135 +8,129 @@ from mtmenu.application_running import is_app_running
 from config import PRODUCTION, INACTIVITY_POOL_INTERVAL
 
 from datetime import datetime
+from threading import Thread
+from config import SATURDAY
+from mtmenu import logger
 
-def is_projectors_on():
-    global projectors_on
-    global projectors_down_time
-    if projectors_down_time == time(0,0,0):
-        projectors_on = in_schedule()
-    return projectors_on
 
-def set_projectors_on(bool):
-    global projectors_down_time
-    global projectors_on
-    if (bool):
-        projectors_down_time = time(0,0,0)
-    else:
-        projectors_down_time = datetime.now()
-    projectors_on = bool
-    
+class ActivityChecker():
 
-def get_last_activity():
-    global last_activity
-    return last_activity
-
-def set_last_activity(time = None):
-    global last_activity
-    
-    if time != None:
-        last_activity = time
-    else:
-        last_activity = datetime.now()
+    def __init__(self):
+        #CONTROL VARIABLES
+        self.last_activity = datetime.now()
+        self.projectors_on = self.in_schedule()
         
+        Thread( target=self.last_activity_checker ).start()
 
-def get_projectors_down_duration():
-    global projectors_down_time
-    return get_minutes( cast_time_to_timedelta( datetime.now() ) ) - get_minutes( cast_time_to_timedelta(projectors_down_time ) )
 
-########## SCREENSAVER & PROJECTOR
+    def set_projectors_status(self, status):
+        self.projectors_on = status
 
-def get_first_item(list):
-    for item in list:
-        return item
-    return None
 
-def cast_time_to_timedelta(instant):
-    return timedelta( seconds = instant.hour*60*60 + instant.minute*60 + instant.second )
+    def set_last_activity(self, time = None): 
+        if time != None:
+            self.last_activity = time
+        else:
+            self.last_activity = datetime.now()
+      
+        
+    def get_projectors_down_duration(self):
+        return self.get_minutes( self.cast_time_to_timedelta( datetime.now() ) ) - self.get_minutes( self.cast_time_to_timedelta(self.projectors_down_time ) )
+        
+        
+    def update_projectors_status(self):
+        try:
+            dic = projectors.projectors_status()
+            for key, value in dic.items():
+                if not value == 'OFF':
+                    self.set_projectors_status(True)
+                    return
 
-def last_activity_checker():
-    last_activity_timer = Timer(INACTIVITY_POOL_INTERVAL, last_activity_checker)
+            self.set_projectors_status(False)
+        except Exception as e:
+            logger.error("Projectors status error:\n%s" % e)
     
-    last_active = get_last_activity()
+    
+    def last_activity_checker(self):
+        self.update_projectors_status()
+
+        diff_min = self.get_minutes(datetime.now() - self.last_activity)
+        screensaver_control = self.get_first_item(ScreensaverControlProxy.objects.all())        
+        projector_control = self.get_first_item(ProjectorControlProxy.objects.all())
+
+        if screensaver_control:
+            self.manage_screensaver(screensaver_control, diff_min)
+        else:
+            logger.error("screensaver time not defined")
+
+        if projector_control:
+            self.manage_projectors(projector_control, diff_min)           
+        else:
+            logger.error("projectors inactivity time not defined")
+
+        self.last_activity_checker()
+
+
+    def manage_screensaver(self, control, minutes):
+        inactivity_time = self.get_minutes( self.cast_time_to_timedelta( control.inactivity_time ) )
+        application = ApplicationProxy.objects.filter(id = control.application.id)[0]    
+        if minutes > inactivity_time and not is_app_running() and application:
+            logger.info('Launching Screensaver')
+            application.execute(True)
+
+
+    def manage_projectors(self, control, minutes):
+        inactivity_time = self.get_minutes( self.cast_time_to_timedelta( control.inactivity_time ) ) 
+        logger.debug("Projector inactivity time = %s\ndiff time = %s\nis_projectors_on = %s" % (inactivity_time, minutes, self.projectors_on))
+        
+        if minutes > inactivity_time and self.projectors_on:
+            logger.info("Turning Projectors Off")   
+            self.turn_projectors_power(0)     
+
+        
+    def turn_projectors_power(self, status):
+        if not self.in_schedule():
+            logger.info("NOT IN SCHEDULE. Projectors will remain with the previous state")
+            return
+        
+        try:
+            projectors.projectors_power(status)
+            logger.info("Projectors status changed to %d" % status)
+        except Exception, e:
+            logger.error('Error changing projectors status:\n%s' % e)
+    
+    
+    def in_schedule(self):
+        day = datetime.now().weekday()
+        projector_control = self.get_first_item( ProjectorControlProxy.objects.all() )
+        if not projector_control:
+            return False
+         
+        if day < SATURDAY:
+            start = projector_control.startup_week_time
+            end = projector_control.shutdown_week_time
+        else:
+            start = projector_control.startup_weekend_time
+            end = projector_control.shutdown_weekend_time
+
+        return self.is_between(start, end)
+
+
+    def get_first_item(self, items):
+        for item in items:
+            return item
+        return None
+    
+    
+    def cast_time_to_timedelta(self, instant):
+        return timedelta( seconds = instant.hour*60*60 + instant.minute*60 + instant.second )
        
-    if last_active == None:
-        last_activity_timer.start()
-        return
-
-    diff_min = get_minutes(datetime.now() - last_active)
-    screensaver_control_list = ScreensaverControlProxy.objects.all()
-    screensaver_control = get_first_item(screensaver_control_list)
     
-    projector_control_list = ProjectorControlProxy.objects.all()
-    projector_control = get_first_item(projector_control_list)
+    def get_minutes(self, time):
+        return ( time.seconds + time.microseconds/1000000.0) / 60
     
-    if screensaver_control:
-        screensaver_inactivity_time = get_minutes( cast_time_to_timedelta( screensaver_control.inactivity_time ) )
-        application = ApplicationProxy.objects.filter(id = screensaver_control.application.id)[0]        
-        
-        if diff_min > screensaver_inactivity_time and not is_app_running():
-            print "screensaver inactivity time reached"
-            if application:
-                application.execute(True)
-    else:
-        print "screensaver time not defined"
-    
-    if projector_control:
-        projector_inactivity_time = get_minutes( cast_time_to_timedelta( projector_control.inactivity_time ) )
-        
-        print "Projector inactivity time = %s\ndiff time = %s\nis_projectors_on = %s" % (projector_inactivity_time, diff_min, is_projectors_on())
-        
-        if diff_min > projector_inactivity_time and is_projectors_on():
-            print "projector inactivity time reached"
-            try:
-                projectors.projectors_power(0)
-                set_projectors_on(False)
-                print 'projectors turned off'
-            except Exception, e:
-                print 'Error turning projectors off'
-                print e
-                if not PRODUCTION: 
-                    set_projectors_on(False)
-    else:
-        print "projectors inactivity time not defined"
-        
-    last_activity_timer.start()
-    
+    def is_between(self, start, end):
+        now = datetime.now()
+        return (now.hour > start.hour or ( now.hour == start.hour and now.minute > start.minute )) and \
+        (now.hour < end.hour or (now.hour == end.hour and now.minute < end.minute))
 
-def get_minutes(time):
-    return ( time.seconds + time.microseconds/1000000.0) / 60
-
-def is_between(start, end):
-    now = datetime.now()
-    return (now.hour > start.hour or ( now.hour == start.hour and now.minute > start.minute )) and \
-    (now.hour < end.hour or (now.hour == end.hour and now.minute < end.minute))
-
-def in_schedule():
-    from datetime import datetime, time
-    now = datetime.now()
-    day = now.weekday()
-    projector_control = get_first_item( ProjectorControlProxy.objects.all() )
-    if not projector_control:
-        return False
-     
-    if day < 5:
-        start = projector_control.startup_week_time
-        end = projector_control.shutdown_week_time
-    else:
-        start = projector_control.startup_weekend_time
-        end = projector_control.shutdown_weekend_time
-
-    # Considering ending before start
-    if start.hour > end.hour:
-        tmp_end = time(23,59,59)
-        tmp_start = time(0,0,0)
-        
-        return is_between(start, tmp_end) or is_between(tmp_start, end)
-    else:
-        return is_between(start, end)
-
-
-#CONTROL VARIABLES
-last_activity = datetime.now()
-projectors_on = in_schedule()
-
-projectors_down_time = time(0,0,0)

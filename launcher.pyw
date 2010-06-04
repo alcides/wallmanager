@@ -5,11 +5,11 @@ import time
 from datetime import datetime
 mtmenu_dir = os.path.join(os.path.dirname(__file__), 'mtmenu')
 
-
-f = open('mtmenu/logs/out_%s.txt' % int(time.mktime(datetime.now().timetuple())) , 'w')
 while True:
+    f = open('mtmenu/logs/out_%s.txt' % int(time.mktime(datetime.now().timetuple())) , 'w')
+    
     proc = subprocess.Popen([sys.executable, 'main.py', '-p', 'default:tuio,0.0.0.0:6001'],
-				cwd=mtmenu_dir, shell=False, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+				cwd=mtmenu_dir, shell=True, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     
     stdout, stderr = proc.communicate()
     if stdout:
@@ -19,4 +19,4 @@ while True:
         f.write(stderr)
     f.write(30*"=")
 				
-f.close()
+    f.close()

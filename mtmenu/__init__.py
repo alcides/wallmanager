@@ -1,3 +1,9 @@
+import logging, logging.config
+
+logging.config.fileConfig("logging.conf")
+logger = logging.getLogger("wallLogger")
+logger.info("logger stated")
+
 from ui.mainwindow import MainWindow
 main_window = MainWindow()
 
@@ -23,13 +29,21 @@ proxy = Proxy()
 from ui.backgroundimage import BackgroundImage
 background_image = BackgroundImage(filename = 'images/wallpaper.png')
 
+# PROJECTORS CHECKER
+from projectors_interface import ActivityChecker 
+activity_checker = ActivityChecker()
+
+
 # COVERWINDOW
 from ui.coverwindow import CoverWindow
 from gesture.gesture_scan import GestureScan
 cover_window = CoverWindow()
-cover_window.add_widget(GestureScan())
+cover_window.add_widget(GestureScan(activity_checker))
 
 
 # SELF HANDLE
 import win32gui
 self_hwnd = win32gui.GetForegroundWindow()
+
+
+

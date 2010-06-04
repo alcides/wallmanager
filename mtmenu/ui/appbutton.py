@@ -3,6 +3,7 @@ from mtmenu.ui.apppopup import AppPopup
 from threading import Timer
 from config import APPSLIST_BTN_SIZE, APPSLIST_BTN_IMAGE_SIZE, APPSLIST_BTN_FONT_SIZE, APPSLIST_BTN_POPUPS_PER_BTN, APPSLIST_STAR_ONLY_WHEN_ORDER_BY_RATING
 from utils import get_trimmed_label_widget
+from mtmenu import logger
 
 class AppButton(MTKineticItem):
     """Widget representing an application on main window. 
@@ -23,7 +24,6 @@ class AppButton(MTKineticItem):
         
         super(AppButton, self).__init__(**kwargs)
         
-
     """Execute application on double click
        Open popup on single click"""
     def on_press(self, touch):  
@@ -48,10 +48,10 @@ class AppButton(MTKineticItem):
         self.popups_currently_open -= 1
 
     def open_app(self):
-        print '\nLoading %s...\n' % unicode(self.app)
-        print 'ID: %i' % self.app.id
-        print 'Path: %s\n' % self.app.get_extraction_fullpath()
-        print 'Boot file: %s\n' % self.app.get_boot_file()
+        logger.info('\nLoading %s...\n' % unicode(self.app))
+        logger.info('ID: %i' % self.app.id)
+        logger.info('Path: %s\n' % self.app.get_extraction_fullpath())
+        logger.info('Boot file: %s\n' % self.app.get_boot_file())
         self.app.execute()
 
         #refresh cstegory in main thread
@@ -60,8 +60,7 @@ class AppButton(MTKineticItem):
         self.parent.refresh(categories_list.current)
         
         
-    def draw(self):
-        
+    def draw(self): 
         # Outside line
         style = {'bg-color': (1, 1, 1, 1), 'draw-background': 0, 'draw-border': True, 'border-radius': 10}
         set_color(*style.get('bg-color'))
@@ -74,9 +73,10 @@ class AppButton(MTKineticItem):
             image.size = self.get_resized_size(image)
             image.pos = x - image.width /2, y - image.height /2      
             image.draw()
-        except Exception as e:
-            print "EXCEPTION on appbutton"
-            print e
+        except Exception, e:
+            logger.error("EXCEPTION on appbutton :: now refreshing application list\n%s" % e)
+            self.parent.reorder()
+            return
         
         # Label
         label_obj, self.label = get_trimmed_label_widget(text = self.label,
