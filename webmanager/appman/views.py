@@ -54,6 +54,7 @@ def contact(request):
             try:
                 send_mail(subject, message, email_from, [email_to])
                 request.user.message_set.create(message="Your message was sent successfully to the designated contact administrator.")
+                return application_list(request)
             except SMTPException, e:
                 request.user.message_set.create(message="Unable to send your message. Please try again later.")
     else:
