@@ -413,3 +413,17 @@ div.log code.description {
     padding: 10px;
     background-color: #EEE;
 }
+
+.tos_container input {
+    padding: 0;
+    margin: 0;
+    display: inline;
+    width: 20px;
+    float: left;
+}
+
+.tos_container label[for=tos] {
+    float: left;
+    width: 200px;
+}
+

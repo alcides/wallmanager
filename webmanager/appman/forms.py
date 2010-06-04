@@ -20,7 +20,7 @@ class ApplicationForm(ModelForm):
 
 
 class ApplicationAddForm(ApplicationForm):
-    tos = BooleanField(label='I agree to the terms of service.',
+    tos = BooleanField(label='I agree to the <a href="/tos/">terms of service</a>.',
             required=False) # it is required, but handled below for a custom error message.
 
     def clean_tos(self):
