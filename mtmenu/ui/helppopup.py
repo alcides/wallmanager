@@ -107,7 +107,7 @@ class HelpPopup(MTModalWindow):
         
         # Application's tooltip Image
         image = Image("images/app_tooltip.png")
-        image.pos = text_pos_x+45, y+45 
+        image.pos = text_pos_x+65, y+60
         image.draw()
         
         #Line
