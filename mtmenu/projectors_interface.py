@@ -1,3 +1,4 @@
+import time
 
 from datetime import datetime, time, timedelta
 from threading import Timer
@@ -5,7 +6,7 @@ from threading import Timer
 from webmanager.appman.utils import projectors
 from models import ScreensaverControlProxy, ProjectorControlProxy, ApplicationProxy
 from mtmenu.application_running import is_app_running
-from config import PRODUCTION, INACTIVITY_POOL_INTERVAL
+from config import PRODUCTION, INACTIVITY_POOL_INTERVAL, TIME_TO_CHECK_PROJECTORS
 
 from datetime import datetime
 from threading import Thread
@@ -52,23 +53,24 @@ class ActivityChecker():
     
     
     def last_activity_checker(self):
-        self.update_projectors_status()
+        while True:
+            time.sleep(TIME_TO_CHECK_PROJECTORS * 60)
+            
+            self.update_projectors_status()
 
-        diff_min = self.get_minutes(datetime.now() - self.last_activity)
-        screensaver_control = self.get_first_item(ScreensaverControlProxy.objects.all())        
-        projector_control = self.get_first_item(ProjectorControlProxy.objects.all())
+            diff_min = self.get_minutes(datetime.now() - self.last_activity)
+            screensaver_control = self.get_first_item(ScreensaverControlProxy.objects.all())        
+            projector_control = self.get_first_item(ProjectorControlProxy.objects.all())
 
-        if screensaver_control:
-            self.manage_screensaver(screensaver_control, diff_min)
-        else:
-            logger.error("screensaver time not defined")
+            if screensaver_control:
+                self.manage_screensaver(screensaver_control, diff_min)
+            else:
+                logger.error("screensaver time not defined")
 
-        if projector_control:
-            self.manage_projectors(projector_control, diff_min)           
-        else:
-            logger.error("projectors inactivity time not defined")
-
-        self.last_activity_checker()
+            if projector_control:
+                self.manage_projectors(projector_control, diff_min)           
+            else:
+                logger.error("projectors inactivity time not defined")
 
 
     def manage_screensaver(self, control, minutes):
