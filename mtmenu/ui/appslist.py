@@ -1,7 +1,20 @@
 from pymt import *
 from appbutton import AppButton
-from config import APPSLIST_NUMBER_OF_LINES, APPSLIST_SIZE, APPSLIST_POSITION, APPSLIST_FRICTION, APPSLIST_PADDING_X, APPSLIST_PADDING_Y
+from config import APPSLIST_NUMBER_OF_LINES, APPSLIST_SIZE, APPSLIST_POSITION, APPSLIST_FRICTION, APPSLIST_PADDING_X, APPSLIST_PADDING_Y, APPSLIST_BTN_POPUPS
 from utils import get_applications
+
+
+class PopupController(object):
+    def __init__():
+        self.opened = []
+        
+    def open(p):
+        if len(self.opened) > APPSLIST_BTN_POPUPS:
+            p = self.opened.pop()
+            p.close()
+        
+        self.opened.append(p)
+        
 
 class AppsList(MTKineticList):
     
@@ -28,6 +41,8 @@ class AppsList(MTKineticList):
         self.current_category = None
         self.criteria = 'name'
         
+        self.popup_controller = PopupController()
+        
         for a in applications:
             a.is_running = False
             a.save(False, True)
@@ -42,7 +57,7 @@ class AppsList(MTKineticList):
         for chunk in chunks(self.apps, APPSLIST_NUMBER_OF_LINES):
             chunk.reverse()
             for app in chunk:
-                item = AppButton(app)
+                item = AppButton(app, self.popup_controller)
                
                 self.add_widget(item)
 

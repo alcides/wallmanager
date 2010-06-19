@@ -13,7 +13,7 @@ class AppButton(MTKineticItem):
         kwargs -- Button properties, most of them inherited from MTButton
     
     This widget should be added to AppsGrid on Menu's UI construction"""
-    def __init__(self, app, **kwargs):
+    def __init__(self, app, popctrl, **kwargs):
         kwargs.setdefault('label', unicode(app))
         kwargs.setdefault('deletable', False)
         kwargs.setdefault('size', APPSLIST_BTN_SIZE)        
@@ -21,6 +21,7 @@ class AppButton(MTKineticItem):
         self.app = app
         self.popups_currently_open = 0
         self.double_tap_detected = False
+        self.popup_controller = popctrl
         
         super(AppButton, self).__init__(**kwargs)
         
@@ -41,8 +42,11 @@ class AppButton(MTKineticItem):
         if self.popups_currently_open == APPSLIST_BTN_POPUPS_PER_BTN or self.double_tap_detected:
             return
         
+
+        pop = AppPopup(self.app, touch_pos, self)        
+        self.popup_controller.open(pop)
         self.popups_currently_open += 1
-        self.get_root_window().add_widget(AppPopup(self.app, touch_pos, self))
+        self.get_root_window().add_widget(pop)
 
     def popup_closed(self):
         self.popups_currently_open -= 1
