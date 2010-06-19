@@ -80,7 +80,7 @@ TIME_TO_CHECK_PROJECTORS = 10
 MAX_ATTEMPTS = 3
 SLEEP_SECONDS_BETWEEN_ATTEMPTS = 2
 
-NATIVE_APP_NAMES = [' Community Core Vision ','Atalho para launcher.py']
+NATIVE_APP_NAMES = [' Community Core Vision ','Atalho para launcher.py', 'WatchDog']
 
 # WINDOWS MANAGER
 SET_FULLSCREEN = 3
