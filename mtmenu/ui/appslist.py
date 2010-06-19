@@ -15,6 +15,8 @@ class PopupController(object):
         
         self.opened.insert(0,p)
         
+    def remove(self, p):
+        self.opened.remove(p)
 
 class AppsList(MTKineticList):
     
