@@ -48,8 +48,9 @@ class AppButton(MTKineticItem):
         self.popups_currently_open += 1
         self.get_root_window().add_widget(pop)
 
-    def popup_closed(self):
+    def popup_closed(self,pop):
         self.popups_currently_open -= 1
+        self.popup_controller.remove(pop)
 
     def open_app(self):
         logger.info('\nLoading %s...\n' % unicode(self.app))

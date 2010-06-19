@@ -13,7 +13,7 @@ class PopupController(object):
             p = self.opened.pop()
             p.close()
         
-        self.opened.append(p)
+        self.opened.insert(0,p)
         
 
 class AppsList(MTKineticList):

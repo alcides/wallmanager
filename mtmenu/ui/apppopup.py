@@ -135,7 +135,7 @@ class AppPopup(MTWidget):
     def close(self):
         self.timer.cancel()
         if self.app_button:
-            self.app_button.popup_closed()
+            self.app_button.popup_closed(self)
         if self.get_root_window():
             self.get_root_window().remove_widget(self)
             
