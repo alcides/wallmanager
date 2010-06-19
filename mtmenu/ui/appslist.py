@@ -5,10 +5,10 @@ from utils import get_applications
 
 
 class PopupController(object):
-    def __init__():
+    def __init__(self):
         self.opened = []
         
-    def open(p):
+    def open(self, p):
         if len(self.opened) > APPSLIST_BTN_POPUPS:
             p = self.opened.pop()
             p.close()
