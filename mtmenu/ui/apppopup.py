@@ -24,8 +24,6 @@ class AppPopup(MTWidget):
 
         self.app = app
         self.app_button = app_button     
-        self.timer = Timer(APPSLIST_POPUP_DURATION, self.close)
-        self.timer.start()
         
         self.play_btn_pos = ()
         self.cancel_btn_pos = ()
@@ -133,7 +131,6 @@ class AppPopup(MTWidget):
             self.close()
         
     def close(self):
-        self.timer.cancel()
         if self.app_button:
             self.app_button.popup_closed()
         if self.get_root_window():
