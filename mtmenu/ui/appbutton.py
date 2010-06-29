@@ -79,9 +79,7 @@ class AppButton(MTKineticItem):
             image.pos = x - image.width /2, y - image.height /2      
             image.draw()
         except Exception, e:
-            logger.error("EXCEPTION on appbutton :: now refreshing application list\n%s" % e)
-            self.parent.reorder()
-            return
+            logger.error("EXCEPTION loading icon\n%s" % e)
         
         # Label
         label_obj, self.label = get_trimmed_label_widget(text = self.label,
