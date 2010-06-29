@@ -24,11 +24,11 @@ def get_all_categories():
 
     
 def get_all_applications(sort_by_value=False):
-    return sort_apps(ApplicationProxy.objects.all(), sort_by_value)
+    return sort_apps(ApplicationProxy.objects.filter(is_extracted=True), sort_by_value)
 
 
 def get_applications_of_category(cat, sort_by_value=False):
-    return sort_apps( ApplicationProxy.objects.filter(category = cat), sort_by_value )
+    return sort_apps( ApplicationProxy.objects.filter(category = cat, is_extracted=True), sort_by_value )
     
 
 def exists_category(category_name):
