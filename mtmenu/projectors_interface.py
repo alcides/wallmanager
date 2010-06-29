@@ -1,4 +1,4 @@
-import time
+import time as systemtime
 
 from datetime import datetime, time, timedelta
 from threading import Timer
@@ -28,9 +28,9 @@ class ActivityChecker():
         self.projectors_on = status
 
 
-    def set_last_activity(self, time = None): 
-        if time != None:
-            self.last_activity = time
+    def set_last_activity(self, dtime = None): 
+        if dtime != None:
+            self.last_activity = dtime
         else:
             self.last_activity = datetime.now()
       
@@ -54,7 +54,7 @@ class ActivityChecker():
     
     def last_activity_checker(self):
         while True:
-            time.sleep(TIME_TO_CHECK_PROJECTORS * 60)
+            systemtime.sleep(TIME_TO_CHECK_PROJECTORS * 60)
             
             self.update_projectors_status()
 
@@ -128,8 +128,8 @@ class ActivityChecker():
         return timedelta( seconds = instant.hour*60*60 + instant.minute*60 + instant.second )
        
     
-    def get_minutes(self, time):
-        return ( time.seconds + time.microseconds/1000000.0) / 60
+    def get_minutes(self, dtime):
+        return ( dtime.seconds + dtime.microseconds/1000000.0) / 60
     
     def is_between(self, start, end):
         now = datetime.now()
