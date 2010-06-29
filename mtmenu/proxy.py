@@ -27,7 +27,10 @@ class Proxy( threading.Thread ):
             self.execute()
             logger.info("PROXY STOPPED")
         except Exception, e: #Pokemon
-            logger.error("EXCEPTION ON PROXY:\n%s" % e)
+            if logger:
+                logger.error("EXCEPTION ON PROXY:\n%s" % e)
+            except:
+                print "Exception on Proxy:", e
 
 
     def execute(self):
