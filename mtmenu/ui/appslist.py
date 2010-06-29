@@ -42,9 +42,11 @@ class AppsList(MTKineticList):
         for chunk in chunks(self.apps, APPSLIST_NUMBER_OF_LINES):
             chunk.reverse()
             for app in chunk:
-                item = AppButton(app)
-               
-                self.add_widget(item)
+                try:
+                    item = AppButton(app)
+                    self.add_widget(item)
+                except Exception as e:
+                    logger.error("Could not load application %s: %e" % (app, e))
 
             
     def refresh(self, category):
