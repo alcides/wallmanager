@@ -15,12 +15,12 @@
 	
 	{% for l in logs %}
 		<div class="log">
-	        <p>Date: {{l.datetime|date:"d/m/Y"}} </p>
-	        <p>Hour: {{l.datetime|date:"H:i"}} </p>
-	        <p>Error Description:</p>
+	        <p><b>Date:</b> {{l.datetime|date:"d/m/Y"}} </p>
+	        <p><b>Hour:</b> {{l.datetime|date:"H:i"}} </p>
+	        <p><b>Error Description:</b></p>
 	        <code class="description"><pre>{{l.error_description}}</pre></code>
 		</div>
-		
+		<hr>
     {% endfor %}
 </div>
 {% endblock %}

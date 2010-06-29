@@ -11,6 +11,10 @@
 
 {% block content%}
 
+{% if not application.is_extracted %}
+<p class="info">Application is not yet extracted.</p>
+{% endif %}
+
 <div class="app">
 	{% load show_stars %}
 	<p>{% show_stars application.stars of 5 round to half %}</p>
@@ -43,7 +47,7 @@
 
 <img class="icon" src="/media/{{ application.icon }}" alt="{{ application.name }}" />
 
-<p class="description">{{ application.description }}</p>
+<p class="description">{{ application.description|linebreaks }}</p>
 
 {% if form.errors %}
 	<div id="report_abuse_form" style="visibility:visible">
