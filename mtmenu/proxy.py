@@ -29,7 +29,7 @@ class Proxy( threading.Thread ):
         except Exception, e: #Pokemon
             if logger:
                 logger.error("EXCEPTION ON PROXY:\n%s" % e)
-            except:
+            else:
                 print "Exception on Proxy:", e
 
 
