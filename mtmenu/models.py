@@ -137,6 +137,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         """ Returns the command to be executed on the shell """
         import platform
         if platform.system()[:3].lower() == "win":
+            return [boot_file]
             return ["start", "/MIN", boot_file]
         else:
             return ["bash", boot_file]    
