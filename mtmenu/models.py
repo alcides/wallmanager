@@ -137,6 +137,7 @@ class ApplicationProxy(models.Application, WallModelsProxy):
         """ Returns the command to be executed on the shell """
         import platform
         if platform.system()[:3].lower() == "win":
+            return ['wscript.exe', path.join(path.abspath(path.dirname(__file__)), ['hide.vbs']),boot_file]
             return [boot_file]
             return ["start", "/MIN", boot_file]
         else:
