@@ -49,7 +49,7 @@ class CategoryList (MTKineticList):
     def select_category(self, category_to_select = None):
         self.current = category_to_select
         
-        for cat_button in self.pchildren.iterate():
+        for cat_button in self.children:
             if cat_button.category == self.current:
                 cat_button.selected = True
                 one_selected = True
