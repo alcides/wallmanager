@@ -5,6 +5,7 @@ import threading
 from django.conf import settings
 
 import appman.utils.unzip as unzip
+from appman.utils.log_file import logger
 
 class UncompressThread(threading.Thread):
     """ Thread that uncompresses a certain zip file."""
@@ -28,9 +29,11 @@ class UncompressThread(threading.Thread):
             un = unzip.unzip()
             un.extract(str(self.instance.zipfile.path) , self.path)
             return os.path.exists(os.path.join(self.path, 'boot.bat'))
-        except unzip.zipfile.BadZipfile:
+        except unzip.zipfile.BadZipfile, e:
+            logger.log_app_event(self.instance, "BadZipfile:" + str(e))
             return False
-        except IOError:
+        except IOError, e:
+            logger.log_app_event(self.instance, "IO:" + str(e))
             return False
             
     def safe_call(self, fun):
