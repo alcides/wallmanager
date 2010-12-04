@@ -400,6 +400,13 @@ div.log code.description {
     background-color: #F6F1CF;
 }
 
+.info {
+    padding: 10px;
+    background-color: #C2CFF6;
+    border: solid #2C4699 1px;
+    margin: 10px;
+}
+
 #app_search {
     float: right;
     padding: 5px;
